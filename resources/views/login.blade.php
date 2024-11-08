@@ -70,7 +70,8 @@
                 <img src="{{asset('assets/img/WhatsApp Image 2024-09-06 at 14.51.57_79bdcbe2.jpg')}}" alt="logo" class="logo-utama">
             </aside>
             <section class="col-xl-6 col-lg-6 col-md-12 col-xm-12 d-flex justify-content-center align-items-center">
-                <form action="post" class="login-form">
+                <form action="{{ route('login.submit') }}" method="POST" class="login-form">
+                    @csrf
                     <div class="form-group text-center">
                         <img src="{{asset('assets/img/logo konek@3x.png')}}" alt="logo" class="icon-login">
                         <h1>Login</h1>
@@ -78,11 +79,11 @@
                     </div>
                     <div class="mb-3">
                         <label class="m-0">Username</label>
-                        <input type="text" class="form-control" id="username" placeholder="Masukkan Username">
+                        <input type="text" name="name" class="form-control" id="name" placeholder="Masukkan Username">
                     </div>
                     <div class="mb-3">
                         <label class="m-0">Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="Masukkan Password">
+                        <input type="password" name="password" class="form-control" id="password" placeholder="Masukkan Password">
                     </div>
                     <button type="submit" class="btn btn-primary">Login</button>
                 </form>
