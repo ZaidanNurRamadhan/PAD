@@ -6,6 +6,9 @@
     <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" rel="stylesheet"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
     <aside class="sidebar">
@@ -14,8 +17,8 @@
                 <img alt="KONEK Logo" height="170" src="{{asset('assets/img/Logo.png')}}" width="170"/>
             </div>
             <nav>
-                <a href="{{route('gudang-karyawan')}}" id="gudangLink"><i class="fas fa-warehouse"></i> Gudang</a>
                 <a href="{{route('transaksi-karyawan')}}" id="transaksiLink"><i class="fas fa-receipt"></i> Transaksi</a>
+                <a href="{{route('gudang-karyawan')}}" id="gudangLink"><i class="fas fa-warehouse"></i> Gudang</a>
             </nav>
         </div>
         <div>

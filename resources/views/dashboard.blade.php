@@ -4,7 +4,7 @@
         <article class="card mt-2">
         <div class="card-header d-flex justify-content-between align-items-center bg-white fs-4 position-sticky">
             Monitoring Penyebaran Produk
-            <a href="#" class="text-decoration-none fs-6">Lihat Semua</a>
+            <a class="text-decoration-none fs-6" href="{{route('monitoring')}}">Lihat Semua</a>
         </div>
         <div class="card-body scrollable-table">
             <table class="table">
@@ -60,7 +60,7 @@
         <div class="col-md-8 table-terhubung" style="width: 63%">
             <article class="card chartnya">
             <div class="card-header d-flex justify-content-between bg-white">
-                <div class="fs-4">Penjualan &amp; Retur</div>
+                <div class="fs-4 align-self-end">Penjualan &amp; Retur</div>
                 <div class="dropdown">
                     <div class="dropdown-selected bg-white" onclick="toggleDropdown(this)">
                         <img src="{{ asset('assets/img/kalender.png') }}" alt="Calendar Icon" class="icon">
@@ -70,7 +70,6 @@
                     <div class="dropdown-options" class="dropdown-options">
                         <div class="dropdown-option" onclick="selectOption(this,'Harian')">Harian</div>
                         <div class="dropdown-option" onclick="selectOption(this,'Bulanan')">Bulanan</div>
-                        <div class="dropdown-option" onclick="selectOption(this,'Tahunan')">Tahunan</div>
                     </div>
                 </div>
             </div>
@@ -81,7 +80,7 @@
 
             <article class="card mt-4 isi-table">
             <div class="card-header d-flex justify-content-between bg-white position-sticky terlaris">
-                <div class="fs-4">Terlaris</div>
+                <div class="fs-4 align-self-end">Terlaris</div>
                 <div class="dropdown">
                     <div class="dropdown-selected bg-white" onclick="toggleDropdown(this)">
                         <img src="{{ asset('assets/img/kalender.png') }}" alt="Calendar Icon" class="icon">
@@ -91,7 +90,6 @@
                     <div class="dropdown-options" class="dropdown-options">
                         <div class="dropdown-option" onclick="selectOption(this,'Harian')">Harian</div>
                         <div class="dropdown-option" onclick="selectOption(this,'Bulanan')">Bulanan</div>
-                        <div class="dropdown-option" onclick="selectOption(this,'Tahunan')">Tahunan</div>
                     </div>
                 </div>
             </div>
@@ -188,12 +186,12 @@
             <article class="card">
             <div class="card-header d-flex justify-content-between align-items-center bg-white position-sticky">
                 <div class="fs-4">Produk Menipis</div>
-                <a href="#" class="text-decoration-none fs-6">Lihat Semua</a>
+                <a class="text-decoration-none fs-6" href="{{route('gudang-owner')}}">Lihat Semua</a>
             </div>
             <div class="card-body scrollable-list">
                 <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between flex-column">
-                    <span>Lays</span>
+                    <span class="">Lays</span>
                     <span>Produk Tersisa: 15 Packet <span class="badge badge-danger">Rendah</span></span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between flex-column">

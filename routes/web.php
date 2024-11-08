@@ -60,6 +60,7 @@ Route::get('/settings', function () {
     return view('settings');
 })->name('settings');
 
+<<<<<<< HEAD
 // Route::get('/login', function () {
 //     return view('login');
 // })->name('login');
@@ -80,3 +81,11 @@ Route::middleware('auth')->group(function () {
 Route::get('/coba', function () {
     return view('coba');
 })->name('lo');
+=======
+Route::get('/login', function () {
+    return view('login');
+})->name('login');
+Route::get('/monitoring', function () {
+    return view('monitoring');
+})->name('monitoring');
+>>>>>>> 3260a7cb04a6a20fa917acd674467c36de27fc4b
