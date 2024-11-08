@@ -19,7 +19,7 @@
                     <th>Tanggal keluar</th>
                     <th>Tanggal Retur</th>
                     <th>Waktu Edar</th>
-                    <th>Status</th>
+                    <th class="text-center">Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,7 +36,10 @@
                     <td>11/12/22</td>
                     <td></td>
                     <td>19</td>
-                    <td><span class="text-success">Open</span></td>
+                    <td>
+                        <span class="text-success">Open</span>
+                        <a href="#" style="color: black; float: right;" data-bs-toggle="modal" data-bs-target="#Edittransaksi"><i class="fas fa-angle-right"></i></a>
+                    </td>
                 </tr>
                 <tr>
                     <td>Rp62000</td>
@@ -47,7 +50,10 @@
                     <td>11/12/22</td>
                     <td>30/12/22</td>
                     <td>19</td>
-                    <td><span class="text-danger">Closed</span></td>
+                    <td>
+                        <span class="text-danger">Closed</span>
+                        <a href="#" style="color: black; float: right;" data-bs-toggle="modal" data-bs-target="#Edittransaksi"><i class="fas fa-angle-right"></i></a>
+                    </td>
                 </tr>
                 <tr>
                     <td>Sinar Mas</td>
@@ -62,7 +68,10 @@
                     <td>11/12/22</td>
                     <td></td>
                     <td>19</td>
-                    <td><span class="text-success">Open</span></td>
+                    <td>
+                        <span class="text-success">Open</span>
+                        <a href="#" style="color: black; float: right;" data-bs-toggle="modal" data-bs-target="#Edittransaksi"><i class="fas fa-angle-right"></i></a>
+                    </td>
                 </tr>
                 <tr>
                     <td>Rp62000</td>
@@ -73,7 +82,10 @@
                     <td>11/12/22</td>
                     <td>30/12/22</td>
                     <td>19</td>
-                    <td><span class="text-danger">Closed</span></td>
+                    <td>
+                        <span class="text-danger">Closed</span>
+                        <a href="#" style="color: black; float: right;" data-bs-toggle="modal" data-bs-target="#Edittransaksi"><i class="fas fa-angle-right"></i></a>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -126,9 +138,9 @@
         </footer>
     </main>
     </div>
-  </section>
+</section>
   {{-- edit --}}
-  <section class="modal fade" id="Tambahtransaksi" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<section class="modal fade" id="Edittransaksi" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog-centered modal-dialog">
       <main class="modal-content">
         <header class="modal-header">
@@ -168,7 +180,7 @@
         </footer>
     </main>
     </div>
-  </section>
+</section>
 
 <style>
     /* Flexbox untuk memastikan konten memenuhi layar penuh */

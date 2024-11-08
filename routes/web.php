@@ -56,6 +56,6 @@ Route::get('/settings', function () {
 Route::get('/login', function () {
     return view('login');
 })->name('login');
-Route::get('/coba', function () {
-    return view('coba');
-})->name('lo');
+Route::get('/monitoring', function () {
+    return view('monitoring');
+})->name('monitoring');

@@ -1,42 +1,43 @@
 @extends('layout.owner')
 @section('content')
-<section class="card">
-    <div class="card-header d-flex justify-content-between align-items-center border-0 p-3">
-        <h5 class="align-self-end">Laporan</h5>
-        <div class="dropdown align-self-start">
-            <div class="dropdown-selected bg-white" onclick="toggleDropdown(this)">
-                <img src="{{ asset('assets/img/kalender.png') }}" alt="Calendar Icon" class="icon">
-                <span class="selected-text">Harian</span>
-                <span class="arrow">▼</span>
+<div class="container-fluid">
+    <section class="card p-3">
+        <div class="card-header d-flex justify-content-between align-items-center border-0">
+            <h3 class="align-self-end">Laporan</h3>
+            <div class="dropdown align-self-start">
+                <div class="dropdown-selected bg-white" onclick="toggleDropdown(this)">
+                    <img src="{{ asset('assets/img/kalender.png') }}" alt="Calendar Icon" class="icon">
+                    <span class="selected-text">Harian</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div class="dropdown-options" class="dropdown-options">
+                    <div class="dropdown-option" onclick="selectOption(this,'Harian')">Harian</div>
+                    <div class="dropdown-option mt-2" onclick="selectOption(this,'Bulanan')">Bulanan</div>
+                </div>
             </div>
-            <div class="dropdown-options" class="dropdown-options">
-                <div class="dropdown-option" onclick="selectOption(this,'Harian')">Harian</div>
-                <div class="dropdown-option" onclick="selectOption(this,'Bulanan')">Bulanan</div>
-                <div class="dropdown-option" onclick="selectOption(this,'Tahunan')">Tahunan</div>
+        </div>
+        <div class="row mt-3">
+            <div class="col text-center">
+                <p style="color: #1570EF" class="fw-semibold">Jumlah Transaksi</p>
+                <p>4</p>
+            </div>
+            <div class="col text-center">
+                <p style="color: #E19133" class="fw-semibold" >Produk yang Terjual</p>
+                <p>126</p>
+            </div>
+            <div class="col text-center">
+                <p style="color: #845EBC" class="fw-semibold">Produk Retur</p>
+                <p>126</p>
             </div>
         </div>
-    </div>
-    <div class="row mt-3">
-        <div class="col text-center">
-            <p>4</p>
-            <p>Jumlah Transaksi</p>
-        </div>
-        <div class="col text-center">
-            <p>126</p>
-            <p>Produk yang Terjual</p>
-        </div>
-        <div class="col text-center">
-            <p>126</p>
-            <p>Produk Retur</p>
-        </div>
-    </div>
-</section>
-<section class="card mt-4 p-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h5>Rekap Transaksi</h5>
+    </section>
+</div>
+<section class="card mt-4 p-4 min-vh-100 d-flex justify-content-between flex-column">
+    <div class="card-header d-flex justify-content-between border-0 mb-2">
+        <h5 class="align-self-end">Rekap Transaksi</h5>
         <button class="btn btn-outline-secondary">Download</button>
     </div>
-    <div class="table-responsive">
+    <div class="table-responsive flex-grow-1">
         <table class="table">
             <thead>
                 <tr>
@@ -104,11 +105,11 @@
                 </tr>
             </tbody>
         </table>
-        <div class="d-flex justify-content-between">
-            <button class="btn btn-secondary">Prev</button>
-            <span>Page 1 of 10</span>
-            <button class="btn btn-secondary">Next</button>
-        </div>
+    </div>
+    <div class="d-flex justify-content-between">
+        <button class="btn btn-secondary">Prev</button>
+        <span>Page 1 of 10</span>
+        <button class="btn btn-secondary">Next</button>
     </div>
 </section>
 @endsection
