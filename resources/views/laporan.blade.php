@@ -19,15 +19,15 @@
         <div class="row mt-3">
             <div class="col text-center">
                 <p style="color: #1570EF" class="fw-semibold">Jumlah Transaksi</p>
-                <p>4</p>
+                <p>{{ count($data) }}</p>
             </div>
             <div class="col text-center">
-                <p style="color: #E19133" class="fw-semibold" >Produk yang Terjual</p>
-                <p>126</p>
+                <p style="color: #E19133" class="fw-semibold">Produk yang Terjual</p>
+                <p>{{ array_sum(array_column($data, 'terjual')) }}</p>
             </div>
             <div class="col text-center">
                 <p style="color: #845EBC" class="fw-semibold">Produk Retur</p>
-                <p>126</p>
+                <p>{{ array_sum(array_column($data, 'jumlah')) - array_sum(array_column($data, 'terjual')) }}</p>
             </div>
         </div>
     </section>
@@ -53,56 +53,19 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td colspan="9"><strong>Zaidan Punya</strong></td>
-                </tr>
-                <tr>
-                    <td>Rp62000</td>
-                    <td>43</td>
-                    <td>Lays</td>
-                    <td>40</td>
-                    <td>Rp1.500</td>
-                    <td>11/12/22</td>
-                    <td>30/12/22</td>
-                    <td>19</td>
-                    <td class="text-danger">Closed</td>
-                </tr>
-                <tr>
-                    <td>Rp62000</td>
-                    <td>20</td>
-                    <td>Bru</td>
-                    <td>20</td>
-                    <td>Rp1.500</td>
-                    <td>11/12/22</td>
-                    <td>30/12/22</td>
-                    <td>19</td>
-                    <td class="text-danger">Closed</td>
-                </tr>
-                <tr>
-                    <td colspan="9"><strong>Sinar Mas</strong></td>
-                </tr>
-                <tr>
-                    <td>Rp62000</td>
-                    <td>43</td>
-                    <td>Lays</td>
-                    <td>40</td>
-                    <td>Rp1.500</td>
-                    <td>11/12/22</td>
-                    <td>30/12/22</td>
-                    <td>19</td>
-                    <td class="text-danger">Closed</td>
-                </tr>
-                <tr>
-                    <td>Rp62000</td>
-                    <td>20</td>
-                    <td>Bru</td>
-                    <td>20</td>
-                    <td>Rp1.500</td>
-                    <td>11/12/22</td>
-                    <td>30/12/22</td>
-                    <td>19</td>
-                    <td class="text-danger">Closed</td>
-                </tr>
+                @foreach($data as $item)
+                    <tr>
+                        <td>Rp{{ number_format($item['total_harga'], 0, ',', '.') }}</td>
+                        <td>{{ $item['jumlah'] }}</td>
+                        <td>{{ $item['produk'] }}</td>
+                        <td>{{ $item['terjual'] }}</td>
+                        <td>Rp{{ number_format($item['harga'], 0, ',', '.') }}</td>
+                        <td>{{ $item['tanggal_keluar'] }}</td>
+                        <td>{{ $item['tanggal_retur'] }}</td>
+                        <td>{{ $item['waktu_edar'] }}</td>
+                        <td class="{{ $item['status'] === 'Open' ? 'text-success' : 'text-danger' }}">{{ $item['status'] }}</td>
+                    </tr>
+                @endforeach
             </tbody>
         </table>
     </div>

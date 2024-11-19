@@ -10,8 +10,4 @@ class Produk extends Model
     use HasFactory;
     protected $table = 'produk';
     protected $fillable = ['name', 'price', 'category'];
-    public function toko()
-    {
-        return $this->belongsTo(Toko::class);
-    }
 }

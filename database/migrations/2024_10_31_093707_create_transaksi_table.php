@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('transaksi', function (Blueprint $table) {
             $table->id();
             $table->date('transactionDate'); // Tanggal transaksi
-            $table->string('transactionType', 100); // Jenis transaksi
+            $table->string('transactionType', 100)->nullable(); // Jenis transaksi
             $table->integer('amount'); // Jumlah transaksi
             $table->timestamps();
         });

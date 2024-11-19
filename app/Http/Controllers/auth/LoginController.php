@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-
     /**
      * Display the login form.
      */
@@ -16,23 +15,27 @@ class LoginController extends Controller
     {
         return view('login');
     }
-   /**
+
+    /**
      * Handle the login request and redirect based on role.
      */
-    public function store(Request $request)
+    public function login(Request $request)
     {
         // Validate the login credentials
         $credentials = $request->validate([
-            'name' => 'required',
-            'password' => 'required',
+            'name' => 'required|string',
+            'password' => 'required|string',
         ]);
 
         // Attempt to authenticate and login the user
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt(['name' => $credentials['name'], 'password' => $credentials['password']])) {
             $request->session()->regenerate();
-            
-            // Redirect based on user role
+        
+            // Debugging: Check the authenticated user role
             $user = Auth::user();
+            dd("Logged in user role: " . $user->role);  // Log role to verify
+
+            // Redirect based on user role
             if ($user->role === 'owner') {
                 return redirect()->route('dashboard');
             } elseif ($user->role === 'karyawan') {
@@ -45,6 +48,7 @@ class LoginController extends Controller
             'name' => 'The provided credentials do not match our records.',
         ])->onlyInput('name');
     }
+
 
     /**
      * Logout the user and redirect to the login page.
