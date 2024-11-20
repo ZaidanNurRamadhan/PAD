@@ -3,6 +3,7 @@
 <div class="container-fluid">
     <section class="card p-3">
         <div class="card-header d-flex justify-content-between align-items-center border-0">
+            <p class="text-white">laporannnnbbbbbb</p>
             <h3 class="align-self-end">Laporan</h3>
             <div class="dropdown align-self-start">
                 <div class="dropdown-selected bg-white" onclick="toggleDropdown(this)">

@@ -9,72 +9,85 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{asset('css/layout-owner.css')}}">
 </head>
 <body>
     <aside class="sidebar">
         <div>
-            <div class="mb-4 ml-4">
-                <img alt="KONEK Logo" height="170" src="{{asset('assets/img/Logo.png')}}" width="170"/>
+            <div>
+                <img alt="KONEK Logo" height="120" src="{{ asset('assets/img/Logo.png') }}" width="170" class="image1 object-fit-cover"/>
+                <img alt="KONEK Logo" height="80" src="{{ asset('assets/img/logo-konek.png') }}" width="80" class="image2"/>
             </div>
             <nav>
-                <a href="{{route('transaksi-karyawan')}}" id="transaksiLink"><i class="fas fa-receipt"></i> Transaksi</a>
-                <a href="{{route('gudang-karyawan')}}" id="gudangLink"><i class="fas fa-warehouse"></i> Gudang</a>
+                <a href="{{route('transaksi-karyawan')}}" id="transaksiLink"><i class="fas fa-receipt"></i><i class="d-none lg d-lg-inline fst-normal"> Transaksi</i></a>
+                <a href="{{route('gudang-karyawan')}}" id="gudangLink"><i class="fas fa-warehouse"></i><i class="d-none lg d-lg-inline fst-normal"> Gudang</i></a>
             </nav>
         </div>
         <div>
             <nav>
-                <a href="#logoutModal" data-bs-toggle="modal" data-bs-target="#logoutModal"><i class="fas fa-sign-out-alt"></i> Keluar</a>
+                <a href="#logoutModal" data-bs-toggle="modal" data-bs-target="#logoutModal"><i class="fas fa-sign-out-alt"></i><i class="d-none lg d-lg-inline fst-normal"> Keluar</i></a>
             </nav>
         </div>
     </aside>
-    <main class="content">
-        <header class="header">
-            <input placeholder="Cari produk, laporan, transaksi" type="text"/>
-            <div class="karyawan">karyawan</div>
+
+    <main id="app"
+          class="content"
+          data-routes="{{ json_encode([
+              'login' => route('login'),
+              'dashboard' => route('dashboard'),
+              'transaksi' => route('transaksi-owner'),
+              'gudang' => route('gudang-owner'),
+              'laporan' => route('laporan'),
+              'pemasok' => route('pemasok'),
+              'toko' => route('manajemen-toko'),
+              'settings' => route('settings')
+          ]) }}">
+        <header class="d-sm-none">
+            <nav class="navbar bg-body-tertiary fixed-top">
+                <div class="container-fluid">
+                  <img src="{{asset('assets/img/Logo.png')}}" width="100" height="40" class="aspek object-fit-cover" alt="">
+                  <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                    <span class="navbar-toggler-icon"></span>
+                  </button>
+                  <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+                    <div class="offcanvas-header">
+                      <h5 class="offcanvas-title fs-3" id="offcanvasNavbarLabel">Menu</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body d-flex flex-column">
+                        <ul class="navbar-nav flex-grow-1">
+                          <li class="nav-item">
+                            <a href="{{ route('transaksi-karyawan') }}" id="transaksiLink" class="text-decoration-none fst-normal {{ request()->routeIs('transaksi-karyawan') ? 'active' : '' }}">
+                              <i class="fas fa-receipt"></i><i class="d-none lg d-lg-inline fst-normal"> Transaksi</i>
+                            </a>
+                          </li>
+                          <li class="nav-item">
+                            <a href="{{ route('gudang-karyawan') }}" id="gudangLink" class="text-decoration-none fst-normal"><i class="fas fa-warehouse"></i><i class="d-none lg d-lg-inline fst-normal"> Gudang</i></a>
+                          </li>
+
+                          <!-- Bagian bawah dengan `mt-auto` agar berada di bagian paling bawah -->
+                          <li class="nav-item mt-auto">
+                            <a href="#logoutModal" data-bs-toggle="modal" data-bs-target="#logoutModal" class="text-decoration-none fst-normal"><i class="fas fa-sign-out-alt"></i><i class="d-none lg d-md-inline fst-normal"> Keluar</i></a>
+                          </li>
+                        </ul>
+                      </div>
+
+                  </div>
+                </div>
+              </nav>
         </header>
+        <section class="header">
+            <input placeholder="Cari produk, laporan, transaksi" type="text"/>
+            <div class="karyawan">Karyawan</div>
+        </section>
         <section class="main-content">
             @yield('content')
         </section>
     </main>
-    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title w-100 text-center" id="logoutModalLabel">Konfirmasi Keluar</h5>
-            </div>
-            <div class="modal-body text-center">
-              Apakah Anda yakin ingin keluar?
-            </div>
-            <div class="modal-footer justify-content-center">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-              <button type="button" class="btn btn-danger" id="confirmLogout" href="{{route('login')}}">Keluar</button>
-            </div>
-          </div>
-        </div>
-      </div>
+    @include('component.ModalKeluar')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script>
-            document.addEventListener("DOMContentLoaded", function() {
-        const currentUrl = window.location.href;
-
-        // Daftar elemen link beserta URL-nya
-        const links = [
-            { element: document.getElementById('gudangLink'), url: "{{ route('gudang-karyawan') }}" },
-            { element: document.getElementById('transaksiLink'), url: "{{ route('transaksi-karyawan') }}" }
-        ];
-
-        // Menetapkan kelas 'active' ke link yang sesuai dengan URL saat ini
-        links.forEach(link => {
-            if (currentUrl.includes(link.url)) {
-                link.element.classList.add('active');
-            } else {
-                link.element.classList.remove('active');
-            }
-        });
-    });
-    document.getElementById('confirmLogout').addEventListener('click', function () {
-        window.location.href = "{{ route('login') }}"; // Mengarahkan ke halaman login
-    });
-    </script>
+    <script src="{{asset('js/layout-karyawan.js')}}"></script>
+    <script src="{{asset('js/script.js')}}"></script>
+    <script src="{{ asset('js/layout-owner.js') }}"></script>
 </body>
 </html>

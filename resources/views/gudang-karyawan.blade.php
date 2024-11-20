@@ -1,7 +1,7 @@
 @extends('layout.karyawan')
 @section('content')
 <section class="card p-4">
-    <h4 class="fw-bold text-center">Stok Keseluruhan</h4>
+    <h4 class="fw-bold text-center text-judul">Stok Keseluruhan</h4>
     <div class="row mt-2">
         <div class="col text-center">
             <h5 style="color: #1570EF" class="fw-semibold">Kategori</h5>

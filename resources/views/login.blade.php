@@ -76,7 +76,7 @@
             <section class="col-xl-6 col-lg-6 col-md-12 col-xm-12 d-flex justify-content-center align-items-center">
                 <form action="post" class="login-form">
                     <div class="form-group text-center">
-                        <img src="{{asset('assets/img/logo konek@3x.png')}}" alt="logo" class="icon-login">
+                        <img src="{{asset('assets/img/logo-konek.png')}}" alt="logo" class="icon-login">
                         <h1>Login</h1>
                         <p class="fw-light">Selamat datang di aplikasi manajemen stok</p>
                     </div>
