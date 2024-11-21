@@ -20,8 +20,8 @@ class SettingController extends Controller
         $data = [];
         foreach ($employees as $employee) {
             $data[] = [
-                'name' => $faker->name, // Random name
-                'contact' => $faker->contact, // Random contact
+                'name' => $employee->name, // Random name
+                'contact' => $employee->contact, // Random contact
                 'username' => $employee->name // Username from the database
             ];
         }

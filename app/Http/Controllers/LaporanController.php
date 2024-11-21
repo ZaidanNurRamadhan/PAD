@@ -15,25 +15,28 @@ class LaporanController extends Controller
 
     private function getLaporanData()
     {
-        // Fetch all transactions and products
+        // Fetch all transactions
         $transaksis = Transaksi::all();
-        $produks = Produk::all();
 
         // Prepare data for the view
         $data = [];
         foreach ($transaksis as $transaksi) {
-            $produk = $produks->random(); // Randomly select a product for demonstration
-            $data[] = [
-                'total_harga' => $produk->price * rand(1, 100), // Total price (price * random quantity)
-                'jumlah' => rand(1, 100), // Random quantity sold
-                'produk' => $produk->name,
-                'terjual' => rand(1, 100), // Random sold quantity
-                'harga' => $produk->price,
-                'tanggal_keluar' => $transaksi->transactionDate,
-                'tanggal_retur' => now()->addDays(rand(1, 30))->toDateString(), // Random return date
-                'waktu_edar' => rand(1, 30), // Random shelf life
-                'status' => rand(0, 1) ? 'Open' : 'Closed', // Randomly assign status as 'Open' or 'Closed'
-            ];
+            // Find the product related to the transaction
+            $produk = Produk::where('id', $transaksi->id)->first(); // Assuming there's a relation between Transaksi and Produk
+
+            if ($produk) { // Check if product exists
+                $data[] = [
+                    'total_harga' => $produk->hargaJual * $transaksi->terjual, // Total price (harga jual * terjual)
+                    'jumlah' => $produk->jumlah, // Jumlah dari tabel produk
+                    'produk' => $produk->name, // Nama produk dari tabel produk
+                    'terjual' => $transaksi->terjual, // Terjual dari tabel transaksi
+                    'harga' => $produk->hargaBeli, // Harga beli dari tabel produk
+                    'tanggal_keluar' => $transaksi->transactionDate, // Tanggal keluar dari tabel transaksi
+                    'tanggal_retur' => $transaksi->returDate, // Tanggal retur dari tabel transaksi
+                    'waktu_edar' => $transaksi->waktuEdar, // Waktu edar dari tabel transaksi
+                    'status' => $transaksi->status, // Status dari tabel transaksi
+                ];
+            }
         }
 
         return view('laporan', compact('data'));

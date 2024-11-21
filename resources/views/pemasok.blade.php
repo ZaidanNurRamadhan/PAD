@@ -46,16 +46,16 @@
             <header class="modal-header">
               <h1 class="modal-title fs-5" id="staticBackdropLabel">Hapus Pemasok</h1>
             </header>
-            <form action="{{ route('pemasok.destroy', ['id' => $data->id]) }}" method="POST">
+            <form action="{{ route('pemasok.destroy', $data->id) }}" method="POST">
                 @csrf
                 <article class="modal-body">
                     <p>Anda yakin ingin menghapus pemasok ini?</p>
                 </article>
+                <footer class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-danger">Hapus</button>
+                </footer>
             </form>
-            <footer class="modal-footer">
-              <button type="button" style="width: 100px;" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-              <button type="button" style="width: 100px;" class="btn btn-danger">Ya</button>
-            </footer>
         </main>
         </div>
       </section>
@@ -86,11 +86,11 @@
                         <input type="email" name="email" class="form-control" style="max-width: 273px;" placeholder="Masukkan email pemasok">
                     </section>
                 </article>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Tambah</button>
+                </div>
             </form>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-              <button type="button" class="btn btn-primary">Tambah</button>
-            </div>
         </main>
         </div>
       </section>
@@ -101,32 +101,32 @@
             <header class="modal-header">
               <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Pemasok</h1>
             </header>
-            <form action="{{ route('pemasok.update', ['id' => $data->id]) }}" method="POST">
+            <form action="{{ route('pemasok.update', $data->id) }}" method="POST">
                 @csrf
-                @method('PUT')
+                @method('POST')
                 <article class="modal-body">
                     <section class="form-group d-flex justify-content-between px-3">
                         <label for="">Nama Pemasok</label>
-                        <input type="text" name="name" class="form-control" style="max-width: 273px;" placeholder="Masukkan nama pemasok">
+                        <input type="text" name="name" value="{{ $data->name }}" class="form-control" style="max-width: 273px;">
                     </section>
                     <section class="form-group d-flex justify-content-between px-3 mt-4">
                         <label for="">Produk</label>
-                        <input type="text" name="produkDisediakan" class="form-control" style="max-width: 273px;" placeholder="Masukkan nama produk">
+                        <input type="text" name="produkDisediakan" value="{{ $data->produkDisediakan }}" class="form-control" style="max-width: 273px;">
                     </section>
                     <section class="form-group d-flex justify-content-between px-3 mt-4">
                         <label for="">Kontak</label>
-                        <input type="number" name="nomorTelepon" class="form-control" style="max-width: 273px;" placeholder="Masukkan kontak pemasok">
+                        <input type="number" name="nomorTelepon" value="{{ $data->nomorTelepon }}" class="form-control" style="max-width: 273px;">
                     </section>
                     <section class="form-group d-flex justify-content-between px-3 mt-4">
                         <label for="">Email</label>
-                        <input type="email" name="email" class="form-control" style="max-width: 273px;" placeholder="Masukkan email pemasok">
+                        <input type="email" name="email" value="{{ $data->email }}" class="form-control" style="max-width: 273px;">
                     </section>
                 </article>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
             </form>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-              <button type="button" class="btn btn-primary">Simpan</button>
-            </div>
         </main>
         </div>
       </section>

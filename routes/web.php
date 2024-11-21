@@ -20,9 +20,9 @@ use App\Http\Controllers\SettingController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -49,9 +49,9 @@ Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
 // })->name('pemasok');
 Route::get('/pemasok', [PemasokController::class, 'index'])->name('pemasok');
 Route::post('/pemasok/store', [PemasokController::class, 'store'])->name('pemasok.store');
-Route::get('/pemasok/{id}/edit', [PemasokController::class, 'edit'])->name('pemasok.edit');
 Route::post('/pemasok/update/{id}', [PemasokController::class, 'update'])->name('pemasok.update');
 Route::post('/pemasok/destroy/{id}', [PemasokController::class, 'destroy'])->name('pemasok.destroy');
+
 
 // Route::get('/transaksi-owner', function () {
 //     return view('transaksi-owner');
@@ -67,6 +67,11 @@ Route::get('/transaksi-karyawan', [TransaksiController::class, 'karyawan'])->nam
 //     return view('manajemen-toko');
 // })->name('manajemen-toko');
 Route::get('/manajemen-toko', [TokoController::class, 'index'])->name('manajemen-toko');
+Route::get('/toko', [TokoController::class, 'index'])->name('toko.index');
+Route::post('/toko', [TokoController::class, 'store'])->name('toko.store');
+Route::get('/toko/{toko}/edit', [TokoController::class, 'edit'])->name('toko.edit');
+Route::put('/toko/{toko}', [TokoController::class, 'update'])->name('toko.update');
+Route::delete('/toko/{toko}', [TokoController::class, 'destroy'])->name('toko.destroy');
 
 // Route::get('/settings', function () {
 //     return view('settings');
@@ -91,6 +96,6 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // });
 
 
-Route::get('/coba', function () {
-    return view('coba');
-})->name('lo');
+// Route::get('/coba', function () {
+//     return view('coba');
+// })->name('lo');
