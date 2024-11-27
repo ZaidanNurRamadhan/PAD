@@ -11,4 +11,9 @@ class Produk extends Model
     
     protected $table = 'produk';
     protected $fillable = ['name', 'hargaBeli', 'hargaJual', 'category', 'jumlah'];
+
+    public function stok()
+    {
+        return $this->hasOne(Stok::class, 'product_id');
+    }
 }

@@ -13,40 +13,13 @@ class PemasokSeeder extends Seeder
      */
     public function run(): void
     {
-        // Creating dummy data for the pemasok table
-        Pemasok::create([
-            'name' => 'Pemasok A',
-            'produkDisediakan' => 'Produk A1',
-            'nomorTelepon' => '081234567890',
-            'email' => 'pemasokA@example.com',
-        ]);
-
-        Pemasok::create([
-            'name' => 'Pemasok B',
-            'produkDisediakan' => 'Produk B1',
-            'nomorTelepon' => '081234567891',
-            'email' => 'pemasokB@example.com',
-        ]);
-
-        Pemasok::create([
-            'name' => 'Pemasok C',
-            'produkDisediakan' => 'Produk C1',
-            'nomorTelepon' => '081234567892',
-            'email' => 'pemasokC@example.com',
-        ]);
-
-        Pemasok::create([
-            'name' => 'Pemasok D',
-            'produkDisediakan' => 'Produk D1',
-            'nomorTelepon' => '081234567893',
-            'email' => 'pemasokD@example.com',
-        ]);
-
-        Pemasok::create([
-            'name' => 'Pemasok E',
-            'produkDisediakan' => 'Produk E1',
-            'nomorTelepon' => '081234567894',
-            'email' => 'pemasokE@example.com',
-        ]);
+        for ($i = 0; $i < 5; $i++) {
+            Pemasok::create([
+                'name' => fake()->company(), // Nama perusahaan sebagai nama pemasok
+                'produkDisediakan' => fake()->word(), // Satu kata random sebagai produk disediakan
+                'nomorTelepon' => fake()->phoneNumber(), // Nomor telepon random
+                'email' => fake()->unique()->safeEmail(), // Email random yang unik
+            ]);
+        }
     }
 }

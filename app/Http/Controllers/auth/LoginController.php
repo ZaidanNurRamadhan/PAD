@@ -20,34 +20,32 @@ class LoginController extends Controller
      * Handle the login request and redirect based on role.
      */
     public function login(Request $request)
-    {
-        // Validate the login credentials
-        $credentials = $request->validate([
-            'name' => 'required|string',
-            'password' => 'required|string',
-        ]);
+{
+    $credentials = $request->validate([
+        'name' => 'required|string',
+        'password' => 'required|string',
+    ]);
 
-        // Attempt to authenticate and login the user
-        if (Auth::attempt(['name' => $credentials['name'], 'password' => $credentials['password']])) {
-            $request->session()->regenerate();
-        
-            // Debugging: Check the authenticated user role
-            $user = Auth::user();
-            dd("Logged in user role: " . $user->role);  // Log role to verify
+    // Cek login berhasil atau tidak
+    if (Auth::attempt(['name' => $credentials['name'], 'password' => $credentials['password']])) {
+        $request->session()->regenerate();
 
-            // Redirect based on user role
-            if ($user->role === 'owner') {
-                return redirect()->route('dashboard');
-            } elseif ($user->role === 'karyawan') {
-                return redirect()->route('gudang-karyawan');
-            }
+        // dd(Auth::user());
+        // dd('Redirecting to dashboard');
+
+        $user = Auth::user(); // Dapatkan pengguna yang login
+        if ($user->role === 'owner') {
+            return redirect()->route('dashboard'); // Redirect owner
+        } elseif ($user->role === 'karyawan') {
+            return redirect()->route('gudang-karyawan'); // Redirect karyawan
         }
-
-        // If authentication fails, return back with an error message
-        return back()->withErrors([
-            'name' => 'The provided credentials do not match our records.',
-        ])->onlyInput('name');
     }
+
+    // Jika login gagal
+    return back()->withErrors([
+        'name' => 'The provided credentials do not match our records.',
+    ])->onlyInput('name');
+}
 
 
     /**

@@ -33,6 +33,9 @@ Route::get('/dashboard', function () {
 // })->name('gudang-owner');
 Route::get('/gudang-owner', [GudangController::class, 'index'])->name('gudang-owner');
 Route::get('/gudang-karyawan', [GudangController::class, 'karyawan'])->name('gudang-karyawan');
+Route::post('/gudang/store', [GudangController::class, 'store'])->name('gudang.store');
+Route::post('/gudang/update/{id}', [GudangController::class, 'update'])->name('gudang.update');
+Route::post('/gudang/destroy/{id}', [GudangController::class, 'destroy'])->name('gudang.destroy');
 
 
 // Route::get('/gudang-karyawan', function () {
@@ -58,6 +61,13 @@ Route::post('/pemasok/destroy/{id}', [PemasokController::class, 'destroy'])->nam
 // })->name('transaksi-owner');
 Route::get('/transaksi-owner', [TransaksiController::class, 'index'])->name('transaksi-owner');
 Route::get('/transaksi-karyawan', [TransaksiController::class, 'karyawan'])->name('transaksi-karyawan');
+Route::prefix('transaksi')->group(function () {
+    Route::get('/create', [TransaksiController::class, 'create'])->name('transaksi.create'); // Menampilkan form create
+    Route::post('/store', [TransaksiController::class, 'store'])->name('transaksi.store');  // Menyimpan data baru
+    Route::get('/edit/{id}', [TransaksiController::class, 'edit'])->name('transaksi.edit'); // Menampilkan form edit
+    Route::put('/update/{id}', [TransaksiController::class, 'update'])->name('transaksi.update'); // Memperbarui data
+    Route::delete('/destroy/{id}', [TransaksiController::class, 'destroy'])->name('transaksi.destroy'); // Menghapus data
+});
 
 // Route::get('/transaksi-karyawan', function () {
 //     return view('transaksi-karyawan');
@@ -77,6 +87,12 @@ Route::delete('/toko/{toko}', [TokoController::class, 'destroy'])->name('toko.de
 //     return view('settings');
 // })->name('settings');
 Route::get('/settings', [SettingController::class, 'index'])->name('settings');
+Route::prefix('karyawan')->group(function () {
+    Route::get('/', [SettingController::class, 'index'])->name('karyawan.index'); // Read
+    Route::post('/store', [SettingController::class, 'store'])->name('karyawan.store'); // Create
+    Route::post('/update/{id}', [SettingController::class, 'update'])->name('karyawan.update'); // Update
+    Route::post('/destroy/{id}', [SettingController::class, 'destroy'])->name('karyawan.destroy'); // Delete
+});
 
 // Route::get('/login', function () {
 //     return view('login');
@@ -86,13 +102,17 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Route::middleware('auth')->group(function () {
-//     Route::get('/dashboard', function () {
-//         return view('layout.owner');  // Mengarahkan ke owner.blade.php di folder layout
-//     })->name('dashboard');
+//     Route::middleware('role:owner')->group(function () {
+//         Route::get('/dashboard', function () {
+//             return view('layout.owner'); // Halaman owner
+//         })->name('dashboard')->middleware('auth');
+//     });
 
-//     Route::get('/gudang-karyawan', function () {
-//         return view('layout.karyawan');  // Mengarahkan ke karyawan.blade.php di folder layout
-//     })->name('gudang-karyawan');
+//     Route::middleware('role:karyawan')->group(function () {
+//         Route::get('/gudang-karyawan', function () {
+//             return view('layout.karyawan'); // Halaman karyawan
+//         })->name('gudang-karyawan')->middleware('auth');
+//     });
 // });
 
 
