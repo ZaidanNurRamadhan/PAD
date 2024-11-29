@@ -20,15 +20,15 @@
         <div class="row mt-3">
             <div class="col text-center">
                 <p style="color: #1570EF" class="fw-semibold">Jumlah Transaksi</p>
-                <p>4</p>
+                <p>{{ count($data) }}</p>
             </div>
             <div class="col text-center">
-                <p style="color: #E19133" class="fw-semibold" >Produk yang Terjual</p>
-                <p>126</p>
+                <p style="color: #E19133" class="fw-semibold">Produk yang Terjual</p>
+                <p>{{ array_sum(array_column($data, 'terjual')) }}</p>
             </div>
             <div class="col text-center">
                 <p style="color: #845EBC" class="fw-semibold">Produk Retur</p>
-                <p>126</p>
+                <p>{{ array_sum(array_column($data, 'jumlah')) - array_sum(array_column($data, 'terjual')) }}</p>
             </div>
         </div>
     </section>
@@ -57,7 +57,7 @@
                 @forelse($data as $item)
                     <tr>
                         <td>Rp{{ number_format($item['total_harga'], 0, ',', '.') }}</td>
-                        <td>{{ $item['jumlah_stok'] }}</td>
+                        <td>{{ $item['jumlah'] }}</td>
                         <td>{{ $item['produk'] }}</td>
                         <td>{{ $item['terjual'] }}</td>
                         <td>Rp{{ number_format($item['harga'], 0, ',', '.') }}</td>

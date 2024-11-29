@@ -24,7 +24,7 @@
                     @forelse($data as $item)
                         <tr>
                             <td>Rp{{ number_format($item['total_harga'], 0, ',', '.') }}</td>
-                            <td>{{ $item['jumlah_stok'] }}</td>
+                            <td>{{ $item['jumlah'] }}</td>
                             <td>{{ $item['produk'] }}</td>
                             <td>{{ $item['terjual'] }}</td>
                             <td>Rp{{ number_format($item['harga'], 0, ',', '.') }}</td>

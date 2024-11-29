@@ -46,4 +46,5 @@
             <button class="btn btn-secondary">Next</button>
         </div>
     </section>
+    @include('component.TambahKaryawan')
 @endsection

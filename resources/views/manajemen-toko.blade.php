@@ -20,7 +20,7 @@
                     @forelse ($tokoList as $toko)
                         <tr>
                             <td>{{ $toko->name }}</td>
-                            <td>{{ $toko->namaPemilik }}</td>
+                            <td>{{ $ownerNames[array_rand($ownerNames)] }}</td>
                             <td>{{ $toko->address }}</td>
                             <td>{{ $toko->phone_number }}</td>
                             <td class="d-flex justify-content-center">
@@ -50,4 +50,5 @@
     @include('component.EditManajemenToko')
     {{-- hapus --}}
     @include('component.HapusManajemenToko')
+
 @endsection

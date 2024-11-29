@@ -4,9 +4,7 @@
         <header class="modal-header">
           <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit</h1>
         </header>
-        <form action="{{ route('gudang.update', ['id' => $produk['id']]) }}" method="post">
-            @csrf
-            @method('PUT')
+        <form action="" method="post">
             <article class="modal-body">
                 <section class="form-group d-flex justify-content-between px-3">
                     <label for="">Nama Produk</label>
@@ -29,11 +27,11 @@
                     <input type="text" name="astok" class="form-control" style="max-width: 273px;" placeholder="Masukkan ambang kritis">
                 </section>
             </article>
-            <footer class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary">Simpan</button>
-            </footer>
         </form>
+        <footer class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="button" class="btn btn-primary">Simpan</button>
+        </footer>
     </main>
     </div>
   </section>

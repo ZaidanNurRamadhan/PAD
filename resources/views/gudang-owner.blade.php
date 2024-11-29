@@ -6,15 +6,15 @@
         <div class="row mt-4">
             <div class="col text-center">
                 <h5 style="color: #1570EF" class="fw-semibold">Kategori</h5>
-                <p class="fw-semibold">14</p>
+                <p class="fw-semibold">{{ $produks->groupBy('category')->count() }}</p>
             </div>
             <div class="col text-center">
                 <h5 style="color: #E19133" class="fw-semibold">Total Produk</h5>
-                <p class="fw-semibold">858</p>
+                <p class="fw-semibold">{{ $produks->count() }}</p>
             </div>
             <div class="col text-center">
                 <h5 style="color: #F36960" class="fw-semibold">Produk Menipis</h5>
-                <p class="fw-semibold">12</p>
+                <p class="fw-semibold">{{ $produks->where('batas_kritis', '>', 0)->count() }}</p>
             </div>
         </div>
     </section>
@@ -68,7 +68,7 @@
         </div>
     </section>
 </div>
-    {{-- tambah --}}
+{{-- tambah --}}
     @include('component.TambahGudang')
     {{-- edit --}}
     @include('component.EditGudang')

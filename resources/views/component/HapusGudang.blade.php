@@ -4,17 +4,15 @@
         <header class="modal-header">
           <h1 class="modal-title fs-5" id="staticBackdropLabel">Hapus Produk</h1>
         </header>
-        <form action="{{ route('gudang.destroy', ['id' => $produk['id']]) }}" method="post">
-          @csrf
-          @method('DELETE')
+        <form action="" method="post">
             <article class="modal-body">
                 <p>Anda yakin ingin menghapus produk ini?</p>
             </article>
-            <footer class="modal-footer">
-              <button type="button" style="width: 100px;" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-              <button type="submit" style="width: 100px;" class="btn btn-danger">Ya</button>
-            </footer>
         </form>
+        <footer class="modal-footer">
+          <button type="button" style="width: 100px;" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="button" style="width: 100px;" class="btn btn-danger">Ya</button>
+        </footer>
     </main>
     </div>
   </section>
