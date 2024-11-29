@@ -13,35 +13,18 @@ class ProdukSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create dummy products
-        Produk::create([
-            'name' => 'Produk A',
-            'price' => 10000,
-            'category' => 'Kategori 1',
-        ]);
+        for ($i = 0; $i < 5; $i++) {
 
-        Produk::create([
-            'name' => 'Produk B',
-            'price' => 20000,
-            'category' => 'Kategori 2',
-        ]);
+            $hargaBeli = fake()->numberBetween(10000, 500000);
+            $hargaJual = $hargaBeli + fake()->numberBetween(10000, 500000);
 
-        Produk::create([
-            'name' => 'Produk C',
-            'price' => 30000,
-            'category' => 'Kategori 1',
-        ]);
-
-        Produk::create([
-            'name' => 'Produk D',
-            'price' => 40000,
-            'category' => 'Kategori 3',
-        ]);
-
-        Produk::create([
-            'name' => 'Produk E',
-            'price' => 50000,
-            'category' => 'Kategori 2',
-        ]);
+            Produk::create([
+                'name' => fake()->word(),
+                'hargaBeli' => $hargaBeli,
+                'hargaJual' => $hargaJual,
+                'category' => fake()->randomElement(['Kategori 1', 'Kategori 2', 'Kategori 3']),
+                'jumlah' => fake()->numberBetween(1, 100),
+            ]);
+        }
     }
 }

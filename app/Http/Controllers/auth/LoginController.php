@@ -19,32 +19,30 @@ class LoginController extends Controller
    /**
      * Handle the login request and redirect based on role.
      */
-    public function store(Request $request)
-    {
-        // Validate the login credentials
-        $credentials = $request->validate([
-            'name' => 'required',
-            'password' => 'required',
-        ]);
+    public function login(Request $request)
+{
+    $credentials = $request->validate([
+        'name' => 'required|string',
+        'password' => 'required|string',
+    ]);
 
-        // Attempt to authenticate and login the user
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-            
-            // Redirect based on user role
-            $user = Auth::user();
-            if ($user->role === 'owner') {
-                return redirect()->route('dashboard');
-            } elseif ($user->role === 'karyawan') {
-                return redirect()->route('gudang-karyawan');
-            }
+    if (Auth::attempt(['name' => $credentials['name'], 'password' => $credentials['password']])) {
+        $request->session()->regenerate();
+
+        $user = Auth::user();
+
+        // Redirect berdasarkan peran pengguna
+        if ($user->role === 'owner') {
+            return redirect()->route('dashboard');
+        } elseif ($user->role === 'karyawan') {
+            return redirect()->route('transaksi-karyawan');
         }
-
-        // If authentication fails, return back with an error message
-        return back()->withErrors([
-            'name' => 'The provided credentials do not match our records.',
-        ])->onlyInput('name');
     }
+
+    return back()->withErrors([
+        'name' => 'The provided credentials do not match our records.',
+    ])->onlyInput('name');
+}
 
     /**
      * Logout the user and redirect to the login page.

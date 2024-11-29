@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Transaksi;
+use App\Models\Produk;
+use Carbon\Carbon;
 
 class TransaksiSeeder extends Seeder
 {
@@ -13,34 +15,29 @@ class TransaksiSeeder extends Seeder
      */
     public function run(): void
     {
-        Transaksi::create([
-            'transactionDate' => '2023-10-01',
-            'transactionType' => 'Deposit',
-            'amount' => 1000,
-        ]);
+        $produkList = Produk::all();
 
-        Transaksi::create([
-            'transactionDate' => '2023-10-02',
-            'transactionType' => 'Withdrawal',
-            'amount' => 500,
-        ]);
+        if ($produkList->isEmpty()) {
+            $this->command->error('Tidak ada data produk. Harap tambahkan data ke tabel produk terlebih dahulu.');
+            return;
+        }
 
-        Transaksi::create([
-            'transactionDate' => '2023-10-03',
-            'transactionType' => 'Transfer',
-            'amount' => 2000,
-        ]);
+        for ($i = 0; $i < 5; $i++) {
+            $transactionDate = Carbon::now()->subDays(fake()->numberBetween(1, 30));
+            $returDate = (clone $transactionDate)->addDays(fake()->numberBetween(1, 7));
+            $produk = $produkList->random();
 
-        Transaksi::create([
-            'transactionDate' => '2023-10-04',
-            'transactionType' => 'Deposit',
-            'amount' => 1500,
-        ]);
+            Transaksi::create([
+                'produk_id' => $produk->id,
+                'transactionDate' => $transactionDate,
+                'returDate' => fake()->boolean(70) ? $returDate : null,
+                'amount' => $produk->hargaJual,
+                'terjual' => fake()->numberBetween(1, $produk->jumlah),
+                'waktuEdar' => $returDate ? $returDate->diffInDays($transactionDate) : null,
+                'status' => $returDate ? 'closed' : 'open',
+            ]);
 
-        Transaksi::create([
-            'transactionDate' => '2023-10-05',
-            'transactionType' => 'Withdrawal',
-            'amount' => 700,
-        ]);
+            $produk->update(['jumlah' => $produk->jumlah - 1]);
+        }
     }
 }

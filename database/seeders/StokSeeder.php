@@ -14,20 +14,13 @@ class StokSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create dummy data
-        Stok::create([
-            'jumlah' => 100,
-            'tanggalDistribusi' => Carbon::now()->subDays(10), // 10 days ago
-        ]);
-
-        Stok::create([
-            'jumlah' => 200,
-            'tanggalDistribusi' => Carbon::now()->subDays(5), // 5 days ago
-        ]);
-
-        Stok::create([
-            'jumlah' => 150,
-            'tanggalDistribusi' => Carbon::now(), // Today
-        ]);
+        for ($i = 1; $i <= 5; $i++) {
+            Stok::create([
+                'product_id' => $i,
+                'jumlah' => fake()->numberBetween(50, 200),
+                'tanggalDistribusi' => Carbon::now()->subDays(fake()->numberBetween(0, 30)),
+                'batasKritis' => fake()->numberBetween(10, 50),
+            ]);
+        }
     }
 }
