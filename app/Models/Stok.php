@@ -8,9 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Stok extends Model
 {
     use HasFactory;
+
     protected $table = 'stok';
-    protected $fillable = [
-        'jumlah',
-        'tanggalDistribusi',
-    ];
+    protected $fillable = ['jumlah', 'tanggalDistribusi', 'batasKritis'];
 }

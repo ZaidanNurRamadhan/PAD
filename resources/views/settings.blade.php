@@ -16,15 +16,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Afriza</td>
-                        <td>081212795478</td>
-                        <td>afriza123</td>
-                        <td class="d-flex justify-content-center">
-                            <button class="btn btn-warning btn-sm mx-2" type="button" data-bs-toggle="modal" data-bs-target="#Editkaryawan">Edit</button>
-                            <button class="btn btn-danger btn-sm mx-2" type="button" data-bs-toggle="modal" data-bs-target="#Hapuskaryawan">Hapus</button>
-                        </td>
-                    </tr>
+                    @foreach ($data as $employee)
+                        <tr>
+                            <td>{{ $employee['name'] }}</td>
+                            <td>{{ $employee['contact'] }}</td>
+                            <td>{{ $employee['username'] }}</td>
+                            <td class="d-flex justify-content-center">
+                                <button class="btn btn-warning btn-sm mx-2" type="button" data-bs-toggle="modal" data-bs-target="#Editkaryawan">Edit</button>
+                                <button class="btn btn-danger btn-sm mx-2" type="button" data-bs-toggle="modal" data-bs-target="#Hapuskaryawan">Hapus</button>
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>

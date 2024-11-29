@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('stok', function (Blueprint $table) {
             $table->id();
             $table->integer('jumlah'); // Jumlah stok
+            $table->integer('batasKritis'); // Batas kritis stok
             $table->date('tanggalDistribusi'); // Tanggal distribusi stok
             $table->timestamps();
         });
