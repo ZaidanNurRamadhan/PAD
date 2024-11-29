@@ -39,12 +39,16 @@
                 </tbody>
             </table>
         </div>
-
         <div class="pagination">
             <button class="btn btn-secondary">Previous</button>
             <span>Page 1 of 10</span>
             <button class="btn btn-secondary">Next</button>
         </div>
     </section>
+    {{-- tambah --}}
     @include('component.TambahKaryawan')
+      {{-- edit --}}
+      @include('component.EditKaryawan')
+      {{-- hapus --}}
+      @include('component.HapusKaryawan')
 @endsection

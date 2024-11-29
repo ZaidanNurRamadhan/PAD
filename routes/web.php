@@ -117,4 +117,3 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 //         })->name('transaksi-karyawan');
 //     });
 // });
-
