@@ -3,6 +3,7 @@
 <div class="container-fluid">
     <section class="card p-3">
         <div class="card-header d-flex justify-content-between align-items-center border-0">
+            <p class="text-white">laporannnnbbbbbb</p>
             <h3 class="align-self-end">Laporan</h3>
             <div class="dropdown align-self-start">
                 <div class="dropdown-selected bg-white" onclick="toggleDropdown(this)">
@@ -19,15 +20,15 @@
         <div class="row mt-3">
             <div class="col text-center">
                 <p style="color: #1570EF" class="fw-semibold">Jumlah Transaksi</p>
-                <p>4</p>
+                <p>{{ count($data) }}</p>
             </div>
             <div class="col text-center">
-                <p style="color: #E19133" class="fw-semibold" >Produk yang Terjual</p>
-                <p>126</p>
+                <p style="color: #E19133" class="fw-semibold">Produk yang Terjual</p>
+                <p>{{ array_sum(array_column($data, 'terjual')) }}</p>
             </div>
             <div class="col text-center">
                 <p style="color: #845EBC" class="fw-semibold">Produk Retur</p>
-                <p>126</p>
+                <p>{{ array_sum(array_column($data, 'jumlah')) - array_sum(array_column($data, 'terjual')) }}</p>
             </div>
         </div>
     </section>
@@ -53,56 +54,24 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td colspan="9"><strong>Zaidan Punya</strong></td>
-                </tr>
-                <tr>
-                    <td>Rp62000</td>
-                    <td>43</td>
-                    <td>Lays</td>
-                    <td>40</td>
-                    <td>Rp1.500</td>
-                    <td>11/12/22</td>
-                    <td>30/12/22</td>
-                    <td>19</td>
-                    <td class="text-danger">Closed</td>
-                </tr>
-                <tr>
-                    <td>Rp62000</td>
-                    <td>20</td>
-                    <td>Bru</td>
-                    <td>20</td>
-                    <td>Rp1.500</td>
-                    <td>11/12/22</td>
-                    <td>30/12/22</td>
-                    <td>19</td>
-                    <td class="text-danger">Closed</td>
-                </tr>
-                <tr>
-                    <td colspan="9"><strong>Sinar Mas</strong></td>
-                </tr>
-                <tr>
-                    <td>Rp62000</td>
-                    <td>43</td>
-                    <td>Lays</td>
-                    <td>40</td>
-                    <td>Rp1.500</td>
-                    <td>11/12/22</td>
-                    <td>30/12/22</td>
-                    <td>19</td>
-                    <td class="text-danger">Closed</td>
-                </tr>
-                <tr>
-                    <td>Rp62000</td>
-                    <td>20</td>
-                    <td>Bru</td>
-                    <td>20</td>
-                    <td>Rp1.500</td>
-                    <td>11/12/22</td>
-                    <td>30/12/22</td>
-                    <td>19</td>
-                    <td class="text-danger">Closed</td>
-                </tr>
+                @forelse($data as $item)
+                    <tr>
+                        <td>Rp{{ number_format($item['total_harga'], 0, ',', '.') }}</td>
+                        <td>{{ $item['jumlah'] }}</td>
+                        <td>{{ $item['produk'] }}</td>
+                        <td>{{ $item['terjual'] }}</td>
+                        <td>Rp{{ number_format($item['harga'], 0, ',', '.') }}</td>
+                        <td>{{ $item['tanggal_keluar'] }}</td>
+                        <td>{{ $item['tanggal_retur'] }}</td>
+                        <td>{{ $item['waktu_edar'] }}</td>
+                        <td class="{{ $item['status'] === 'Open' ? 'text-success' : 'text-danger' }}">{{ $item['status'] }}</td>
+                    </tr>
+                    @empty
+                    <tr><td colspan="9" class="text-center">Tidak ada data</td></tr>
+                @endforelse
+                @for ($i = count($data); $i < 19; $i++)
+                    <tr><td colspan="9"></td></tr>
+                @endfor
             </tbody>
         </table>
     </div>

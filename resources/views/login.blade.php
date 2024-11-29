@@ -77,7 +77,7 @@
                 <form action="{{ route('login.submit') }}" method="POST" class="login-form">
                     @csrf
                     <div class="form-group text-center">
-                        <img src="{{asset('assets/img/logo konek@3x.png')}}" alt="logo" class="icon-login">
+                        <img src="{{asset('assets/img/logo-konek.png')}}" alt="logo" class="icon-login">
                         <h1>Login</h1>
                         <p class="fw-light">Selamat datang di aplikasi manajemen stok</p>
                     </div>

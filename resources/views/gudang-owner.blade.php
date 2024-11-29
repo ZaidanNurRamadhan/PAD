@@ -6,15 +6,15 @@
         <div class="row mt-4">
             <div class="col text-center">
                 <h5 style="color: #1570EF" class="fw-semibold">Kategori</h5>
-                <p class="fw-semibold">14</p>
+                <p class="fw-semibold">{{ $produks->groupBy('category')->count() }}</p>
             </div>
             <div class="col text-center">
                 <h5 style="color: #E19133" class="fw-semibold">Total Produk</h5>
-                <p class="fw-semibold">858</p>
+                <p class="fw-semibold">{{ $produks->count() }}</p>
             </div>
             <div class="col text-center">
                 <h5 style="color: #F36960" class="fw-semibold">Produk Menipis</h5>
-                <p class="fw-semibold">12</p>
+                <p class="fw-semibold">{{ $produks->where('batas_kritis', '>', 0)->count() }}</p>
             </div>
         </div>
     </section>
@@ -39,18 +39,25 @@
                     </tr>
                 </thead>
                 <tbody class="h-100">
-                    <tr>
-                        <td>9</td>
-                        <td>Coca cola</td>
-                        <td>Rp20500</td>
-                        <td>Rp43000</td>
-                        <td>41 Packets</td>
-                        <td>10 Packets</td>
-                        <td class="justify-content-center d-flex">
-                            <button class="m-2 btn btn-warning btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#edit">Edit</button>
-                            <button class="m-2 btn btn-danger btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#Hapusproduk">Hapus</button>
-                        </td>
-                    </tr>
+                    @forelse($data as $produk)
+                        <tr>
+                            <td>{{ $produk['id'] }}</td>
+                            <td>{{ $produk['name'] }}</td>
+                            <td>Rp{{ number_format($produk['harga_beli'], 0, ',', '.') }}</td>
+                            <td>Rp{{ number_format($produk['harga_jual'], 0, ',', '.') }}</td>
+                            <td>{{ $produk['stok'] }}</td>
+                            <td>{{ $produk['batas_kritis'] }} Packets</td>
+                            <td class="justify-content-center d-flex">
+                                <button class="m-2 btn btn-warning btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#Edit">Edit</button>
+                                <button class="m-2 btn btn-danger btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#Hapusproduk">Hapus</button>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr><td colspan="7" class="text-center">Tidak ada data</td></tr>
+                    @endforelse
+                    @for ($i = count($data); $i < 19; $i++)
+                        <tr><td colspan="7"></td></tr>
+                    @endfor
                 </tbody>
             </table>
         </div>
@@ -62,97 +69,9 @@
     </section>
 </div>
 {{-- tambah --}}
-    <section class="modal fade" id="Tambahproduk" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog-centered modal-dialog">
-          <main class="modal-content">
-            <header class="modal-header">
-              <h1 class="modal-title fs-5" id="staticBackdropLabel">Tambah Produk</h1>
-            </header>
-            <form action="" method="post">
-                <article class="modal-body">
-                    <section class="form-group d-flex justify-content-between px-3">
-                        <label for="">Nama Produk</label>
-                        <input type="text" name="pname" class="form-control" style="max-width: 273px;" placeholder="Masukkan nama produk">
-                    </section>
-                    <section class="form-group d-flex justify-content-between px-3 mt-4">
-                        <label for="">Harga Beli</label>
-                        <input type="text" name="hbeli" class="form-control" style="max-width: 273px;" placeholder="Masukkan harga beli">
-                    </section>
-                    <section class="form-group d-flex justify-content-between px-3 mt-4">
-                        <label for="">Harga Jual</label>
-                        <input type="text" name="hjual" class="form-control" style="max-width: 273px;" placeholder="Masukkan harga jual">
-                    </section>
-                    <section class="form-group d-flex justify-content-between px-3 mt-4">
-                        <label for="">Jumlah Stok</label>
-                        <input type="text" name="jstok" class="form-control" style="max-width: 273px;" placeholder="Masukkan jumlah stok">
-                    </section>
-                    <section class="form-group d-flex justify-content-between px-3 mt-4">
-                        <label for="">Ambang Kritis</label>
-                        <input type="text" name="astok" class="form-control" style="max-width: 273px;" placeholder="Masukkan ambang kritis">
-                    </section>
-                </article>
-            </form>
-            <footer class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-              <button type="button" class="btn btn-primary">Tambah</button>
-            </footer>
-        </main>
-        </div>
-      </section>
-      <section class="modal fade" id="Edit" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog-centered modal-dialog">
-          <main class="modal-content">
-            <header class="modal-header">
-              <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit</h1>
-            </header>
-            <form action="" method="post">
-                <article class="modal-body">
-                    <section class="form-group d-flex justify-content-between px-3">
-                        <label for="">Nama Produk</label>
-                        <input type="text" name="pname" class="form-control" style="max-width: 273px;" placeholder="Masukkan nama produk">
-                    </section>
-                    <section class="form-group d-flex justify-content-between px-3 mt-4">
-                        <label for="">Harga Beli</label>
-                        <input type="text" name="hbeli" class="form-control" style="max-width: 273px;" placeholder="Masukkan harga beli">
-                    </section>
-                    <section class="form-group d-flex justify-content-between px-3 mt-4">
-                        <label for="">Harga Jual</label>
-                        <input type="text" name="hjual" class="form-control" style="max-width: 273px;" placeholder="Masukkan harga jual">
-                    </section>
-                    <section class="form-group d-flex justify-content-between px-3 mt-4">
-                        <label for="">Jumlah Stok</label>
-                        <input type="text" name="jstok" class="form-control" style="max-width: 273px;" placeholder="Masukkan jumlah stok">
-                    </section>
-                    <section class="form-group d-flex justify-content-between px-3 mt-4">
-                        <label for="">Ambang Kritis</label>
-                        <input type="text" name="astok" class="form-control" style="max-width: 273px;" placeholder="Masukkan ambang kritis">
-                    </section>
-                </article>
-            </form>
-            <footer class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-              <button type="button" class="btn btn-primary">Simpan</button>
-            </footer>
-        </main>
-        </div>
-      </section>
+    @include('component.TambahGudang')
+    {{-- edit --}}
+    @include('component.EditGudang')
       {{-- hapus --}}
-      <section class="modal fade" id="Hapusproduk" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog-centered modal-dialog">
-          <main class="modal-content d-flex justify-content-center align-items-center">
-            <header class="modal-header">
-              <h1 class="modal-title fs-5" id="staticBackdropLabel">Hapus Produk</h1>
-            </header>
-            <form action="" method="post">
-                <article class="modal-body">
-                    <p>Anda yakin ingin menghapus produk ini?</p>
-                </article>
-            </form>
-            <footer class="modal-footer">
-              <button type="button" style="width: 100px;" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-              <button type="button" style="width: 100px;" class="btn btn-danger">Ya</button>
-            </footer>
-        </main>
-        </div>
-      </section>
+    @include('component.HapusGudang')
 @endsection
