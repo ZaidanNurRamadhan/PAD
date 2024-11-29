@@ -12,10 +12,11 @@ class Transaksi extends Model
 
     protected $fillable = [
         'transactionDate',
-        'returDate',
+        'transactionType',
         'amount',
-        'terjual',
-        'waktuEdar',
-        'status',
+    ];
+
+    protected $casts = [
+        'transactionDate' => 'date',
     ];
 }

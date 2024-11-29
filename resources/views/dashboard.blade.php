@@ -4,7 +4,7 @@
         <article class="card mt-2">
         <div class="card-header d-flex justify-content-between align-items-center bg-white fs-4 position-sticky">
             Monitoring Penyebaran Produk
-            <a class="text-decoration-none fs-6" href="">Lihat Semua</a>
+            <a class="text-decoration-none fs-6" href="{{route('monitoring')}}">Lihat Semua</a>
         </div>
         <div class="card-body scrollable-table">
             <table class="table">

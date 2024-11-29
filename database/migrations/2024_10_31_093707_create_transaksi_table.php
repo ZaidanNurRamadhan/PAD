@@ -14,11 +14,8 @@ return new class extends Migration
         Schema::create('transaksi', function (Blueprint $table) {
             $table->id();
             $table->date('transactionDate'); // Tanggal transaksi
-            $table->date('returDate'); // Tanggal retur
+            $table->string('transactionType', 100); // Jenis transaksi
             $table->integer('amount'); // Jumlah transaksi
-            $table->integer('terjual'); // Jumlah terjual
-            $table->integer('waktuEdar'); // Waktu edar
-            $table->enum('status', ['open', 'closed']);
             $table->timestamps();
         });
     }

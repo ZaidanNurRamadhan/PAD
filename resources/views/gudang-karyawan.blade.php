@@ -1,29 +1,28 @@
 @extends('layout.karyawan')
 @section('content')
-<div class="container-fluid">
-    <section class="card p-4">
-        <h3 class="text-center">Stok Keseluruhan</h3>
-        <div class="row mt-4">
-            <div class="col text-center">
-                <h5 style="color: #1570EF" class="fw-semibold">Kategori</h5>
-                <p class="fw-semibold">{{ $produks->groupBy('category')->count() ?? 0 }}</p>
-            </div>
-            <div class="col text-center">
-                <h5 style="color: #E19133" class="fw-semibold">Total Produk</h5>
-                <p class="fw-semibold">{{ $produks->count() ?? 0 }}</p>
-            </div>
-            <div class="col text-center">
-                <h5 style="color: #F36960" class="fw-semibold">Produk Menipis</h5>
-                <p class="fw-semibold">{{ $produks->filter(fn($p) => $p->stok < $p->batas_kritis)->count() ?? 0 }}</p>
-            </div>
+<section class="card p-4">
+    <h4 class="fw-bold text-center">Stok Keseluruhan</h4>
+    <div class="row mt-2">
+        <div class="col text-center">
+            <h5 style="color: #1570EF" class="fw-semibold">Kategori</h5>
+            <p class="fw-semibold">14</p>
         </div>
-    </section>
+        <div class="col text-center">
+            <h5 style="color: #E19133" class="fw-semibold">Total Produk</h5>
+            <p class="fw-semibold">858</p>
+        </div>
+        <div class="col text-center">
+            <h5 style="color: #F36960" class="fw-semibold">Produk Menipis</h5>
+            <p class="fw-semibold">12</p>
+        </div>
+    </div>
+</section>
     <section class="card mt-4 p-4 min-vh-100 d-flex justify-content-between flex-column">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h5>Produk</h5>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Tambahproduk">
                 Tambah Produk
-            </button>
+              </button>
         </div>
         <div class="table table-responsive flex-grow-1">
             <table class="table h-100">
@@ -38,16 +37,14 @@
                     </tr>
                 </thead>
                 <tbody class="h-100">
-                    @foreach($data as $produk)
-                        <tr>
-                            <td>{{ $produk['id'] }}</td>
-                            <td>{{ $produk['name'] }}</td>
-                            <td>Rp{{ number_format($produk['harga_beli'], 0, ',', '.') }}</td>
-                            <td>Rp{{ number_format($produk['harga_jual'], 0, ',', '.') }}</td>
-                            <td>{{ $produk['stok'] }} Packets</td>
-                            <td>{{ $produk['batas_kritis'] }} Packets</td>
-                        </tr>
-                    @endforeach
+                    <tr>
+                        <td>9</td>
+                        <td>Coca cola</td>
+                        <td>Rp20500</td>
+                        <td>Rp43000</td>
+                        <td>41 Packets</td>
+                        <td>10 Packets</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -56,8 +53,8 @@
             <span>Page 1 of 10</span>
             <button class="btn btn-secondary">Next</button>
         </div>
-    </section>
         {{-- tambah --}}
+    </section>
     <section class="modal fade" id="Tambahproduk" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog-centered modal-dialog">
           <main class="modal-content">

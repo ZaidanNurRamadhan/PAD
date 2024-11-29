@@ -18,19 +18,16 @@ class StokSeeder extends Seeder
         Stok::create([
             'jumlah' => 100,
             'tanggalDistribusi' => Carbon::now()->subDays(10), // 10 days ago
-            'batasKritis' => 50,
         ]);
 
         Stok::create([
             'jumlah' => 200,
             'tanggalDistribusi' => Carbon::now()->subDays(5), // 5 days ago
-            'batasKritis' => 25,
         ]);
 
         Stok::create([
             'jumlah' => 150,
             'tanggalDistribusi' => Carbon::now(), // Today
-            'batasKritis' => 20,
         ]);
     }
 }

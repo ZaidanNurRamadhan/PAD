@@ -21,22 +21,70 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($data as $item)
-                        <tr>
-                            <td>Rp{{ number_format($item['total_harga'], 0, ',', '.') }}</td>
-                            <td>{{ $item['jumlah'] }}</td>
-                            <td>{{ $item['produk'] }}</td>
-                            <td>{{ $item['terjual'] }}</td>
-                            <td>Rp{{ number_format($item['harga'], 0, ',', '.') }}</td>
-                            <td>{{ $item['tanggal_keluar'] }}</td>
-                            <td>{{ $item['tanggal_retur'] }}</td>
-                            <td>{{ $item['waktu_edar'] }}</td>
-                            <td>
-                                <span class="text-success">{{ $item['status'] }}</span>
-                                <a href="#" style="color: black; float: right;" data-bs-toggle="modal" data-bs-target="#Edittransaksi"><i class="fas fa-angle-right"></i></a>
-                            </td>
-                        </tr>
-                    @endforeach
+                    <tr>
+                        <td>Zaidan Punya</td>
+                        <td>63</td>
+                    </tr>
+                    <tr>
+                        <td>Rp62000</td>
+                        <td>43</td>
+                        <td>Lays</td>
+                        <td>40</td>
+                        <td>Rp1.500</td>
+                        <td>11/12/22</td>
+                        <td></td>
+                        <td>19</td>
+                        <td>
+                            <span class="text-success">Open</span>
+                            <a href="#" style="color: black; float: right;" data-bs-toggle="modal" data-bs-target="#Edittransaksi"><i class="fas fa-angle-right"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Rp62000</td>
+                        <td>20</td>
+                        <td>Bru</td>
+                        <td>20</td>
+                        <td>Rp1.500</td>
+                        <td>11/12/22</td>
+                        <td>30/12/22</td>
+                        <td>19</td>
+                        <td>
+                            <span class="text-danger">Closed</span>
+                            <a href="#" style="color: black; float: right;" data-bs-toggle="modal" data-bs-target="#Edittransaksi"><i class="fas fa-angle-right"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Sinar Mas</td>
+                        <td>63</td>
+                    </tr>
+                    <tr>
+                        <td>Rp62000</td>
+                        <td>43</td>
+                        <td>Lays</td>
+                        <td>40</td>
+                        <td>Rp1.500</td>
+                        <td>11/12/22</td>
+                        <td></td>
+                        <td>19</td>
+                        <td>
+                            <span class="text-success">Open</span>
+                            <a href="#" style="color: black; float: right;" data-bs-toggle="modal" data-bs-target="#Edittransaksi"><i class="fas fa-angle-right"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Rp62000</td>
+                        <td>20</td>
+                        <td>Bru</td>
+                        <td>20</td>
+                        <td>Rp1.500</td>
+                        <td>11/12/22</td>
+                        <td>30/12/22</td>
+                        <td>19</td>
+                        <td>
+                            <span class="text-danger">Closed</span>
+                            <a href="#" style="color: black; float: right;" data-bs-toggle="modal" data-bs-target="#Edittransaksi"><i class="fas fa-angle-right"></i></a>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
