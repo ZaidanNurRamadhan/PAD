@@ -15,48 +15,33 @@ class ProdukSeeder extends Seeder
     {
         // Create dummy products
         Produk::create([
-            'id' => 1,
             'name' => 'Produk A',
-            'hargaBeli' => 10000,
-            'hargaJual' => 15000,
+            'price' => 10000,
             'category' => 'Kategori 1',
-            'jumlah' => 10,
         ]);
 
         Produk::create([
-            'id' => 2,
             'name' => 'Produk B',
-            'hargaBeli' => 20000,
-            'hargaJual' => 25000,
+            'price' => 20000,
             'category' => 'Kategori 2',
-            'jumlah' => 20,
         ]);
 
         Produk::create([
-            'id' => 3,
             'name' => 'Produk C',
-            'hargaBeli' => 30000,
-            'hargaJual' => 35000,
+            'price' => 30000,
             'category' => 'Kategori 1',
-            'jumlah' => 30,
         ]);
 
         Produk::create([
-            'id' => 4,
             'name' => 'Produk D',
-            'hargaBeli' => 40000,
-            'hargaJual' => 45000,
+            'price' => 40000,
             'category' => 'Kategori 3',
-            'jumlah' => 40,
         ]);
 
         Produk::create([
-            'id' => 5,
             'name' => 'Produk E',
-            'hargaBeli' => 50000,
-            'hargaJual' => 55000,
+            'price' => 50000,
             'category' => 'Kategori 2',
-            'jumlah' => 50,
         ]);
     }
 }

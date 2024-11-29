@@ -17,7 +17,6 @@ class LoginSeeder extends Seeder
         User::create([
             'name' => 'Owner User',
             'email' => 'owner@example.com',
-            'contact' => '081234567890',
             'role' => 'owner',
             'password' => Hash::make('password'),
         ]);
@@ -25,7 +24,6 @@ class LoginSeeder extends Seeder
         User::create([
             'name' => 'Employee User',
             'email' => 'employee@example.com',
-            'contact' => '081234567891',
             'role' => 'karyawan',
             'password' => Hash::make('password'),
         ]);

@@ -15,47 +15,32 @@ class TransaksiSeeder extends Seeder
     {
         Transaksi::create([
             'transactionDate' => '2023-10-01',
-            'returDate' => '2023-10-02',
+            'transactionType' => 'Deposit',
             'amount' => 1000,
-            'terjual' => 500,
-            'waktuEdar' => 2,
-            'status' => 'closed',
         ]);
 
         Transaksi::create([
             'transactionDate' => '2023-10-02',
-            'returDate' => '2023-10-03',
+            'transactionType' => 'Withdrawal',
             'amount' => 500,
-            'terjual' => 200,
-            'waktuEdar' => 3,
-            'status' => 'open',
         ]);
 
         Transaksi::create([
             'transactionDate' => '2023-10-03',
-            'returDate' => '2023-10-04',
+            'transactionType' => 'Transfer',
             'amount' => 2000,
-            'terjual' => 1000,
-            'waktuEdar' => 4,
-            'status' => 'closed',
         ]);
 
         Transaksi::create([
             'transactionDate' => '2023-10-04',
-            'returDate' => '2023-10-05',
+            'transactionType' => 'Deposit',
             'amount' => 1500,
-            'terjual' => 750,
-            'waktuEdar' => 5,
-            'status' => 'open',
         ]);
 
         Transaksi::create([
             'transactionDate' => '2023-10-05',
-            'returDate' => '2023-10-06',
+            'transactionType' => 'Withdrawal',
             'amount' => 700,
-            'terjual' => 350,
-            'waktuEdar' => 6,
-            'status' => 'closed',
         ]);
     }
 }

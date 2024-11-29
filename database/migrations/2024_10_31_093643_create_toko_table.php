@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('toko', function (Blueprint $table) {
             $table->id();
             $table->string('name'); // Nama toko
-            $table->string('namaPemilik'); // Pemilik toko
             $table->text('address')->nullable(); // Alamat toko
             $table->string('phone_number', 255)->nullable(); // Nomor telepon toko
             $table->timestamps();

@@ -32,15 +32,15 @@ class PemasokController extends Controller
      */
     public function store(Request $request)
     {
-    $request->validate([
-        'name' => 'required|max:255',
-        'produkDisediakan' => 'required|max:255',
-        'nomorTelepon' => 'required|numeric',
-        'email' => 'required|email|max:255',
-    ]);
-
-    Pemasok::create($request->all());
-    return redirect()->route('pemasok')->with('success', 'Pemasok berhasil ditambahkan.');
+        $request->validate([
+            'name' => 'required',
+            'produkDisediakan' => 'required',
+            'nomorTelepon' => 'required|numeric',
+            'email' => 'required|email',
+        ]);
+    
+        $pemasok = Pemasok::create($request->all());
+        return response()->json($pemasok);
     }
 
     /**
@@ -63,27 +63,28 @@ class PemasokController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, string $id)
     {
-    $request->validate([
-        'name' => 'required|max:255',
-        'produkDisediakan' => 'required|max:255',
-        'nomorTelepon' => 'required|numeric',
-        'email' => 'required|email|max:255',
-    ]);
-
-    $pemasok = Pemasok::findOrFail($id);
-    $pemasok->update($request->all());
-    return redirect()->route('pemasok')->with('success', 'Pemasok berhasil diperbarui.');
+        $request->validate([
+            'name' => 'required',
+            'produkDisediakan' => 'required',
+            'nomorTelepon' => 'required|numeric',
+            'email' => 'required|email',
+        ]);
+    
+        $pemasok = Pemasok::findOrFail($id);
+        $pemasok->update($request->all());
+        return response()->json($pemasok);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(string $id)
     {
-    $pemasok = Pemasok::findOrFail($id);
-    $pemasok->delete();
-    return redirect()->route('pemasok')->with('success', 'Pemasok berhasil dihapus.');
+        $pemasok = Pemasok::findOrFail($id);
+        $pemasok->delete();
+
+        return response()->json(['success' => true]);
     }
 }
