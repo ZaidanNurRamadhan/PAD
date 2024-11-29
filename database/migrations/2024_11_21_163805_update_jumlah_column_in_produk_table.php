@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('produk', function (Blueprint $table) {
-            $table->integer('jumlah')->default(0)->change(); // Set default nilai 0
+            $table->integer('jumlah')->default(0)->change();
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('produk', function (Blueprint $table) {
-            $table->integer('jumlah')->change(); // Hilangkan default jika perlu rollback
+            $table->integer('jumlah')->change();
         });
     }
 };

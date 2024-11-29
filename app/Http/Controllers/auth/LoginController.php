@@ -26,22 +26,19 @@ class LoginController extends Controller
         'password' => 'required|string',
     ]);
 
-    // Cek login berhasil atau tidak
     if (Auth::attempt(['name' => $credentials['name'], 'password' => $credentials['password']])) {
         $request->session()->regenerate();
 
-        // dd(Auth::user());
-        // dd('Redirecting to dashboard');
+        $user = Auth::user();
 
-        $user = Auth::user(); // Dapatkan pengguna yang login
+        // Redirect berdasarkan peran pengguna
         if ($user->role === 'owner') {
-            return redirect()->route('dashboard'); // Redirect owner
+            return redirect()->route('dashboard');
         } elseif ($user->role === 'karyawan') {
-            return redirect()->route('gudang-karyawan'); // Redirect karyawan
+            return redirect()->route('transaksi-karyawan');
         }
     }
 
-    // Jika login gagal
     return back()->withErrors([
         'name' => 'The provided credentials do not match our records.',
     ])->onlyInput('name');

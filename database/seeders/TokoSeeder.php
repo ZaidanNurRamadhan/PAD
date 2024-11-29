@@ -15,10 +15,10 @@ class TokoSeeder extends Seeder
     {
         for ($i = 0; $i < 5; $i++) {
             Toko::create([
-                'name' => fake()->company(), // Nama toko random
-                'namaPemilik' => fake()->name(), // Nama pemilik random
-                'address' => fake()->address(), // Alamat random
-                'phone_number' => fake()->phoneNumber(), // Nomor telepon random
+                'name' => fake()->company(),
+                'namaPemilik' => fake()->name(),
+                'address' => fake()->address(),
+                'phone_number' => fake()->phoneNumber(),
             ]);
         }
     }

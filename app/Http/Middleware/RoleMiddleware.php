@@ -16,14 +16,13 @@ class RoleMiddleware
         if (!Auth::check()) {
             return redirect()->route('login');
         }
-
+    
         $user = Auth::user();
 
-        // Check user role
         if ($user->role !== $role) {
-            return redirect()->route('dashboard'); // Redirect to default dashboard if unauthorized
+            return abort(403, 'Unauthorized action.');
         }
-
+    
         return $next($request);
     }
 }

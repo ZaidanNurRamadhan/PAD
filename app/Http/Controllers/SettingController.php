@@ -10,20 +10,17 @@ class SettingController extends Controller
 {
     public function index()
     {
-        // Retrieve all users with the role of 'karyawan'
         $employees = User::where('role', 'karyawan')->get();
 
-        // Create a Faker instance
         $faker = Faker::create();
 
-        // Prepare the data to be passed to the view
         $data = [];
         foreach ($employees as $employee) {
             $data[] = [
-                'id' => $employee->id, // ID from the database
-                'name' => $employee->name, // Random name
-                'contact' => $employee->contact, // Random contact
-                'username' => $employee->name // Username from the database
+                'id' => $employee->id,
+                'name' => $employee->name,
+                'contact' => $employee->contact,
+                'username' => $employee->name
             ];
         }
 
@@ -43,7 +40,7 @@ class SettingController extends Controller
         'name' => $request->name,
         'contact' => $request->contact,
         'role' => 'karyawan',
-        'email' => $request->name . '@example.com', // Placeholder email
+        'email' => $request->name . '@example.com',
         'password' => bcrypt($request->password),
     ]);
 

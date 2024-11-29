@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Transaksi;
+use App\Models\Produk;
 use Carbon\Carbon;
 
 class TransaksiSeeder extends Seeder
@@ -14,19 +15,29 @@ class TransaksiSeeder extends Seeder
      */
     public function run(): void
     {
+        $produkList = Produk::all();
+
+        if ($produkList->isEmpty()) {
+            $this->command->error('Tidak ada data produk. Harap tambahkan data ke tabel produk terlebih dahulu.');
+            return;
+        }
+
         for ($i = 0; $i < 5; $i++) {
             $transactionDate = Carbon::now()->subDays(fake()->numberBetween(1, 30));
             $returDate = (clone $transactionDate)->addDays(fake()->numberBetween(1, 7));
+            $produk = $produkList->random();
 
             Transaksi::create([
-                'namaProduk' => fake()->word(), // Nama produk random
-                'transactionDate' => $transactionDate, // Tanggal transaksi random
-                'returDate' => $returDate, // Tanggal retur random setelah transaksi
-                'amount' => fake()->numberBetween(500, 5000), // Jumlah transaksi antara 500 hingga 5000
-                'terjual' => fake()->numberBetween(100, 3000), // Jumlah terjual antara 100 hingga 3000
-                'waktuEdar' => $returDate->diffInDays($transactionDate), // Selisih hari antara transactionDate dan returDate
-                'status' => fake()->randomElement(['open', 'closed']), // Status transaksi random
+                'produk_id' => $produk->id,
+                'transactionDate' => $transactionDate,
+                'returDate' => fake()->boolean(70) ? $returDate : null,
+                'amount' => $produk->hargaJual,
+                'terjual' => fake()->numberBetween(1, $produk->jumlah),
+                'waktuEdar' => $returDate ? $returDate->diffInDays($transactionDate) : null,
+                'status' => $returDate ? 'closed' : 'open',
             ]);
+
+            $produk->update(['jumlah' => $produk->jumlah - 1]);
         }
     }
 }

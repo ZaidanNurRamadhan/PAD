@@ -15,10 +15,10 @@ class PemasokSeeder extends Seeder
     {
         for ($i = 0; $i < 5; $i++) {
             Pemasok::create([
-                'name' => fake()->company(), // Nama perusahaan sebagai nama pemasok
-                'produkDisediakan' => fake()->word(), // Satu kata random sebagai produk disediakan
-                'nomorTelepon' => fake()->phoneNumber(), // Nomor telepon random
-                'email' => fake()->unique()->safeEmail(), // Email random yang unik
+                'name' => fake()->company(),
+                'produkDisediakan' => fake()->word(),
+                'nomorTelepon' => fake()->phoneNumber(),
+                'email' => fake()->unique()->safeEmail(),
             ]);
         }
     }

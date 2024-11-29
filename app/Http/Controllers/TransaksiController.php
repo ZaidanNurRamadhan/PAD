@@ -4,41 +4,101 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
+use App\Models\Produk;
+use App\Models\Toko;
 
 class TransaksiController extends Controller
 {
     public function index()
     {
         $data = $this->getTransaksiData();
-        return view('transaksi-owner', compact('data'));
+        $tokos = Toko::all();
+        $produk = Produk::all();
+        return view('transaksi-owner', compact('data', 'tokos', 'produk'));
     }
 
     public function karyawan()
     {
         $data = $this->getTransaksiData();
-        return view('transaksi-karyawan', compact('data'));
+        $tokos = Toko::all();
+        $produk = Produk::all();
+        return view('transaksi-karyawan', compact('data', 'tokos', 'produk'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'nama_produk' => 'required', // Nama produk wajib diisi
+            'toko_id' => 'required|exists:toko,id',
+            'produk_id' => 'required|exists:produk,id',
             'harga' => 'required|numeric',
             'terjual' => 'required|numeric',
             'tanggal_keluar' => 'required|date',
             'tanggal_retur' => 'nullable|date',
         ]);
+    
+        $toko = Toko::findOrFail($request->toko_id);
+        $produk = Produk::findOrFail($request->produk_id);
 
-        // Hitung waktu edar
+        if ($produk->jumlah < $request->terjual) {
+            return back()->withErrors(['terjual' => 'Jumlah produk tidak mencukupi.']);
+        }
+
         $waktuEdar = $request->tanggal_retur ? 
             (strtotime($request->tanggal_retur) - strtotime($request->tanggal_keluar)) / (60 * 60 * 24) : 
             null;
 
-        // Tentukan status
+        $status = $request->tanggal_retur ? 'close' : 'open';
+    
+        Transaksi::create([
+            'toko_id' => $toko->id,
+            'produk_id' => $produk->id,
+            'transactionDate' => $request->tanggal_keluar,
+            'returDate' => $request->tanggal_retur,
+            'amount' => $request->harga,
+            'terjual' => $request->terjual,
+            'waktuEdar' => $waktuEdar,
+            'status' => $status,
+        ]);
+    
+        $produk->update(['jumlah' => $produk->jumlah - $request->terjual]);
+    
+        return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil ditambahkan.');
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'toko_id' => 'required|exists:toko,id',
+            'produk_id' => 'required|exists:produk,id',
+            'harga' => 'required|numeric',
+            'terjual' => 'required|numeric|min:0',
+            'tanggal_keluar' => 'required|date',
+            'tanggal_retur' => 'nullable|date|after_or_equal:tanggal_keluar',
+        ]);
+    
+        $transaksi = Transaksi::findOrFail($id);
+        $produk = Produk::findOrFail($request->produk_id);
+        $toko = Toko::findOrFail($request->toko_id);
+
+        $selisihTerjual = $request->terjual - $transaksi->terjual;
+
+        if ($selisihTerjual > 0 && $produk->jumlah < $selisihTerjual) {
+            return back()->withErrors(['terjual' => 'Jumlah produk tidak mencukupi.']);
+        }
+
+        if ($selisihTerjual != 0) {
+            $produk->update(['jumlah' => $produk->jumlah - $selisihTerjual]);
+        }
+
+        $waktuEdar = $request->tanggal_retur ? 
+            (strtotime($request->tanggal_retur) - strtotime($request->tanggal_keluar)) / (60 * 60 * 24) : 
+            null;
+  
         $status = $request->tanggal_retur ? 'close' : 'open';
 
-        Transaksi::create([
-            'nama_produk' => $request->nama_produk,
+        $transaksi->update([
+            'toko_id' => $toko->id,
+            'produk_id' => $produk->id,
             'transactionDate' => $request->tanggal_keluar,
             'returDate' => $request->tanggal_retur,
             'amount' => $request->harga,
@@ -47,39 +107,14 @@ class TransaksiController extends Controller
             'status' => $status,
         ]);
 
-        return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil ditambahkan.');
+        return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil diperbarui.');
     }
 
-    public function update(Request $request, $id)
+    public function edit($id)
     {
-        $request->validate([
-            'nama_produk' => 'required',
-            'harga' => 'required|numeric',
-            'terjual' => 'required|numeric',
-            'tanggal_keluar' => 'required|date',
-            'tanggal_retur' => 'nullable|date',
-        ]);
-
-        // Hitung waktu edar
-        $waktuEdar = $request->tanggal_retur ? 
-            (strtotime($request->tanggal_retur) - strtotime($request->tanggal_keluar)) / (60 * 60 * 24) : 
-            null;
-
-        // Tentukan status
-        $status = $request->tanggal_retur ? 'close' : 'open';
-
-        // Update data di tabel transaksi
-        Transaksi::where('id', $id)->update([
-            'nama_produk' => $request->input('nama_produk'), // Nama produk diperbarui
-            'transactionDate' => $request->input('tanggal_keluar'),
-            'returDate' => $request->input('tanggal_retur'),
-            'amount' => $request->input('harga'),
-            'terjual' => $request->input('terjual'),
-            'waktuEdar' => $waktuEdar,
-            'status' => $status,
-        ]);
-
-        return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil diperbarui.');
+        $transaksi = Transaksi::findOrFail($id);
+        $tokos = Toko::all();
+        return view('transaksi-owner', compact('transaksi', 'tokos'));
     }
 
     public function destroy($id)
@@ -92,26 +127,25 @@ class TransaksiController extends Controller
 
     private function getTransaksiData()
     {
-        $transaksis = Transaksi::all(); // Ambil semua data dari tabel transaksi
+    $transaksis = Transaksi::with('produk')->get();
 
-        $data = [];
-        foreach ($transaksis as $transaksi) {
-            $data[] = [
-                'id' => $transaksi->id,
-                'total_harga' => $transaksi->amount * $transaksi->terjual, // Total harga dihitung
-                'jumlah' => $transaksi->terjual, // Jumlah terjual
-                'produk' => $transaksi->nama_produk, // Nama produk langsung dari tabel transaksi
-                'terjual' => $transaksi->terjual,
-                'harga' => $transaksi->amount, // Harga produk dari amount
-                'tanggal_keluar' => $transaksi->transactionDate,
-                'tanggal_retur' => $transaksi->returDate,
-                'waktu_edar' => $transaksi->returDate ? 
-                    (strtotime($transaksi->returDate) - strtotime($transaksi->transactionDate)) / (60 * 60 * 24) : 
-                    null,
-                'status' => $transaksi->returDate ? 'close' : 'open',
-            ];
-        }
+    $data = [];
+    foreach ($transaksis as $transaksi) {
+        $data[] = [
+            'id' => $transaksi->id,
+            'toko' => $transaksi->toko->name ?? 'Toko tidak ditemukan',
+            'produk' => $transaksi->produk->name ?? 'Produk tidak ditemukan',
+            'jumlah_stok' => $transaksi->produk->jumlah ?? 0,
+            'terjual' => $transaksi->terjual,
+            'total_harga' => $transaksi->amount * $transaksi->terjual,
+            'harga' => $transaksi->amount,
+            'tanggal_keluar' => $transaksi->transactionDate,
+            'tanggal_retur' => $transaksi->returDate,
+            'waktu_edar' => $transaksi->waktuEdar,
+            'status' => $transaksi->status,
+        ];
+    }
 
-        return $data;
+    return $data;
     }
 }

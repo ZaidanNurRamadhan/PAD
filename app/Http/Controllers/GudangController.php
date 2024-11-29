@@ -61,73 +61,77 @@ class GudangController extends Controller
     }
 
     public function store(Request $request)
-{
-    $request->validate([
-        'pname' => 'required|string|max:255',
-        'hbeli' => 'required|integer',
-        'hjual' => 'required|integer',
-        'jstok' => 'required|integer',
-        'astok' => 'required|integer',
-    ]);
-
-    // Buat produk baru
-    $produk = new Produk();
-    $produk->name = $request->pname;
-    $produk->hargaBeli = $request->hbeli;
-    $produk->hargaJual = $request->hjual;
-    $produk->category = 'Uncategorized'; // Atur kategori default
-    $produk->jumlah = $request->jstok;   // Pastikan kolom jumlah diisi
-    $produk->save();
-
-    // Buat stok baru yang terhubung dengan produk
-    $stok = new Stok();
-    $stok->product_id = $produk->id; // Hubungkan stok ke produk
-    $stok->jumlah = $request->jstok;
-    $stok->batasKritis = $request->astok;
-    $stok->tanggalDistribusi = now();
-    $stok->save();
-
-    return redirect()->route('gudang-owner')->with('success', 'Produk berhasil ditambahkan!');
-}
-
-public function update(Request $request, $id)
-{
-    $request->validate([
-        'pname' => 'required|string|max:255',
-        'hbeli' => 'required|integer',
-        'hjual' => 'required|integer',
-        'jstok' => 'required|integer',
-        'astok' => 'required|integer',
-    ]);
-
-    // Update produk
-    $produk = Produk::findOrFail($id);
-    $produk->name = $request->pname;
-    $produk->hargaBeli = $request->hbeli;
-    $produk->hargaJual = $request->hjual;
-    $produk->save();
-
-    // Update stok yang terhubung dengan produk
-    $stok = Stok::where('product_id', $produk->id)->first();
-    if ($stok) {
-        $stok->jumlah = $request->jstok;
-        $stok->batasKritis = $request->astok;
-        $stok->save();
+    {
+        $request->validate([
+            'pname' => 'required|string|max:255',
+            'hbeli' => 'required|integer',
+            'hjual' => 'required|integer',
+            'jstok' => 'required|integer',
+            'astok' => 'required|integer',
+        ]);
+    
+        $produk = Produk::create([
+            'name' => $request->pname,
+            'hargaBeli' => $request->hbeli,
+            'hargaJual' => $request->hjual,
+            'category' => 'Uncategorized',
+            'jumlah' => $request->jstok,
+        ]);
+    
+        Stok::create([
+            'product_id' => $produk->id,
+            'jumlah' => $request->jstok,
+            'batasKritis' => $request->astok,
+            'tanggalDistribusi' => now(),
+        ]);
+    
+        return redirect()->route('gudang-owner')->with('success', 'Produk berhasil ditambahkan!');
     }
 
-    return redirect()->route('gudang-owner')->with('success', 'Produk berhasil diupdate!');
-}
+    public function edit($id)
+    {
+        $produk = Produk::findOrFail($id);
+        return view('gudang-owner', compact('produk'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'pname' => 'required|string|max:255',
+            'hbeli' => 'required|integer',
+            'hjual' => 'required|integer',
+            'jstok' => 'required|integer',
+            'astok' => 'required|integer',
+        ]);
+    
+        $produk = Produk::findOrFail($id);
+        $produk->update([
+            'name' => $request->pname,
+            'hargaBeli' => $request->hbeli,
+            'hargaJual' => $request->hjual,
+        ]);
+    
+        $stok = Stok::where('product_id', $id)->first();
+        if ($stok) {
+            $stok->update([
+                'jumlah' => $request->jstok,
+                'batasKritis' => $request->astok,
+            ]);
+        }
+    
+        return redirect()->route('gudang-owner')->with('success', 'Produk berhasil diupdate!');
+    }
 
     public function destroy($id)
     {
         $produk = Produk::findOrFail($id);
-        $produk->delete();
 
- // Delete corresponding stock entry
-        $stok = Stok::where('id', $produk->id)->first();
+        $stok = Stok::where('product_id', $produk->id)->first();
         if ($stok) {
             $stok->delete();
         }
+    
+        $produk->delete();
 
         return redirect()->route('gudang-owner')->with('success', 'Produk berhasil dihapus!');
     }

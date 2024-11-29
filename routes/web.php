@@ -8,6 +8,7 @@ use App\Http\Controllers\GudangController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,9 +25,10 @@ use App\Http\Controllers\SettingController;
 //     return view('welcome');
 // });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 // Route::get('/gudang-owner', function () {
 //     return view('gudang-owner');
@@ -34,8 +36,8 @@ Route::get('/dashboard', function () {
 Route::get('/gudang-owner', [GudangController::class, 'index'])->name('gudang-owner');
 Route::get('/gudang-karyawan', [GudangController::class, 'karyawan'])->name('gudang-karyawan');
 Route::post('/gudang/store', [GudangController::class, 'store'])->name('gudang.store');
-Route::post('/gudang/update/{id}', [GudangController::class, 'update'])->name('gudang.update');
-Route::post('/gudang/destroy/{id}', [GudangController::class, 'destroy'])->name('gudang.destroy');
+Route::put('/gudang/update/{id}', [GudangController::class, 'update'])->name('gudang.update');
+Route::delete('/gudang/destroy/{id}', [GudangController::class, 'destroy'])->name('gudang.destroy');
 
 
 // Route::get('/gudang-karyawan', function () {
@@ -105,13 +107,13 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 //     Route::middleware('role:owner')->group(function () {
 //         Route::get('/dashboard', function () {
 //             return view('layout.owner'); // Halaman owner
-//         })->name('dashboard')->middleware('auth');
+//         })->name('dashboard');
 //     });
 
 //     Route::middleware('role:karyawan')->group(function () {
-//         Route::get('/gudang-karyawan', function () {
+//         Route::get('/transaksi-karyawan', function () {
 //             return view('layout.karyawan'); // Halaman karyawan
-//         })->name('gudang-karyawan')->middleware('auth');
+//         })->name('transaksi-karyawan');
 //     });
 // });
 

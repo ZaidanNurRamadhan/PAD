@@ -19,4 +19,14 @@ class Transaksi extends Model
         'waktuEdar',
         'status',
     ];
+
+    public function produk()
+    {
+        return $this->belongsTo(Produk::class, 'produk_id');
+    }
+
+    public function toko()
+    {
+        return $this->belongsTo(Toko::class, 'toko_id');
+    }
 }

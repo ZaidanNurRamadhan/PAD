@@ -10,14 +10,14 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::table('stok', function (Blueprint $table) {
-        if (!Schema::hasColumn('stok', 'product_id')) {
-            $table->unsignedBigInteger('product_id')->after('id'); // Tambahkan kolom product_id
-            $table->foreign('product_id')->references('id')->on('produks')->onDelete('cascade'); // Tambahkan foreign key
-        }
-    });
-}
+    {
+        Schema::table('stok', function (Blueprint $table) {
+            if (!Schema::hasColumn('stok', 'product_id')) {
+                $table->unsignedBigInteger('product_id')->after('id'); // Sesuaikan tipe data
+                $table->foreign('product_id')->references('id')->on('produk')->onDelete('cascade'); // Nama tabel disesuaikan
+            }
+        });
+    }
 
     /**
      * Reverse the migrations.
@@ -26,8 +26,8 @@ return new class extends Migration
     {
         Schema::table('stok', function (Blueprint $table) {
             if (Schema::hasColumn('stok', 'product_id')) {
-                $table->dropForeign(['product_id']); // Hapus foreign key jika ada
-                $table->dropColumn('product_id');   // Hapus kolom jika ada
+                $table->dropForeign(['product_id']);
+                $table->dropColumn('product_id');
             }
         });
     }

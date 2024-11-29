@@ -12,10 +12,8 @@ class PemasokController extends Controller
      */
     public function index()
     {
-        // Ambil data pemasok dari database
         $pemasok = Pemasok::all();
 
-        // Kirim data ke view pemasok.blade.php
         return view('pemasok', compact('pemasok'));
     }
 

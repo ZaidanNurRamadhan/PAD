@@ -16,19 +16,17 @@ class LaporanController extends Controller
 
     private function getTransaksiData()
     {
-        // Ambil semua data dari tabel transaksi
-        $transaksis = Transaksi::all();
+        $transaksis = Transaksi::with('produk')->get();
 
-        // Siapkan data dalam format yang sama seperti pada TransaksiController
         $data = [];
         foreach ($transaksis as $transaksi) {
             $data[] = [
                 'id' => $transaksi->id,
-                'total_harga' => $transaksi->amount * $transaksi->terjual, // Total harga dihitung
-                'jumlah' => $transaksi->terjual, // Jumlah terjual
-                'produk' => $transaksi->nama_produk, // Nama produk langsung dari tabel transaksi
+                'produk' => $transaksi->produk->name ?? 'Produk tidak ditemukan',
+                'jumlah_stok' => $transaksi->produk->jumlah ?? 0,
                 'terjual' => $transaksi->terjual,
-                'harga' => $transaksi->amount, // Harga produk dari amount
+                'total_harga' => $transaksi->amount * $transaksi->terjual,
+                'harga' => $transaksi->amount,
                 'tanggal_keluar' => $transaksi->transactionDate,
                 'tanggal_retur' => $transaksi->returDate,
                 'waktu_edar' => $transaksi->waktuEdar,
