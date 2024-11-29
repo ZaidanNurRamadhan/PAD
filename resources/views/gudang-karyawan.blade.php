@@ -17,7 +17,16 @@
                 <p class="fw-semibold">{{ $produks->filter(fn($p) => $p->stok < $p->batas_kritis)->count() ?? 0 }}</p>
             </div>
         </div>
-    </section>
+        <div class="col text-center">
+            <h5 style="color: #E19133" class="fw-semibold">Total Produk</h5>
+            <p class="fw-semibold">858</p>
+        </div>
+        <div class="col text-center">
+            <h5 style="color: #F36960" class="fw-semibold">Produk Menipis</h5>
+            <p class="fw-semibold">12</p>
+        </div>
+    </div>
+</section>
     <section class="card mt-4 p-4 min-vh-100 d-flex justify-content-between flex-column">
         <div class="align-items-center mb-3">
             <h5>Produk</h5>
