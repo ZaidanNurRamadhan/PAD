@@ -21,7 +21,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($data as $item)
+                    @forelse($data as $item)
                         <tr>
                             <td>Rp{{ number_format($item['total_harga'], 0, ',', '.') }}</td>
                             <td>{{ $item['jumlah'] }}</td>
@@ -36,7 +36,14 @@
                                 <a href="#" style="color: black; float: right;" data-bs-toggle="modal" data-bs-target="#Edittransaksi"><i class="fas fa-angle-right"></i></a>
                             </td>
                         </tr>
-                    @endforeach
+                        @empty
+                            <tr><td colspan="9" class="text-center">Tidak ada data</td></tr>
+                        @endforelse
+
+                        {{-- Menambahkan baris kosong dengan border jika data kurang dari 20 --}}
+                        @for ($i = count($data); $i < 19; $i++)
+                            <tr><td colspan="9"></td></tr>
+                        @endfor
                 </tbody>
             </table>
         </div>

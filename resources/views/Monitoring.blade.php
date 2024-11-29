@@ -21,7 +21,7 @@
                     <!-- Jika tidak ada data, tampilkan pesan "Tidak ada data yang tersedia" -->
                     @if (false) <!-- Ganti false dengan kondisi cek data jika perlu -->
                         <tr>
-                            <td colspan="6" class="text-center">Tidak ada data yang tersedia</td>
+                            <td colspan="6" class="text-center">Tidak ada data</td>
                         </tr>
                     @else
                         <tr>

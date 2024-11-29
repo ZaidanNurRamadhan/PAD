@@ -17,7 +17,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($tokoList as $toko)
+                    @forelse ($tokoList as $toko)
                         <tr>
                             <td>{{ $toko->name }}</td>
                             <td>{{ $ownerNames[array_rand($ownerNames)] }}</td>
@@ -28,7 +28,12 @@
                                 <button class="btn btn-danger btn-sm mx-2" type="button" data-bs-toggle="modal" data-bs-target="#Hapustoko">Hapus</button>
                             </td>
                         </tr>
-                    @endforeach
+                        @empty
+                        <tr><td colspan="6" class="text-center">Tidak ada data</td></tr>
+                    @endforelse
+                    @for ($i = count($tokoList) ; $i <19 ; $i++)
+                        <tr><td colspan="6"></td></tr>
+                    @endfor
                 </tbody>
             </table>
         </div>

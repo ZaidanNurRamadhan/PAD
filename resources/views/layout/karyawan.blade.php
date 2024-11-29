@@ -33,14 +33,8 @@
     <main id="app"
           class="content"
           data-routes="{{ json_encode([
-              'login' => route('login'),
-              'dashboard' => route('dashboard'),
-              'transaksi' => route('transaksi-owner'),
-              'gudang' => route('gudang-owner'),
-              'laporan' => route('laporan'),
-              'pemasok' => route('pemasok'),
-              'toko' => route('manajemen-toko'),
-              'settings' => route('settings')
+              'transaksi' => route('transaksi-karyawan'),
+              'gudang' => route('gudang-karyawan')
           ]) }}">
         <header class="d-sm-none">
             <nav class="navbar bg-body-tertiary fixed-top">
@@ -62,7 +56,7 @@
                             </a>
                           </li>
                           <li class="nav-item">
-                            <a href="{{ route('gudang-karyawan') }}" id="gudangLink" class="text-decoration-none fst-normal"><i class="fas fa-warehouse"></i><i class="d-none lg d-lg-inline fst-normal"> Gudang</i></a>
+                            <a href="{{ route('gudang-karyawan') }}" id="gudangLink" class="text-decoration-none fst-normal {{ request()->routeIs('transaksi-karyawan') ? 'active' : '' }}"><i class="fas fa-warehouse"></i><i class="d-none lg d-lg-inline fst-normal"> Gudang</i></a>
                           </li>
 
                           <!-- Bagian bawah dengan `mt-auto` agar berada di bagian paling bawah -->
@@ -86,8 +80,7 @@
     </main>
     @include('component.ModalKeluar')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="{{asset('js/layout-karyawan.js')}}"></script>
     <script src="{{asset('js/script.js')}}"></script>
-    <script src="{{ asset('js/layout-owner.js') }}"></script>
+    <script src="{{asset('js/layout-karyawan.js')}}"></script>
 </body>
 </html>
