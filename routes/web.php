@@ -20,6 +20,9 @@ use App\Http\Controllers\DashboardController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::get('/monitoring',function(){
+    return view('Monitoring');
+})->name('monitoring');
 
 Route::get('/', function () {
     return view('login');
@@ -35,17 +38,15 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 // })->name('gudang-owner');
 Route::get('/gudang-owner', [GudangController::class, 'index'])->name('gudang-owner');
 Route::get('/gudang-karyawan', [GudangController::class, 'karyawan'])->name('gudang-karyawan');
+
 Route::post('/gudang/store', [GudangController::class, 'store'])->name('gudang.store');
 Route::put('/gudang/update/{id}', [GudangController::class, 'update'])->name('gudang.update');
 Route::delete('/gudang/destroy/{id}', [GudangController::class, 'destroy'])->name('gudang.destroy');
 
-Route::get('/gudang-karyawan', function () {
-    return view('gudang-karyawan');
-})->name('gudang-karyawan');
+Route::post('/gudang/store', [GudangController::class, 'store'])->name('gudang.store');
+Route::put('/gudang/update/{id}', [GudangController::class, 'update'])->name('gudang.update');
+Route::delete('/gudang/destroy/{id}', [GudangController::class, 'destroy'])->name('gudang.destroy');
 
-Route::get('/laporan', function () {
-    return view('laporan');
-})->name('laporan');
 
 // Route::get('/pemasok', function () {
 //     return view('pemasok');
@@ -56,9 +57,9 @@ Route::get('/pemasok/{id}/edit', [PemasokController::class, 'edit'])->name('pema
 Route::post('/pemasok/update/{id}', [PemasokController::class, 'update'])->name('pemasok.update');
 Route::post('/pemasok/destroy/{id}', [PemasokController::class, 'destroy'])->name('pemasok.destroy');
 
-Route::get('/transaksi-owner', function () {
-    return view('transaksi-owner');
-})->name('transaksi-owner');
+// Route::get('/gudang-karyawan', function () {
+//     return view('gudang-karyawan');
+// })->name('gudang-karyawan');
 
 // Route::get('/transaksi-owner', function () {
 //     return view('transaksi-owner');
@@ -73,9 +74,14 @@ Route::prefix('transaksi')->group(function () {
     Route::delete('/destroy/{id}', [TransaksiController::class, 'destroy'])->name('transaksi.destroy'); // Menghapus data
 });
 
-Route::get('/manajemen-toko', function () {
-    return view('manajemen-toko');
-})->name('manajemen-toko');
+// Route::get('/pemasok', function () {
+//     return view('pemasok');
+// })->name('pemasok');
+Route::get('/pemasok', [PemasokController::class, 'index'])->name('pemasok');
+Route::post('/pemasok/store', [PemasokController::class, 'store'])->name('pemasok.store');
+Route::get('/pemasok/{id}/edit', [PemasokController::class, 'edit'])->name('pemasok.edit');
+Route::post('/pemasok/update/{id}', [PemasokController::class, 'update'])->name('pemasok.update');
+Route::post('/pemasok/destroy/{id}', [PemasokController::class, 'destroy'])->name('pemasok.destroy');
 
 // Route::get('/manajemen-toko', function () {
 //     return view('manajemen-toko');
@@ -118,7 +124,3 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 //         })->name('transaksi-karyawan');
 //     });
 // });
-
-Route::get('/coba', function () {
-    return view('coba');
-})->name('lo');

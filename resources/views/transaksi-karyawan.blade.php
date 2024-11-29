@@ -57,4 +57,4 @@
     @include('component.TambahTransaksi')
     {{-- edit --}}
     @include('component.EditTransaksi')
-    @endsection
+@endsection

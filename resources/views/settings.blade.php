@@ -46,5 +46,10 @@
             <button class="btn btn-secondary">Next</button>
         </div>
     </section>
+    {{-- tambah --}}
     @include('component.TambahKaryawan')
+      {{-- edit --}}
+      @include('component.EditKaryawan')
+      {{-- hapus --}}
+      @include('component.HapusKaryawan')
 @endsection

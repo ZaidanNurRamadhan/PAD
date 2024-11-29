@@ -69,7 +69,7 @@ class GudangController extends Controller
             'jstok' => 'required|integer',
             'astok' => 'required|integer',
         ]);
-    
+
         $produk = Produk::create([
             'name' => $request->pname,
             'hargaBeli' => $request->hbeli,
@@ -77,14 +77,14 @@ class GudangController extends Controller
             'category' => 'Uncategorized',
             'jumlah' => $request->jstok,
         ]);
-    
+
         Stok::create([
             'product_id' => $produk->id,
             'jumlah' => $request->jstok,
             'batasKritis' => $request->astok,
             'tanggalDistribusi' => now(),
         ]);
-    
+
         return redirect()->route('gudang-owner')->with('success', 'Produk berhasil ditambahkan!');
     }
 
@@ -103,14 +103,14 @@ class GudangController extends Controller
             'jstok' => 'required|integer',
             'astok' => 'required|integer',
         ]);
-    
+
         $produk = Produk::findOrFail($id);
         $produk->update([
             'name' => $request->pname,
             'hargaBeli' => $request->hbeli,
             'hargaJual' => $request->hjual,
         ]);
-    
+
         $stok = Stok::where('product_id', $id)->first();
         if ($stok) {
             $stok->update([
@@ -118,7 +118,7 @@ class GudangController extends Controller
                 'batasKritis' => $request->astok,
             ]);
         }
-    
+
         return redirect()->route('gudang-owner')->with('success', 'Produk berhasil diupdate!');
     }
 
@@ -130,9 +130,17 @@ class GudangController extends Controller
         if ($stok) {
             $stok->delete();
         }
-    
+<<<<<<< HEAD
+
+=======
+
+>>>>>>> 51709f3b8a78c4453bfd5bd9715482f2a9fdafdd
         $produk->delete();
 
         return redirect()->route('gudang-owner')->with('success', 'Produk berhasil dihapus!');
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 51709f3b8a78c4453bfd5bd9715482f2a9fdafdd

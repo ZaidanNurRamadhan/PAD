@@ -1,6 +1,6 @@
 @extends('layout.karyawan')
 @section('content')
-<div class="container-fluid">
+  <div class="container-fluid">
     <section class="card p-4">
         <h3 class="fw-bold text-center text-judul">Stok Keseluruhan</h3>
         <div class="row mt-2">

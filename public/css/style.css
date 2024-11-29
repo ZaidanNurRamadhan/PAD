@@ -175,8 +175,23 @@ nav a i {
 }
 
 .table-menipis {
+<<<<<<< HEAD
+<<<<<<< HEAD
     /* height: calc(100vh - 500px); /* Kurangi sesuai tinggi header/footer */
    /* overflow-y: auto; */
+}
+
+.vh-min-100 {
+    min-height: 100vh;
+}
+
+.card.vh-min-100 {
+    height: 100%; /* Agar card mengambil seluruh tinggi yang tersedia */
+}
+
+.scrollable-content {
+    max-height: calc(100vh - 150px); /* Sesuaikan dengan tinggi yang diinginkan */
+    overflow-y: auto;
 }
 
 .vh-min-100 {
@@ -272,6 +287,7 @@ canvas
     height: 40vh;
     width: 100%;
 }
+
 /* Membuat tbody bisa digulir */
 /* .table-responsive {
     max-height:750\vh; /* Sesuaikan dengan kebutuhan tinggi tabel */
@@ -299,3 +315,4 @@ canvas
 /* .table td, .table th {
     padding: 8px;
 } */
+

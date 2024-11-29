@@ -35,7 +35,7 @@ class TransaksiController extends Controller
             'tanggal_keluar' => 'required|date',
             'tanggal_retur' => 'nullable|date',
         ]);
-    
+
         $toko = Toko::findOrFail($request->toko_id);
         $produk = Produk::findOrFail($request->produk_id);
 
@@ -43,12 +43,12 @@ class TransaksiController extends Controller
             return back()->withErrors(['terjual' => 'Jumlah produk tidak mencukupi.']);
         }
 
-        $waktuEdar = $request->tanggal_retur ? 
-            (strtotime($request->tanggal_retur) - strtotime($request->tanggal_keluar)) / (60 * 60 * 24) : 
+        $waktuEdar = $request->tanggal_retur ?
+            (strtotime($request->tanggal_retur) - strtotime($request->tanggal_keluar)) / (60 * 60 * 24) :
             null;
 
         $status = $request->tanggal_retur ? 'close' : 'open';
-    
+
         Transaksi::create([
             'toko_id' => $toko->id,
             'produk_id' => $produk->id,
@@ -59,9 +59,9 @@ class TransaksiController extends Controller
             'waktuEdar' => $waktuEdar,
             'status' => $status,
         ]);
-    
+
         $produk->update(['jumlah' => $produk->jumlah - $request->terjual]);
-    
+
         return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil ditambahkan.');
     }
 
@@ -75,7 +75,6 @@ class TransaksiController extends Controller
             'tanggal_keluar' => 'required|date',
             'tanggal_retur' => 'nullable|date|after_or_equal:tanggal_keluar',
         ]);
-    
         $transaksi = Transaksi::findOrFail($id);
         $produk = Produk::findOrFail($request->produk_id);
         $toko = Toko::findOrFail($request->toko_id);
@@ -90,10 +89,11 @@ class TransaksiController extends Controller
             $produk->update(['jumlah' => $produk->jumlah - $selisihTerjual]);
         }
 
-        $waktuEdar = $request->tanggal_retur ? 
-            (strtotime($request->tanggal_retur) - strtotime($request->tanggal_keluar)) / (60 * 60 * 24) : 
+
+        $waktuEdar = $request->tanggal_retur ?
+            (strtotime($request->tanggal_retur) - strtotime($request->tanggal_keluar)) / (60 * 60 * 24) :
             null;
-  
+
         $status = $request->tanggal_retur ? 'close' : 'open';
 
         $transaksi->update([
