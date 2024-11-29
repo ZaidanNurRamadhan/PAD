@@ -175,8 +175,8 @@ nav a i {
 }
 
 .table-menipis {
-    height: calc(100vh - 100px); /* Kurangi sesuai tinggi header/footer */
-    overflow-y: auto;
+    /* height: calc(100vh - 500px); /* Kurangi sesuai tinggi header/footer */
+   /* overflow-y: auto; */
 }
 
 .vh-min-100 {
@@ -208,8 +208,8 @@ nav a i {
     min-height: 200px;
 }
   .table-menipis {
-    /*max-height: 590px;
-    min-height: 590px; */
+    max-height: 700px;
+    min-height: 700px;
     overflow-y: auto;
   }
 
@@ -272,3 +272,30 @@ canvas
     height: 40vh;
     width: 100%;
 }
+/* Membuat tbody bisa digulir */
+/* .table-responsive {
+    max-height:750\vh; /* Sesuaikan dengan kebutuhan tinggi tabel */
+    /* overflow-y: scroll; */
+/* } */
+
+/* Menjaga posisi sticky pada thead */
+/* .sticky-top {
+    position: sticky;
+    top: 0;
+    z-index: 1; /* Agar thead tetap di atas saat digulir
+} */
+
+/* Memastikan kolom tetap dalam lebar yang sama */
+/* .table th, .table td {
+    white-space: nowrap; /* Agar isi kolom tidak terpotong
+} */
+
+/* Memastikan tabel dan colspan tetap memiliki border */
+/* .table {
+    border-collapse: collapse;
+    width: 100%;
+} */
+
+/* .table td, .table th {
+    padding: 8px;
+} */

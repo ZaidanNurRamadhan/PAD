@@ -54,7 +54,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach($data as $item)
+                @forelse($data as $item)
                     <tr>
                         <td>Rp{{ number_format($item['total_harga'], 0, ',', '.') }}</td>
                         <td>{{ $item['jumlah'] }}</td>
@@ -66,7 +66,12 @@
                         <td>{{ $item['waktu_edar'] }}</td>
                         <td class="{{ $item['status'] === 'Open' ? 'text-success' : 'text-danger' }}">{{ $item['status'] }}</td>
                     </tr>
-                @endforeach
+                    @empty
+                    <tr><td colspan="9" class="text-center">Tidak ada data</td></tr>
+                @endforelse
+                @for ($i = count($data); $i < 19; $i++)
+                    <tr><td colspan="9"></td></tr>
+                @endfor
             </tbody>
         </table>
     </div>

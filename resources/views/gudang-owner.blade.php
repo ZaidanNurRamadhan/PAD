@@ -39,7 +39,7 @@
                     </tr>
                 </thead>
                 <tbody class="h-100">
-                    @foreach($data as $produk)
+                    @forelse($data as $produk)
                         <tr>
                             <td>{{ $produk['id'] }}</td>
                             <td>{{ $produk['name'] }}</td>
@@ -52,7 +52,12 @@
                                 <button class="m-2 btn btn-danger btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#Hapusproduk">Hapus</button>
                             </td>
                         </tr>
-                    @endforeach
+                        @empty
+                        <tr><td colspan="7" class="text-center">Tidak ada data</td></tr>
+                    @endforelse
+                    @for ($i = count($data); $i < 19; $i++)
+                        <tr><td colspan="7"></td></tr>
+                    @endfor
                 </tbody>
             </table>
         </div>
