@@ -21,7 +21,6 @@ class TokoController extends Controller
      */
     public function create()
     {
-        // This method can be used to show a form for creating a new Toko
     }
 
     /**
@@ -51,7 +50,7 @@ class TokoController extends Controller
      */
     public function show(Toko $toko)
     {
-        // This method can be used to show a specific Toko
+
     }
 
     /**

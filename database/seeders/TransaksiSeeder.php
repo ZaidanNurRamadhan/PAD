@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Transaksi;
+use App\Models\Produk;
+use Carbon\Carbon;
 
 class TransaksiSeeder extends Seeder
 {
@@ -13,49 +15,29 @@ class TransaksiSeeder extends Seeder
      */
     public function run(): void
     {
-        Transaksi::create([
-            'transactionDate' => '2023-10-01',
-            'returDate' => '2023-10-02',
-            'amount' => 1000,
-            'terjual' => 500,
-            'waktuEdar' => 2,
-            'status' => 'closed',
-        ]);
+        $produkList = Produk::all();
 
-        Transaksi::create([
-            'transactionDate' => '2023-10-02',
-            'returDate' => '2023-10-03',
-            'amount' => 500,
-            'terjual' => 200,
-            'waktuEdar' => 3,
-            'status' => 'open',
-        ]);
+        if ($produkList->isEmpty()) {
+            $this->command->error('Tidak ada data produk. Harap tambahkan data ke tabel produk terlebih dahulu.');
+            return;
+        }
 
-        Transaksi::create([
-            'transactionDate' => '2023-10-03',
-            'returDate' => '2023-10-04',
-            'amount' => 2000,
-            'terjual' => 1000,
-            'waktuEdar' => 4,
-            'status' => 'closed',
-        ]);
+        for ($i = 0; $i < 5; $i++) {
+            $transactionDate = Carbon::now()->subDays(fake()->numberBetween(1, 30));
+            $returDate = (clone $transactionDate)->addDays(fake()->numberBetween(1, 7));
+            $produk = $produkList->random();
 
-        Transaksi::create([
-            'transactionDate' => '2023-10-04',
-            'returDate' => '2023-10-05',
-            'amount' => 1500,
-            'terjual' => 750,
-            'waktuEdar' => 5,
-            'status' => 'open',
-        ]);
+            Transaksi::create([
+                'produk_id' => $produk->id,
+                'transactionDate' => $transactionDate,
+                'returDate' => fake()->boolean(70) ? $returDate : null,
+                'amount' => $produk->hargaJual,
+                'terjual' => fake()->numberBetween(1, $produk->jumlah),
+                'waktuEdar' => $returDate ? $returDate->diffInDays($transactionDate) : null,
+                'status' => $returDate ? 'closed' : 'open',
+            ]);
 
-        Transaksi::create([
-            'transactionDate' => '2023-10-05',
-            'returDate' => '2023-10-06',
-            'amount' => 700,
-            'terjual' => 350,
-            'waktuEdar' => 6,
-            'status' => 'closed',
-        ]);
+            $produk->update(['jumlah' => $produk->jumlah - 1]);
+        }
     }
 }

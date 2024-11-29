@@ -13,12 +13,15 @@ return new class extends Migration
     {
         Schema::create('transaksi', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('produk_id') // Foreign key untuk produk_id
+                  ->constrained('produk') // Merujuk ke tabel produk
+                  ->onDelete('cascade'); // Cascade saat dihapus
+            $table->foreignId('toko_id') // Foreign key untuk toko_id
+                  ->constrained('toko') // Merujuk ke tabel toko
+                  ->onDelete('cascade'); // Cascade saat dihapus
             $table->date('transactionDate'); // Tanggal transaksi
-            $table->date('returDate'); // Tanggal retur
+            $table->string('transactionType', 100); // Jenis transaksi
             $table->integer('amount'); // Jumlah transaksi
-            $table->integer('terjual'); // Jumlah terjual
-            $table->integer('waktuEdar'); // Waktu edar
-            $table->enum('status', ['open', 'closed']);
             $table->timestamps();
         });
     }

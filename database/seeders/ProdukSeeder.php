@@ -13,50 +13,18 @@ class ProdukSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create dummy products
-        Produk::create([
-            'id' => 1,
-            'name' => 'Produk A',
-            'hargaBeli' => 10000,
-            'hargaJual' => 15000,
-            'category' => 'Kategori 1',
-            'jumlah' => 10,
-        ]);
+        for ($i = 0; $i < 5; $i++) {
 
-        Produk::create([
-            'id' => 2,
-            'name' => 'Produk B',
-            'hargaBeli' => 20000,
-            'hargaJual' => 25000,
-            'category' => 'Kategori 2',
-            'jumlah' => 20,
-        ]);
+            $hargaBeli = fake()->numberBetween(10000, 500000);
+            $hargaJual = $hargaBeli + fake()->numberBetween(10000, 500000);
 
-        Produk::create([
-            'id' => 3,
-            'name' => 'Produk C',
-            'hargaBeli' => 30000,
-            'hargaJual' => 35000,
-            'category' => 'Kategori 1',
-            'jumlah' => 30,
-        ]);
-
-        Produk::create([
-            'id' => 4,
-            'name' => 'Produk D',
-            'hargaBeli' => 40000,
-            'hargaJual' => 45000,
-            'category' => 'Kategori 3',
-            'jumlah' => 40,
-        ]);
-
-        Produk::create([
-            'id' => 5,
-            'name' => 'Produk E',
-            'hargaBeli' => 50000,
-            'hargaJual' => 55000,
-            'category' => 'Kategori 2',
-            'jumlah' => 50,
-        ]);
+            Produk::create([
+                'name' => fake()->word(),
+                'hargaBeli' => $hargaBeli,
+                'hargaJual' => $hargaJual,
+                'category' => fake()->randomElement(['Kategori 1', 'Kategori 2', 'Kategori 3']),
+                'jumlah' => fake()->numberBetween(1, 100),
+            ]);
+        }
     }
 }

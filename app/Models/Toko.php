@@ -8,12 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class Toko extends Model
 {
     use HasFactory;
-
     protected $table = 'toko';
-    protected $fillable = ['name', 'namaPemilik', 'address', 'phone_number'];
+    protected $fillable = ['name', 'address', 'phone_number'];
 
     public function produk()
     {
         return $this->hasMany(Produk::class);
     }
+
+    public function transaksis()
+    {
+        return $this->hasMany(Transaksi::class);
+    }
 }
+

@@ -11,11 +11,23 @@ class Transaksi extends Model
     protected $table = 'transaksi';
 
     protected $fillable = [
+        'nama_produk',
         'transactionDate',
-        'returDate',
+        'transactionType',
         'amount',
-        'terjual',
-        'waktuEdar',
-        'status',
     ];
+
+    protected $casts = [
+        'transactionDate' => 'date',
+    ];
+
+    public function produk()
+    {
+        return $this->belongsTo(Produk::class, 'produk_id');
+    }
+
+    public function toko()
+    {
+        return $this->belongsTo(Toko::class, 'toko_id');
+    }
 }
