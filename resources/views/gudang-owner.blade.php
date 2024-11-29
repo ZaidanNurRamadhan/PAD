@@ -39,7 +39,6 @@
                     </tr>
                 </thead>
                 <tbody class="h-100">
-<<<<<<< HEAD
                     @forelse($data as $produk)
                         <tr>
                             <td>{{ $produk['id'] }}</td>
@@ -59,20 +58,6 @@
                     @for ($i = count($data); $i < 19; $i++)
                         <tr><td colspan="7"></td></tr>
                     @endfor
-=======
-                    <tr>
-                        <td>9</td>
-                        <td>Coca cola</td>
-                        <td>Rp20500</td>
-                        <td>Rp43000</td>
-                        <td>41 Packets</td>
-                        <td>10 Packets</td>
-                        <td class="justify-content-center d-flex">
-                            <button class="m-2 btn btn-warning btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#edit">Edit</button>
-                            <button class="m-2 btn btn-danger btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#Hapusproduk">Hapus</button>
-                        </td>
-                    </tr>
->>>>>>> dev
                 </tbody>
             </table>
         </div>
@@ -89,8 +74,4 @@
     @include('component.EditGudang')
       {{-- hapus --}}
     @include('component.HapusGudang')
-<<<<<<< HEAD
 @endsection
-=======
-@endsection
->>>>>>> dev

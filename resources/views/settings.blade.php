@@ -39,6 +39,7 @@
                 </tbody>
             </table>
         </div>
+
         <div class="pagination">
             <button class="btn btn-secondary">Previous</button>
             <span>Page 1 of 10</span>

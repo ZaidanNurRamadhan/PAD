@@ -75,7 +75,6 @@ class TransaksiController extends Controller
             'tanggal_keluar' => 'required|date',
             'tanggal_retur' => 'nullable|date|after_or_equal:tanggal_keluar',
         ]);
-
         $transaksi = Transaksi::findOrFail($id);
         $produk = Produk::findOrFail($request->produk_id);
         $toko = Toko::findOrFail($request->toko_id);
@@ -89,6 +88,7 @@ class TransaksiController extends Controller
         if ($selisihTerjual != 0) {
             $produk->update(['jumlah' => $produk->jumlah - $selisihTerjual]);
         }
+
 
         $waktuEdar = $request->tanggal_retur ?
             (strtotime($request->tanggal_retur) - strtotime($request->tanggal_keluar)) / (60 * 60 * 24) :

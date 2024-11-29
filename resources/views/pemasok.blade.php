@@ -6,6 +6,7 @@
             <h3>Pemasok</h3>
             <button class="btn btn-primary btn-add" type="button" data-bs-toggle="modal" data-bs-target="#Tambahpemasok">Tambah Pemasok</button>
         </article>
+
         <div class="table-responsive flex-grow-1">
             <table class="table">
                 <thead>

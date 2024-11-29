@@ -13,6 +13,7 @@ class PemasokController extends Controller
     public function index()
     {
         $pemasok = Pemasok::all();
+
         return view('pemasok', compact('pemasok'));
     }
 
@@ -35,7 +36,6 @@ class PemasokController extends Controller
             'nomorTelepon' => 'required|numeric',
             'email' => 'required|email',
         ]);
-
         $pemasok = Pemasok::create($request->all());
         return response()->json($pemasok);
     }
@@ -68,7 +68,6 @@ class PemasokController extends Controller
             'nomorTelepon' => 'required|numeric',
             'email' => 'required|email',
         ]);
-
         $pemasok = Pemasok::findOrFail($id);
         $pemasok->update($request->all());
         return response()->json($pemasok);

@@ -43,11 +43,9 @@ Route::post('/gudang/store', [GudangController::class, 'store'])->name('gudang.s
 Route::put('/gudang/update/{id}', [GudangController::class, 'update'])->name('gudang.update');
 Route::delete('/gudang/destroy/{id}', [GudangController::class, 'destroy'])->name('gudang.destroy');
 
-
-
-// Route::get('/gudang-karyawan', function () {
-//     return view('gudang-karyawan');
-// })->name('gudang-karyawan');
+Route::post('/gudang/store', [GudangController::class, 'store'])->name('gudang.store');
+Route::put('/gudang/update/{id}', [GudangController::class, 'update'])->name('gudang.update');
+Route::delete('/gudang/destroy/{id}', [GudangController::class, 'destroy'])->name('gudang.destroy');
 
 
 // Route::get('/pemasok', function () {
@@ -59,22 +57,31 @@ Route::get('/pemasok/{id}/edit', [PemasokController::class, 'edit'])->name('pema
 Route::post('/pemasok/update/{id}', [PemasokController::class, 'update'])->name('pemasok.update');
 Route::post('/pemasok/destroy/{id}', [PemasokController::class, 'destroy'])->name('pemasok.destroy');
 
-
-// Route::get('/pemasok', function () {
-//     return view('pemasok');
-// })->name('pemasok');
-Route::get('/pemasok', [PemasokController::class, 'index'])->name('pemasok');
-Route::post('/pemasok/store', [PemasokController::class, 'store'])->name('pemasok.store');
-Route::post('/pemasok/update/{id}', [PemasokController::class, 'update'])->name('pemasok.update');
-Route::post('/pemasok/destroy/{id}', [PemasokController::class, 'destroy'])->name('pemasok.destroy');
-
+// Route::get('/gudang-karyawan', function () {
+//     return view('gudang-karyawan');
+// })->name('gudang-karyawan');
 
 // Route::get('/transaksi-owner', function () {
 //     return view('transaksi-owner');
 // })->name('transaksi-owner');
 Route::get('/transaksi-owner', [TransaksiController::class, 'index'])->name('transaksi-owner');
 Route::get('/transaksi-karyawan', [TransaksiController::class, 'karyawan'])->name('transaksi-karyawan');
+Route::prefix('transaksi')->group(function () {
+    Route::get('/create', [TransaksiController::class, 'create'])->name('transaksi.create'); // Menampilkan form create
+    Route::post('/store', [TransaksiController::class, 'store'])->name('transaksi.store');  // Menyimpan data baru
+    Route::get('/edit/{id}', [TransaksiController::class, 'edit'])->name('transaksi.edit'); // Menampilkan form edit
+    Route::put('/update/{id}', [TransaksiController::class, 'update'])->name('transaksi.update'); // Memperbarui data
+    Route::delete('/destroy/{id}', [TransaksiController::class, 'destroy'])->name('transaksi.destroy'); // Menghapus data
+});
 
+// Route::get('/pemasok', function () {
+//     return view('pemasok');
+// })->name('pemasok');
+Route::get('/pemasok', [PemasokController::class, 'index'])->name('pemasok');
+Route::post('/pemasok/store', [PemasokController::class, 'store'])->name('pemasok.store');
+Route::get('/pemasok/{id}/edit', [PemasokController::class, 'edit'])->name('pemasok.edit');
+Route::post('/pemasok/update/{id}', [PemasokController::class, 'update'])->name('pemasok.update');
+Route::post('/pemasok/destroy/{id}', [PemasokController::class, 'destroy'])->name('pemasok.destroy');
 
 // Route::get('/manajemen-toko', function () {
 //     return view('manajemen-toko');

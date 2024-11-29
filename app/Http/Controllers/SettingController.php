@@ -79,5 +79,4 @@ public function destroy($id)
 
     return redirect()->route('karyawan.index')->with('success', 'Karyawan berhasil dihapus.');
 }
-
 }

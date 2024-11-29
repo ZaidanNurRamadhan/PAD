@@ -130,9 +130,17 @@ class GudangController extends Controller
         if ($stok) {
             $stok->delete();
         }
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> 51709f3b8a78c4453bfd5bd9715482f2a9fdafdd
         $produk->delete();
 
         return redirect()->route('gudang-owner')->with('success', 'Produk berhasil dihapus!');
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 51709f3b8a78c4453bfd5bd9715482f2a9fdafdd

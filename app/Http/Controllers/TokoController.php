@@ -21,6 +21,7 @@ class TokoController extends Controller
      */
     public function create()
     {
+
     }
 
     /**
@@ -50,7 +51,6 @@ class TokoController extends Controller
      */
     public function show(Toko $toko)
     {
-
     }
 
     /**
@@ -92,3 +92,4 @@ class TokoController extends Controller
         return redirect()->route('toko.index')->with('success', 'Toko berhasil dihapus.');
     }
 }
+

@@ -1,5 +1,4 @@
 @extends('layout.karyawan')
-
 @section('content')
     <section class="table-container d-flex flex-column vh-min-100">
         <div class="d-flex justify-content-between align-items-center mb-3">
