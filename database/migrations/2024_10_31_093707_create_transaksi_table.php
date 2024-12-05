@@ -20,8 +20,12 @@ return new class extends Migration
                   ->constrained('toko') // Merujuk ke tabel toko
                   ->onDelete('cascade'); // Cascade saat dihapus
             $table->date('transactionDate'); // Tanggal transaksi
-            $table->string('transactionType', 100); // Jenis transaksi
-            $table->integer('amount'); // Jumlah transaksi
+            $table->date('returDate')->nullable(); // Tanggal pengembalian
+            $table->integer('harga')->nullable(); // Jumlah transaksi
+            $table->integer('jumlahDibeli');//jumlah dibeli
+            $table->integer('terjual'); // Jumlah terjual
+            $table->integer('waktuEdar')->nullable(); // Waktu edar
+            $table->enum('status', ['open', 'closed']); // Status transaksi
             $table->timestamps();
         });
     }

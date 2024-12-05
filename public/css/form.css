@@ -1,0 +1,63 @@
+html,body{
+    height: 100%;
+    margin: 0;
+    font-family: "inter", sans-serif
+}
+img{
+    width: 372px;
+    height: 372px;
+}
+main{
+    min-height: 100vh;
+}
+input,button{
+    width: 100%;
+}
+.icon-login{
+    width: 100px;
+    height: 100px;
+}
+.login-form{
+    width: 400px;
+}
+@media (max-width: 768px) {
+    aside{
+        display: none;
+    }
+    .logo-utama {
+        display: none;
+    }
+    section{
+        width: 100%;
+    }
+    .container {
+        justify-content: center;
+    }
+    main{
+        flex: 1;
+    }
+}
+@media (max-width: 1023px) {
+    aside{
+        display: none;
+    }
+    .logo-utama {
+        display: none;
+    }
+    section{
+        width: 100%;
+    }
+    .container {
+        justify-content: center;
+    }
+    main{
+        flex: 1;
+    }
+}
+/* .toggle-password {
+    position: absolute;
+    cursor: pointer;
+    color: gray;
+    right: 20vh;
+    float: right;
+} */

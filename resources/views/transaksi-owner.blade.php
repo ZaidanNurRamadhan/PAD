@@ -22,18 +22,25 @@
                 </thead>
                 <tbody>
                     @forelse($data as $item)
+                        <tr colspan="9">
+                            <td>{{ $item['toko']}}</td>
+                        </tr>
                         <tr>
                             <td>Rp{{ number_format($item['total_harga'], 0, ',', '.') }}</td>
-                            <td>{{ $item['jumlah'] }}</td>
+                            <td>{{ $item['jumlah_stok'] }}</td>
                             <td>{{ $item['produk'] }}</td>
                             <td>{{ $item['terjual'] }}</td>
                             <td>Rp{{ number_format($item['harga'], 0, ',', '.') }}</td>
-                            <td>{{ $item['tanggal_keluar'] }}</td>
+                            <td>{{ \Carbon\Carbon::parse($item['tanggal_keluar'])->format('d/m/Y')}}</td>
                             <td>{{ $item['tanggal_retur'] }}</td>
                             <td>{{ $item['waktu_edar'] }}</td>
-                            <td>
-                                <span class="text-success">{{ $item['status'] }}</span>
-                                <a href="#" style="color: black; float: right;" data-bs-toggle="modal" data-bs-target="#Edittransaksi"><i class="fas fa-angle-right"></i></a>
+                            <td class="text-center">
+                                <span class="{{ $item['status'] == 'closed' ? 'text-danger' : 'text-success' }}">
+                                    {{ ucfirst($item['status']) }}
+                                </span>
+                                <a class="btn btn-sm p-0 m-0" onclick="editTransaksi({{ $item['id'] }})">
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
                             </td>
                         </tr>
                         @empty
@@ -53,8 +60,8 @@
             <button class="btn btn-secondary">Next</button>
         </div>
     </section>
-    {{-- tambah --}}
-    @include('component.TambahTransaksi')
-    {{-- edit --}}
+
     @include('component.EditTransaksi')
+    @include('component.TambahTransaksi')
+
     @endsection

@@ -15,7 +15,7 @@
                         <th>Produk</th>
                         <th>Kontak</th>
                         <th>Email</th>
-                        <th>Aksi</th>
+                        <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -25,9 +25,9 @@
                         <td>{{ $data->produkDisediakan }}</td>
                         <td>{{ $data->nomorTelepon }}</td>
                         <td>{{ $data->email }}</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#Editpemasok">Edit</button>
-                            <button class="btn btn-danger btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#Hapuspemasok">Hapus</button>
+                        <td class="d-flex justify-content-center">
+                            <button class="btn btn-warning btn-sm mx-2" onclick="editPemasok({{ $data->id }})">Edit</button>
+                            <button class="btn btn-danger btn-sm deletePemasok mx-2" data-id="{{$data->id}}" type="button" data-bs-toggle="modal" data-bs-target="#Hapuspemasok">Hapus</button>
                         </td>
                     </tr>
                     @empty

@@ -36,43 +36,51 @@
 <section class="card mt-4 p-4 min-vh-100 d-flex justify-content-between flex-column">
     <div class="card-header d-flex justify-content-between border-0 mb-2">
         <h5 class="align-self-end">Rekap Transaksi</h5>
-        <button class="btn btn-outline-secondary">Download</button>
-    </div>
+        <a href="{{ route('laporan.export') }}" id="downloadBtn">
+            <button class="btn btn-outline-secondary">Download</button>
+        </a>
+            </div>
     <div class="table-responsive flex-grow-1">
         <table class="table">
             <thead>
                 <tr>
                     <th>Total Harga</th>
-                    <th>Jumlah</th>
-                    <th>Produk</th>
-                    <th>Terjual</th>
-                    <th>Harga</th>
-                    <th>Tanggal keluar</th>
-                    <th>Tanggal Retur</th>
-                    <th>Waktu Edar</th>
-                    <th>Status</th>
+                    <th class="text-center">Jumlah</th>
+                    <th class="text-center">Produk</th>
+                    <th class="text-center">Terjual</th>
+                    <th class="text-center">Harga</th>
+                    <th class="text-center">Tanggal keluar</th>
+                    <th class="text-center">Tanggal Retur</th>
+                    <th class="text-center">Waktu Edar</th>
+                    <th class="text-center">Status</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($data as $item)
-                    <tr>
-                        <td>Rp{{ number_format($item['total_harga'], 0, ',', '.') }}</td>
-                        <td>{{ $item['jumlah'] }}</td>
-                        <td>{{ $item['produk'] }}</td>
-                        <td>{{ $item['terjual'] }}</td>
-                        <td>Rp{{ number_format($item['harga'], 0, ',', '.') }}</td>
-                        <td>{{ $item['tanggal_keluar'] }}</td>
-                        <td>{{ $item['tanggal_retur'] }}</td>
-                        <td>{{ $item['waktu_edar'] }}</td>
-                        <td class="{{ $item['status'] === 'Open' ? 'text-success' : 'text-danger' }}">{{ $item['status'] }}</td>
-                    </tr>
-                    @empty
+                    @if($item['status'] === 'closed')
+                        <tr>
+                            <td>{{$item['toko']}}</td>
+                        </tr>
+                        <tr>
+                            <td>Rp{{ number_format($item['total_harga'], 0, ',', '.') }}</td>
+                            <td class="text-center">{{ $item['jumlah_stok'] }}</td>
+                            <td class="text-center">{{ $item['produk'] }}</td>
+                            <td class="text-center">{{ $item['terjual'] }}</td>
+                            <td class="text-center">Rp{{ number_format($item['harga'], 0, ',', '.') }}</td>
+                            <td class="text-center">{{ \Carbon\Carbon::parse($item['tanggal_keluar'])->format('d/m/Y') }}</td>
+                            <td class="text-center">{{ \Carbon\Carbon::parse($item['tanggal_retur'])->format('d/m/Y') }}</td>
+                            <td class="text-center">{{ $item['waktu_edar'] }}</td>
+                            <td class="text-danger text-center">{{ $item['status'] }}</td>
+                        </tr>
+                    @endif
+                @empty
                     <tr><td colspan="9" class="text-center">Tidak ada data</td></tr>
                 @endforelse
                 @for ($i = count($data); $i < 19; $i++)
                     <tr><td colspan="9"></td></tr>
                 @endfor
             </tbody>
+
         </table>
     </div>
     <div class="d-flex justify-content-between">
@@ -81,5 +89,17 @@
         <button class="btn btn-secondary">Next</button>
     </div>
 </section>
-@endsection
+<script>$data = Transaksi::where('status', 'Close')->get();
+    return view('laporan', ['data' => $data]);
+    document.getElementById('downloadBtn').addEventListener('click', function(e) {
+    e.preventDefault(); // Mencegah aksi default, agar bisa memanipulasi pengunduhan
+    window.location.href = e.target.href; // Arahkan ke URL download
 
+    // Setelah download, redirect ke halaman laporan
+    setTimeout(function() {
+        window.location.href = '/laporan'; // URL tujuan setelah download
+    }, 2000); // Tunda beberapa detik agar pengunduhan bisa dimulai terlebih dahulu
+});
+
+    </script>
+@endsection
