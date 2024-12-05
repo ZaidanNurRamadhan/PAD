@@ -36,7 +36,7 @@ body {
     justify-content: space-between;
 }
 .sidebar a {
-    margin-bottom: 10px;
+    padding: 10px 0 10px 0;
     text-decoration: none;
     font-size: 16px;
     color: #333;
@@ -174,12 +174,6 @@ nav a i {
     flex-direction: row; /* Atur arah ke baris */
 }
 
-.table-menipis {
-<<<<<<< HEAD
-<<<<<<< HEAD
-    /* height: calc(100vh - 500px); /* Kurangi sesuai tinggi header/footer */
-   /* overflow-y: auto; */
-}
 
 .vh-min-100 {
     min-height: 100vh;
@@ -316,3 +310,6 @@ canvas
     padding: 8px;
 } */
 
+.monitoring{
+    max-height: 500px;
+}

@@ -35,7 +35,9 @@ class TransaksiSeeder extends Seeder
                 'terjual' => fake()->numberBetween(1, $produk->jumlah),
                 'waktuEdar' => $returDate ? $returDate->diffInDays($transactionDate) : null,
                 'status' => $returDate ? 'closed' : 'open',
+                'toko_id' => 1,  // Pastikan toko_id ada, misalnya ID toko pertama
             ]);
+
 
             $produk->update(['jumlah' => $produk->jumlah - 1]);
         }

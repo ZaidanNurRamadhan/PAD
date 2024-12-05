@@ -21,6 +21,7 @@ class LaporanController extends Controller
         $data = [];
         foreach ($transaksis as $transaksi) {
             $data[] = [
+                'toko' => $transaksi->toko->name ?? 'Toko tidak ditemukan',
                 'id' => $transaksi->id,
                 'produk' => $transaksi->produk->name ?? 'Produk tidak ditemukan',
                 'jumlah_stok' => $transaksi->produk->jumlah ?? 0,

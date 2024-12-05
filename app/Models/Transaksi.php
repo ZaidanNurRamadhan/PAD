@@ -9,13 +9,19 @@ class Transaksi extends Model
 {
     use HasFactory;
     protected $table = 'transaksi';
-
     protected $fillable = [
+        'toko_id',
+        'produk_id',
         'nama_produk',
-        'transactionDate',
         'transactionType',
+        'transactionDate',
+        'returDate',
         'amount',
+        'terjual',
+        'waktuEdar',
+        'status',
     ];
+
 
     protected $casts = [
         'transactionDate' => 'date',
@@ -23,7 +29,7 @@ class Transaksi extends Model
 
     public function produk()
     {
-        return $this->belongsTo(Produk::class, 'produk_id');
+        return $this->belongsTo(Produk::class, 'produk_id', 'id');
     }
 
     public function toko()

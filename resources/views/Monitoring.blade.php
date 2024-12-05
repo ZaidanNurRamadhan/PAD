@@ -18,45 +18,23 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Jika tidak ada data, tampilkan pesan "Tidak ada data yang tersedia" -->
-                    @if (false) <!-- Ganti false dengan kondisi cek data jika perlu -->
-                        <tr>
-                            <td colspan="6" class="text-center">Tidak ada data</td>
-                        </tr>
-                    @else
-                        <tr>
-                            <td>Budi Punya</td>
-                            <td>30</td>
-                            <td>12</td>
-                            <td>Kripik</td>
-                            <td>Minggu</td>
-                            <td>06/10/2024</td>
-                        </tr>
-                        <tr>
-                            <td>Jaya Kemenangan</td>
-                            <td>21</td>
-                            <td>15</td>
-                            <td>Pangpang</td>
-                            <td>Senin</td>
-                            <td>08/12/2024</td>
-                        </tr>
-                        <tr>
-                            <td>Sinar Mas</td>
-                            <td>19</td>
-                            <td>17</td>
-                            <td>Makaron</td>
-                            <td>Rabu</td>
-                            <td>12/08/2024</td>
-                        </tr>
-                        <tr>
-                            <td>Warmin Asep</td>
-                            <td>19</td>
-                            <td>17</td>
-                            <td>Makaron</td>
-                            <td>Jumat</td>
-                            <td>20/10/2024</td>
-                        </tr>
-                    @endif
+                    @forelse ($data as $item)
+                        @if($item['status'] === 'closed')
+                            <tr>
+                                <td>{{$item['nama_toko']}}</td>
+                                <td>{{$item['waktu_edar']}}</td>
+                                <td>{{$item['jumlah']}}</td>
+                                <td>{{$item['kategori']}}</td>
+                                <td>{{$item['hari']}}</td>
+                                <td>{{ \Carbon\Carbon::parse($item['tanggal_keluar'])->format('d/m/Y')}}</td>
+                            </tr>
+                        @endif
+                        @empty
+                            <tr><td colspan="9" class="text-center">Tidak ada data</td></tr>
+                    @endforelse
+                    @for ($i = count($data); $i < 10; $i++)
+                        <tr><td colspan="6"></td></tr>
+                    @endfor
                 </tbody>
             </table>
         </div>

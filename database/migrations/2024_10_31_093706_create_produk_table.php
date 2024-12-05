@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('produk', function (Blueprint $table) {
             $table->id();
             $table->string('name', 255); // Nama produk
-            $table->integer('price'); // Harga produk
-            $table->string('category', 255); // Kategori produk
+            $table->integer('hargaBeli'); // Harga produk
+            $table->integer('hargaJual'); // Harga jual produk
+            $table->integer('jumlah'); // Jumlah produk
+            $table->integer('batasKritis');
             $table->timestamps();
         });
     }
