@@ -1,154 +1,79 @@
 @extends('layout.owner')
 @section('content')
-    <section class="card">
-        <h5>Stok Keseluruhan</h5>
-        <div class="row">
-            <div class="col">
-                <h6>Kategori</h6>
-                <p>14</p>
+<div class="container-fluid">
+    <section class="card p-4">
+        <h3 class="text-center">Stok Keseluruhan</h3>
+        <div class="row mt-4">
+            <div class="col text-center">
+                <h5 style="color: #1570EF" class="fw-semibold">Kategori</h5>
+                <p class="fw-semibold">{{ $produks->groupBy('name')->count() }}</p>
             </div>
-            <div class="col">
-                <h6>Total Produk</h6>
-                <p>868</p>
+            <div class="col text-center">
+                <h5 style="color: #E19133" class="fw-semibold">Total Produk</h5>
+                <p class="fw-semibold">{{ $produks->where('jumlah')->count() }}</p>
             </div>
-            <div class="col">
-                <h6>Produk Menipis</h6>
-                <p>12</p>
+            <div class="col text-center">
+                <h5 style="color: #F36960" class="fw-semibold">Produk Menipis</h5>
+                <p class="fw-semibold">{{ $produks->filter(function ($produk) {
+        return $produk->batasKritis > $produk->jumlah;
+    })->count() }}</p>
             </div>
         </div>
     </section>
-    <section class="card">
+    <section class="card mt-4 p-4 min-vh-100 d-flex justify-content-between flex-column">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h5>Produk</h5>
-            <button class="btn btn-primary">Tambah Produk</button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Tambahproduk">
+                Tambah Produk
+              </button>
         </div>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Produk</th>
-                    <th>Harga Beli</th>
-                    <th>Harga Jual</th>
-                    <th>Stok</th>
-                    <th>Batas Kritis</th>
-                    <th class="text-center">Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Maggi</td>
-                    <td>Rp43000</td>
-                    <td>Rp43000</td>
-                    <td>43 Packets</td>
-                    <td>12 Packets</td>
-                    <td class="justify-content-center d-flex">
-                        <button class="m-2 btn btn-warning btn-sm">Edit</button>
-                        <button class="m-2 btn btn-danger btn-sm">Hapus</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Bru</td>
-                    <td>Rp25700</td>
-                    <td>Rp43000</td>
-                    <td>22 Packets</td>
-                    <td>6 Packets</td>
-                    <td class="justify-content-center d-flex">
-                        <button class="m-2 btn btn-warning btn-sm">Edit</button>
-                        <button class="m-2 btn btn-danger btn-sm">Hapus</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Red Bull</td>
-                    <td>Rp40500</td>
-                    <td>Rp43000</td>
-                    <td>36 Packets</td>
-                    <td>9 Packets</td>
-                    <td class="justify-content-center d-flex">
-                        <button class="m-2 btn btn-warning btn-sm">Edit</button>
-                        <button class="m-2 btn btn-danger btn-sm">Hapus</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>Bourn Vita</td>
-                    <td>Rp50200</td>
-                    <td>Rp43000</td>
-                    <td>14 Packets</td>
-                    <td>6 Packets</td>
-                    <td class="justify-content-center d-flex">
-                        <button class="m-2 btn btn-warning btn-sm">Edit</button>
-                        <button class="m-2 btn btn-danger btn-sm">Hapus</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td>Horlicks</td>
-                    <td>Rp53000</td>
-                    <td>Rp43000</td>
-                    <td>10 Packets</td>
-                    <td>5 Packets</td>
-                    <td class="justify-content-center d-flex">
-                        <button class="m-2 btn btn-warning btn-sm">Edit</button>
-                        <button class="m-2 btn btn-danger btn-sm">Hapus</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>6</td>
-                    <td>Harpic</td>
-                    <td>Rp60500</td>
-                    <td>Rp43000</td>
-                    <td>8 Packets</td>
-                    <td>5 Packets</td>
-                    <td class="justify-content-center d-flex">
-                        <button class="m-2 btn btn-warning btn-sm">Edit</button>
-                        <button class="m-2 btn btn-danger btn-sm">Hapus</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>7</td>
-                    <td>Ariel</td>
-                    <td>Rp40800</td>
-                    <td>Rp43000</td>
-                    <td>23 Packets</td>
-                    <td>7 Packets</td>
-                    <td class="justify-content-center d-flex">
-                        <button class="m-2 btn btn-warning btn-sm">Edit</button>
-                        <button class="m-2 btn btn-danger btn-sm">Hapus</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>8</td>
-                    <td>Scotch Brite</td>
-                    <td>Rp35900</td>
-                    <td>Rp43000</td>
-                    <td>12 Packets</td>
-                    <td>5 Packets</td>
-                    <td class="justify-content-center d-flex">
-                        <button class="m-2 btn btn-warning btn-sm">Edit</button>
-                        <button class="m-2 btn btn-danger btn-sm">Hapus</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>9</td>
-                    <td>Coca cola</td>
-                    <td>Rp20500</td>
-                    <td>Rp43000</td>
-                    <td>41 Packets</td>
-                    <td>10 Packets</td>
-                    <td class="justify-content-center d-flex">
-                        <button class="m-2 btn btn-warning btn-sm">Edit</button>
-                        <button class="m-2 btn btn-danger btn-sm">Hapus</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div class="table table-responsive flex-grow-1">
+            <table class="table h-100">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Produk</th>
+                        <th>Harga Beli</th>
+                        <th>Harga Jual</th>
+                        <th>Stok</th>
+                        <th>Batas Kritis</th>
+                        <th class="text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="h-100">
+                    @forelse($produks as $produk)
+                        <tr>
+                            <td>{{ $produk['id'] }}</td>
+                            <td>{{ $produk['name'] }}</td>
+                            <td>Rp{{ number_format($produk['hargaBeli'], 0, ',', '.') }}</td>
+                            <td>Rp{{ number_format($produk['hargaJual'], 0, ',', '.') }}</td>
+                            <td>{{ $produk['jumlah'] }}</td>
+                            <td>{{ $produk['batasKritis'] }} Packets</td>
+                            <td class="justify-content-center d-flex">
+                                <button class="m-2 btn btn-warning btn-sm edit-btn" data-bs-toggle="modal" data-bs-target="#Editproduk" data-id="{{ $produk->id }}" data-name="{{ $produk->name }}" data-hbeli="{{ $produk->hargaBeli }}" data-hjual="{{ $produk->hargaJual }}" data-jstok="{{ $produk->jumlah }}" data-astok="{{ $produk->batasKritis }}">Edit</button>
+                                <button class="m-2 btn btn-danger btn-sm deleteProduk" data-id="{{ $produk->id }}" data-bs-toggle="modal" data-bs-target="#Hapusproduk">Hapus</button>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr><td colspan="7" class="text-center">Tidak ada data</td></tr>
+                    @endforelse
+                    @for ($i = count($produks); $i < 19; $i++)
+                        <tr><td colspan="7"></td></tr>
+                    @endfor
+                </tbody>
+            </table>
+        </div>
         <div class="d-flex justify-content-between">
             <button class="btn btn-secondary">Prev</button>
             <span>Page 1 of 10</span>
             <button class="btn btn-secondary">Next</button>
         </div>
     </section>
+</div>
+{{-- tambah --}}
+    @include('component.TambahGudang')
+    {{-- edit --}}
+    @include('component.EditGudang')
+      {{-- hapus --}}
+    @include('component.HapusGudang')
 @endsection

@@ -1,207 +1,59 @@
 @extends('layout.owner')
 @section('content')
-    <section class="table-container">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Pemasok</h2>
-        <button class="btn btn-primary btn-add">Tambah Pemasok</button>
+<section class="table-container d-flex flex-column min-vh-100">
+    <div class="flex-grow-1 d-flex flex-column justify-content-between">
+        <article class="d-flex justify-content-between align-items-center mb-3">
+            <h3>Pemasok</h3>
+            <button class="btn btn-primary btn-add" type="button" data-bs-toggle="modal" data-bs-target="#Tambahpemasok">Tambah Pemasok</button>
+        </article>
+
+        <div class="table-responsive flex-grow-1">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nama</th>
+                        <th>Produk</th>
+                        <th>Kontak</th>
+                        <th>Email</th>
+                        <th class="text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($pemasok as $data)
+                    <tr>
+                        <td>{{ $data->name }}</td>
+                        <td>{{ $data->produkDisediakan }}</td>
+                        <td>{{ $data->nomorTelepon }}</td>
+                        <td>{{ $data->email }}</td>
+                        <td class="d-flex justify-content-center">
+                            <button class="btn btn-warning btn-sm mx-2" onclick="editPemasok({{ $data->id }})">Edit</button>
+                            <button class="btn btn-danger btn-sm deletePemasok mx-2" data-id="{{$data->id}}" type="button" data-bs-toggle="modal" data-bs-target="#Hapuspemasok">Hapus</button>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr><td colspan="5" class="text-center">Tidak ada data</td></tr>
+                    @endforelse
+
+                    {{-- Menambahkan baris kosong dengan border jika data kurang dari 20 --}}
+                    @for ($i = count($pemasok); $i < 19; $i++)
+                    <tr><td colspan="5"></td></tr>
+                    @endfor
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination mt-auto d-flex justify-content-between">
+            <button class="btn btn-secondary">Previous</button>
+            <span>Page 1 of 10</span>
+            <button class="btn btn-secondary">Next</button>
+        </div>
     </div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Nama</th>
-                <th>Produk</th>
-                <th>Kontak</th>
-                <th>Email</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Richard Martin</td>
-                <td>Kit Kat</td>
-                <td>7887744556</td>
-                <td>richard@gmail.com</td>
-                <td>
-                    <button class="btn btn-warning btn-sm">Edit</button>
-                    <button class="btn btn-danger btn-sm">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Tom Homan</td>
-                <td>Maaza</td>
-                <td>9867543638</td>
-                <td>tomhoman@gmail.com</td>
-                <td>
-                    <button class="btn btn-warning btn-sm">Edit</button>
-                    <button class="btn btn-danger btn-sm">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Vaandir</td>
-                <td>Dairy Milk</td>
-                <td>9867545656</td>
-                <td>vaandir@gmail.com</td>
-                <td>
-                    <button class="btn btn-warning btn-sm">Edit</button>
-                    <button class="btn btn-danger btn-sm">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Charin</td>
-                <td>Tomato</td>
-                <td>925745457</td>
-                <td>charin@gmail.com</td>
-                <td>
-                    <button class="btn btn-warning btn-sm">Edit</button>
-                    <button class="btn btn-danger btn-sm">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Hoffman</td>
-                <td>Milk Bikis</td>
-                <td>9367546331</td>
-                <td>hoffman@gmail.com</td>
-                <td>
-                    <button class="btn btn-warning btn-sm">Edit</button>
-                    <button class="btn btn-danger btn-sm">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Fainden Juke</td>
-                <td>Marie Gold</td>
-                <td>9667545982</td>
-                <td>fainden@gmail.com</td>
-                <td>
-                    <button class="btn btn-warning btn-sm">Edit</button>
-                    <button class="btn btn-danger btn-sm">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Martin</td>
-                <td>Saffola</td>
-                <td>9867545457</td>
-                <td>martin@gmail.com</td>
-                <td>
-                    <button class="btn btn-warning btn-sm">Edit</button>
-                    <button class="btn btn-danger btn-sm">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Joe Nike</td>
-                <td>Good day</td>
-                <td>9567545769</td>
-                <td>joenike@gmail.com</td>
-                <td>
-                    <button class="btn btn-warning btn-sm">Edit</button>
-                    <button class="btn btn-danger btn-sm">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Joe Nike</td>
-                <td>Good day</td>
-                <td>9567545769</td>
-                <td>joenike@gmail.com</td>
-                <td>
-                    <button class="btn btn-warning btn-sm">Edit</button>
-                    <button class="btn btn-danger btn-sm">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Joe Nike</td>
-                <td>Good day</td>
-                <td>9567545769</td>
-                <td>joenike@gmail.com</td>
-                <td>
-                    <button class="btn btn-warning btn-sm">Edit</button>
-                    <button class="btn btn-danger btn-sm">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Joe Nike</td>
-                <td>Good day</td>
-                <td>9567545769</td>
-                <td>joenike@gmail.com</td>
-                <td>
-                    <button class="btn btn-warning btn-sm">Edit</button>
-                    <button class="btn btn-danger btn-sm">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Joe Nike</td>
-                <td>Good day</td>
-                <td>9567545769</td>
-                <td>joenike@gmail.com</td>
-                <td>
-                    <button class="btn btn-warning btn-sm">Edit</button>
-                    <button class="btn btn-danger btn-sm">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Joe Nike</td>
-                <td>Good day</td>
-                <td>9567545769</td>
-                <td>joenike@gmail.com</td>
-                <td>
-                    <button class="btn btn-warning btn-sm">Edit</button>
-                    <button class="btn btn-danger btn-sm">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Joe Nike</td>
-                <td>Good day</td>
-                <td>9567545769</td>
-                <td>joenike@gmail.com</td>
-                <td>
-                    <button class="btn btn-warning btn-sm">Edit</button>
-                    <button class="btn btn-danger btn-sm">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Joe Nike</td>
-                <td>Good day</td>
-                <td>9567545769</td>
-                <td>joenike@gmail.com</td>
-                <td>
-                    <button class="btn btn-warning btn-sm">Edit</button>
-                    <button class="btn btn-danger btn-sm">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Joe Nike</td>
-                <td>Good day</td>
-                <td>9567545769</td>
-                <td>joenike@gmail.com</td>
-                <td>
-                    <button class="btn btn-warning btn-sm">Edit</button>
-                    <button class="btn btn-danger btn-sm">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Joe Nike</td>
-                <td>Good day</td>
-                <td>9567545769</td>
-                <td>joenike@gmail.com</td>
-                <td>
-                    <button class="btn btn-warning btn-sm">Edit</button>
-                    <button class="btn btn-danger btn-sm">Hapus</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Joe Nike</td>
-                <td>Good day</td>
-                <td>9567545769</td>
-                <td>joenike@gmail.com</td>
-                <td>
-                    <button class="btn btn-warning btn-sm">Edit</button>
-                    <button class="btn btn-danger btn-sm">Hapus</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <div class="pagination">
-        <button class="btn btn-secondary">Previous</button>
-        <span>Page 1 of 10</span>
-        <button class="btn btn-secondary">Next</button>
-    </div>
-    </section>
+</section>
+
+{{-- hapus --}}
+@include('component.HapusPemasok')
+{{-- tambah --}}
+@include('component.TambahPemasok')
+{{-- edit --}}
+@include('component.EditPemasok')
 @endsection
