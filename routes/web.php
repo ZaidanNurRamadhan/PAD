@@ -30,7 +30,7 @@ Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/lupa-password',[LoginController::class, 'lupa_password'])->name('lupa-password');
-Route::post('/lupa-password-aksi',[LoginController::class, 'upa_password_aksi'])->name('lupa-password-aksi');
+Route::post('/lupa-password-aksi',[LoginController::class, 'lupa_password_aksi'])->name('lupa-password-aksi');
 
 
 Route::middleware('auth')->group(function () {

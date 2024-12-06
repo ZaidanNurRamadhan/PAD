@@ -138,9 +138,9 @@ public function update(Request $request, $id)
         'status' => $status,
     ]);
 
-    // if (auth()->user()->role == 'owner') {
-    //     return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil diperbarui.');
-    // }
+    if (auth()->user()->role == 'owner') {
+        return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil diperbarui.');
+    }
 
     return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil diperbarui.');
 }
