@@ -73,7 +73,6 @@
             </thead>
             <tbody>
                 @forelse($data as $item)
-<<<<<<< HEAD
                     @if($item['status'] === 'closed')
                         <tr>
                             <td>{{$item['toko']}}</td>
@@ -91,20 +90,6 @@
                         </tr>
                     @endif
                 @empty
-=======
-                    <tr>
-                        <td>Rp{{ number_format($item['total_harga'], 0, ',', '.') }}</td>
-                        <td>{{ $item['jumlah'] }}</td>
-                        <td>{{ $item['produk'] }}</td>
-                        <td>{{ $item['terjual'] }}</td>
-                        <td>Rp{{ number_format($item['harga'], 0, ',', '.') }}</td>
-                        <td>{{ $item['tanggal_keluar'] }}</td>
-                        <td>{{ $item['tanggal_retur'] }}</td>
-                        <td>{{ $item['waktu_edar'] }}</td>
-                        <td class="{{ $item['status'] === 'Open' ? 'text-success' : 'text-danger' }}">{{ $item['status'] }}</td>
-                    </tr>
-                    @empty
->>>>>>> ae4c336cde000dadff925cae72fa57e64d33eaaa
                     <tr><td colspan="9" class="text-center">Tidak ada data</td></tr>
                 @endforelse
                 @for ($i = count($data); $i < 19; $i++)
@@ -120,7 +105,6 @@
         <button class="btn btn-secondary">Next</button>
     </div>
 </section>
-<<<<<<< HEAD
 <script>$data = Transaksi::where('status', 'Close')->get();
     return view('laporan', ['data' => $data]);
     document.getElementById('downloadBtn').addEventListener('click', function(e) {
@@ -135,6 +119,3 @@
 
     </script>
 @endsection
-=======
-@endsection
->>>>>>> ae4c336cde000dadff925cae72fa57e64d33eaaa
