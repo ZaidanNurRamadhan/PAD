@@ -10,9 +10,10 @@ class Pemasok extends Model
     use HasFactory;
     protected $table = 'pemasok';
     protected $fillable = [
+        'id',
         'name',
-        'produkDisediakan', 
-        'nomorTelepon',      
+        'produkDisediakan',
+        'nomorTelepon',
         'email',
     ];
 

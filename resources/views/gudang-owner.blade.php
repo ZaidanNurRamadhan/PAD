@@ -6,15 +6,17 @@
         <div class="row mt-4">
             <div class="col text-center">
                 <h5 style="color: #1570EF" class="fw-semibold">Kategori</h5>
-                <p class="fw-semibold">14</p>
+                <p class="fw-semibold">{{ $produks->groupBy('name')->count() }}</p>
             </div>
             <div class="col text-center">
                 <h5 style="color: #E19133" class="fw-semibold">Total Produk</h5>
-                <p class="fw-semibold">858</p>
+                <p class="fw-semibold">{{ $produks->where('jumlah')->count() }}</p>
             </div>
             <div class="col text-center">
                 <h5 style="color: #F36960" class="fw-semibold">Produk Menipis</h5>
-                <p class="fw-semibold">12</p>
+                <p class="fw-semibold">{{ $produks->filter(function ($produk) {
+        return $produk->batasKritis > $produk->jumlah;
+    })->count() }}</p>
             </div>
         </div>
     </section>
@@ -39,23 +41,23 @@
                     </tr>
                 </thead>
                 <tbody class="h-100">
-                    @forelse($data as $produk)
+                    @forelse($produks as $produk)
                         <tr>
                             <td>{{ $produk['id'] }}</td>
                             <td>{{ $produk['name'] }}</td>
-                            <td>Rp{{ number_format($produk['harga_beli'], 0, ',', '.') }}</td>
-                            <td>Rp{{ number_format($produk['harga_jual'], 0, ',', '.') }}</td>
-                            <td>{{ $produk['stok'] }}</td>
-                            <td>{{ $produk['batas_kritis'] }} Packets</td>
+                            <td>Rp{{ number_format($produk['hargaBeli'], 0, ',', '.') }}</td>
+                            <td>Rp{{ number_format($produk['hargaJual'], 0, ',', '.') }}</td>
+                            <td>{{ $produk['jumlah'] }}</td>
+                            <td>{{ $produk['batasKritis'] }} Packets</td>
                             <td class="justify-content-center d-flex">
-                                <button class="m-2 btn btn-warning btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#Edit">Edit</button>
-                                <button class="m-2 btn btn-danger btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#Hapusproduk">Hapus</button>
+                                <button class="m-2 btn btn-warning btn-sm edit-btn" data-bs-toggle="modal" data-bs-target="#Editproduk" data-id="{{ $produk->id }}" data-name="{{ $produk->name }}" data-hbeli="{{ $produk->hargaBeli }}" data-hjual="{{ $produk->hargaJual }}" data-jstok="{{ $produk->jumlah }}" data-astok="{{ $produk->batasKritis }}">Edit</button>
+                                <button class="m-2 btn btn-danger btn-sm deleteProduk" data-id="{{ $produk->id }}" data-bs-toggle="modal" data-bs-target="#Hapusproduk">Hapus</button>
                             </td>
                         </tr>
                         @empty
                         <tr><td colspan="7" class="text-center">Tidak ada data</td></tr>
                     @endforelse
-                    @for ($i = count($data); $i < 19; $i++)
+                    @for ($i = count($produks); $i < 19; $i++)
                         <tr><td colspan="7"></td></tr>
                     @endfor
                 </tbody>
@@ -68,7 +70,7 @@
         </div>
     </section>
 </div>
-    {{-- tambah --}}
+{{-- tambah --}}
     @include('component.TambahGudang')
     {{-- edit --}}
     @include('component.EditGudang')

@@ -22,8 +22,8 @@ class ProdukSeeder extends Seeder
                 'name' => fake()->word(),
                 'hargaBeli' => $hargaBeli,
                 'hargaJual' => $hargaJual,
-                'category' => fake()->randomElement(['Kategori 1', 'Kategori 2', 'Kategori 3']),
                 'jumlah' => fake()->numberBetween(1, 100),
+                'batasKritis' => fake()->numberBetween(5,20)
             ]);
         }
     }

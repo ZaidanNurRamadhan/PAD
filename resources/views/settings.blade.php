@@ -21,10 +21,21 @@
                             <tr>
                                 <td>{{ $employee['name'] }}</td>
                                 <td>{{ $employee['contact'] }}</td>
-                                <td>{{ $employee['username'] }}</td>
+                                <td>{{ $employee['email'] }}</td>
                                 <td class="d-flex justify-content-center">
-                                    <button class="btn btn-warning btn-sm mx-2" type="button" data-bs-toggle="modal" data-bs-target="#Editkaryawan">Edit</button>
-                                    <button class="btn btn-danger btn-sm mx-2" type="button" data-bs-toggle="modal" data-bs-target="#Hapuskaryawan">Hapus</button>
+                                    <!-- Tombol Edit -->
+                                    <button class="btn btn-warning btn-sm mx-2"
+                                        type="button"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#Editkaryawan"
+                                        data-id="{{ $employee['id'] }}"
+                                        data-name="{{ $employee['name'] }}"
+                                        data-contact="{{ $employee['contact'] }}"
+                                        data-username="{{ $employee['email'] }}">
+                                        Edit
+                                    </button>
+                                    <!-- Tombol Hapus -->
+                                    <button class="btn btn-danger btn-sm mx-2 deleteKaryawan" type="button" data-id="{{ $employee['id'] }}" data-bs-toggle="modal" data-bs-target="#Hapuskaryawan">Hapus</button>
                                 </td>
                             </tr>
                         @endforeach
@@ -46,4 +57,10 @@
             <button class="btn btn-secondary">Next</button>
         </div>
     </section>
+    {{-- tambah --}}
+    @include('component.TambahKaryawan')
+      {{-- edit --}}
+      @include('component.EditKaryawan')
+      {{-- hapus --}}
+      @include('component.HapusKaryawan')
 @endsection

@@ -36,9 +36,9 @@ class PemasokController extends Controller
             'nomorTelepon' => 'required|numeric',
             'email' => 'required|email',
         ]);
-    
-        $pemasok = Pemasok::create($request->all());
-        return response()->json($pemasok);
+        Pemasok::create($request->all());
+        // return response()->json($pemasok);
+        return redirect()->route('pemasok')->with('success','data telah tambah');
     }
 
     /**
@@ -52,16 +52,13 @@ class PemasokController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
         $pemasok = Pemasok::findOrFail($id);
-        return view('pemasok.edit', compact('pemasok'));
+        return response()->json($pemasok);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
         $request->validate([
             'name' => 'required',
@@ -69,20 +66,25 @@ class PemasokController extends Controller
             'nomorTelepon' => 'required|numeric',
             'email' => 'required|email',
         ]);
-    
+
         $pemasok = Pemasok::findOrFail($id);
         $pemasok->update($request->all());
-        return response()->json($pemasok);
+        return redirect()->route('pemasok')->with('success', 'Pemasok berhasil diperbarui.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
+        // Mencari pemasok berdasarkan ID
         $pemasok = Pemasok::findOrFail($id);
+
+        // Menghapus pemasok
         $pemasok->delete();
 
-        return response()->json(['success' => true]);
+        // Kembali ke halaman pemasok, tanpa menggunakan alert
+        return redirect()->route('pemasok')->with('success', 'pemasok berhasil dihapus!');
     }
+
 }

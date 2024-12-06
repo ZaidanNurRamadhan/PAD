@@ -26,16 +26,20 @@ class TransaksiSeeder extends Seeder
             $transactionDate = Carbon::now()->subDays(fake()->numberBetween(1, 30));
             $returDate = (clone $transactionDate)->addDays(fake()->numberBetween(1, 7));
             $produk = $produkList->random();
+            $jumlahDibeli = fake()->numberBetween(1,$produk->jumlah);
 
             Transaksi::create([
                 'produk_id' => $produk->id,
                 'transactionDate' => $transactionDate,
                 'returDate' => fake()->boolean(70) ? $returDate : null,
-                'amount' => $produk->hargaJual,
-                'terjual' => fake()->numberBetween(1, $produk->jumlah),
+                'harga' => $produk->hargaJual,
+                'jumlahDibeli' => $jumlahDibeli,
+                'terjual' => fake()->numberBetween(1, $jumlahDibeli),
                 'waktuEdar' => $returDate ? $returDate->diffInDays($transactionDate) : null,
                 'status' => $returDate ? 'closed' : 'open',
+                'toko_id' => 1,  // Pastikan toko_id ada, misalnya ID toko pertama
             ]);
+
 
             $produk->update(['jumlah' => $produk->jumlah - 1]);
         }

@@ -3,16 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Reset Password</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="{{asset('css/form.css')}}">
+    <style>
+        html,body{
+            height: 100%;
+            margin: 0;
+            font-family: "inter", sans-serif
+        }
+        img{
+            width: 372px;
+            height: 372px;
+        }
+        main{
+            min-height: 100vh;
+        }
+        input,button{
+            width: 100%;
+        }
+        .icon-login{
+            width: 100px;
+            height: 100px;
+        }
+        .login-form{
+            width: 400px;
+        }
+        @media (max-width: 768px) {
+            aside{
+                display: none;
+            }
+            .logo-utama {
+                display: none;
+            }
+            section{
+                width: 100%;
+            }
+            .container {
+                justify-content: center;
+            }
+            main{
+                flex: 1;
+            }
+        }
+        @media (max-width: 1023px) {
+            aside{
+                display: none;
+            }
+            .logo-utama {
+                display: none;
+            }
+            section{
+                width: 100%;
+            }
+            .container {
+                justify-content: center;
+            }
+            main{
+                flex: 1;
+            }
+        }
+    </style>
 </head>
 <body>
-    @include('component.notifikasi')
     <main class="container-fluid d-flex align-items-center">
         <div class="row flex-fill">
             <aside class="col-xl-6 col-md-6 d-flex justify-content-center align-items-center">
@@ -30,14 +85,10 @@
                         <label class="m-0">Username</label>
                         <input type="text" name="name" class="form-control" id="name" placeholder="Masukkan Username" required>
                     </div>
-                    <div>
+                    <div class="mb-3">
                         <label class="m-0">Password</label>
-                        <div class="d-flex">
-                            <input type="password" name="password" class="form-control" id="password" placeholder="Masukkan Password" required>
-                            {{-- <span id="togglePassword" class="fas fa-eye toggle-password align-self-center"></span> --}}
-                        </div>
+                        <input type="password" name="password" class="form-control" id="password" placeholder="Masukkan Password" required>
                     </div>
-                    <a href="{{route('password.forgot')}}" class="mb-2 text-decoration-none float-end">Lupa password?</a>
                     <button type="submit" class="btn btn-primary w-100">Login</button>
                 </form>
             </section>

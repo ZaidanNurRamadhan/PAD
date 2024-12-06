@@ -4,15 +4,17 @@
         <header class="modal-header">
           <h1 class="modal-title fs-5" id="staticBackdropLabel">Tambah Karyawan</h1>
         </header>
-        <form action="" method="post">
-            <article class="modal-body">
-                <p>Anda yakin ingin menghapus toko ini?</p>
+        <form id="deleteTokoForm" method="post">
+            @csrf
+            @method('DELETE')
+            <article class="modal-body justify-content-center">
+                Anda yakin ingin menghapus toko ini?
             </article>
+            <footer class="modal-footer m-0 justify-content-center">
+                <button type="button" style="width: 100px;" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="submit" style="width: 100px;" class="btn btn-danger">Ya</button>
+              </footer>
         </form>
-        <footer class="modal-footer">
-          <button type="button" style="width: 100px;" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-          <button type="button" style="width: 100px;" class="btn btn-danger">Ya</button>
-        </footer>
        </main>
     </div>
 </section>
