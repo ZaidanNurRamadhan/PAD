@@ -22,7 +22,7 @@ return new class extends Migration
             $table->date('transactionDate'); // Tanggal transaksi
             $table->date('returDate')->nullable(); // Tanggal pengembalian
             $table->integer('harga')->nullable(); // Harga barang
-            $table->integer('jumlahDibeli')->nullable();//jumlah dibeli
+            $table->integer('jumlahDibeli');//jumlah dibeli
             $table->integer('terjual'); // Jumlah terjual
             $table->integer('waktuEdar')->nullable(); // Waktu edar
             $table->enum('status', ['open', 'closed']); // Status transaksi

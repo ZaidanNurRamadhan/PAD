@@ -76,14 +76,14 @@ class TransaksiController extends Controller
         ]);
 
         // Mengupdate jumlah produk setelah transaksi
-        $produk->update(['jumlah' => $produk->jumlah - $request->terjual, 0]);
+        $produk->update(['jumlah' => $produk->jumlah - $request->terjual]);
 
         // Redirect berdasarkan role pengguna
-        if (auth()->user()->role == 'owner') {
-            return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil ditambahkan.');
+        if (auth()->user()->role == 'karyawan') {
+            return redirect()->route('transaksi-karyawan')->with('success', 'Transaksi berhasil ditambahkan.');
         }
 
-        return redirect()->route('transaksi-karyawan')->with('success', 'Transaksi berhasil ditambahkan.');
+        return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil ditambahkan.');
     }
 
 public function update(Request $request, $id)
@@ -105,7 +105,7 @@ public function update(Request $request, $id)
     $toko = Toko::findOrFail($request->toko_id);
 
     // Menghitung selisih terjual untuk mengelola stok
-    $selisihTerjual = $request->terjual - $transaksi->terjual;
+    $selisihTerjual = $request->jumlahDibeli - $transaksi->terjual;
 
     // Cek apakah stok mencukupi
     if ($selisihTerjual > 0 && $produk->jumlah < $selisihTerjual) {
@@ -138,11 +138,11 @@ public function update(Request $request, $id)
         'status' => $status,
     ]);
 
-    if (auth()->user()->role == 'owner') {
-        return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil diperbarui.');
-    }
+    // if (auth()->user()->role == 'owner') {
+    //     return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil diperbarui.');
+    // }
 
-    return redirect()->route('transaksi-karyawan')->with('success', 'Transaksi berhasil diperbarui.');
+    return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil diperbarui.');
 }
 
 public function edit($id)
