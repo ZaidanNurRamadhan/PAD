@@ -14,7 +14,7 @@ class DashboardController extends Controller
     {
         $data = $this->getMonitoringData();
         $transaksiData = Transaksi::with(['toko', 'produk'])
-            ->select('toko_id', 'created_at', 'transactionDate', 'amount', 'terjual')
+            ->select('toko_id', 'created_at', 'transactionDate', 'harga', 'terjual')
             ->get();
 
         $produkMenipis = Produk::where('jumlah', '<', 20)->get();

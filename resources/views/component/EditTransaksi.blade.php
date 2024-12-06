@@ -33,6 +33,10 @@
                         <input type="text" name="harga" id="harga" class="form-control" style="max-width: 273px;" placeholder="Masukkan harga">
                     </section>
                     <section class="form-group d-flex justify-content-between px-3 mt-4">
+                        <label for="harga">Jumlah</label>
+                        <input type="text" name="jumlahDibeli" id="jumlahDibeli" class="form-control" style="max-width: 273px;" placeholder="Masukkan jumlah">
+                    </section>
+                    <section class="form-group d-flex justify-content-between px-3 mt-4">
                         <label for="terjual">Terjual</label>
                         <input type="text" name="terjual" id="terjual" class="form-control" style="max-width: 273px;" placeholder="Masukkan produk terjual">
                     </section>

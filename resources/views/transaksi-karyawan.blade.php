@@ -27,7 +27,7 @@
                         </tr>
                         <tr>
                             <td>Rp{{ number_format($item['total_harga'], 0, ',', '.') }}</td>
-                            <td>{{ $item['jumlah_stok'] }}</td>
+                            <td>{{ $item['jumlahDibeli'] }}</td>
                             <td>{{ $item['produk'] }}</td>
                             <td>{{ $item['terjual'] }}</td>
                             <td>Rp{{ number_format($item['harga'], 0, ',', '.') }}</td>
