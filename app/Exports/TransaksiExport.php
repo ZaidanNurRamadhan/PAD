@@ -23,9 +23,8 @@ class TransaksiExport implements FromCollection, WithHeadings, WithTitle, WithSt
         return Transaksi::with(['produk', 'toko'])->get()->map(function ($transaksi) {
             return [
                 'ID Transaksi'   => $transaksi->id,
-                'Nama Toko'      => $transaksi->toko ? $transaksi->toko->nama : 'N/A',
+                'Nama Toko'      => $transaksi->toko ? $transaksi->toko->name : 'N/A',
                 'Nama Produk'    => $transaksi->produk ? $transaksi->produk->name : 'N/A',
-                'Tipe Transaksi' => $transaksi->transactionType,
                 'Tanggal Transaksi' => $this->formatDate($transaksi->transactionDate),
                 'Tanggal Retur'  => $this->formatDate($transaksi->returDate),
                 'Jumlah Terjual' => $transaksi->terjual,
@@ -46,10 +45,9 @@ class TransaksiExport implements FromCollection, WithHeadings, WithTitle, WithSt
             'ID Transaksi',
             'Nama Toko',
             'Nama Produk',
-            'Tipe Transaksi',
             'Tanggal Transaksi',
             'Tanggal Retur',
-            'Jumlah Terjual',
+            'Terjual',
             'Waktu Edar',
             'Status',
         ];
@@ -92,8 +90,8 @@ class TransaksiExport implements FromCollection, WithHeadings, WithTitle, WithSt
     public function columnFormats(): array
     {
         return [
-            'E' => 'DD/MM/YYYY',  // Tanggal Transaksi
-            'F' => 'DD/MM/YYYY',  // Tanggal Retur
+            'D' => 'DD/MM/YYYY',  // Tanggal Transaksi
+            'E' => 'DD/MM/YYYY',  // Tanggal Retur
         ];
     }
 

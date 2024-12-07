@@ -28,11 +28,11 @@ class LoginController extends Controller
     public function login(Request $request)
 {
     $credentials = $request->validate([
-        'name' => 'required|string',
+        'email' => 'required|string',
         'password' => 'required|string',
     ]);
 
-    if (Auth::attempt(['name' => $credentials['name'], 'password' => $credentials['password']])) {
+    if (Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password']])) {
         $request->session()->regenerate();
 
         $user = Auth::user();
@@ -46,8 +46,8 @@ class LoginController extends Controller
     }
 
     return back()->withErrors([
-        'name' => 'The provided credentials do not match our records.',
-    ])->onlyInput('name');
+        'email' => 'The provided credentials do not match our records.',
+    ])->onlyInput('email');
 }
 
     public function lupa_password(){

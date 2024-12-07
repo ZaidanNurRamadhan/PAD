@@ -40,7 +40,7 @@ class TransaksiController extends Controller
             'produk_id' => 'required|exists:produk,id',
             'jumlahDibeli' => 'required|numeric',
             'harga' => 'required|numeric',
-            'terjual' => 'required|numeric',
+            'terjual' => 'nullable|numeric',
             'tanggal_keluar' => 'required|date',
             'tanggal_retur' => 'nullable|date',
         ]);
@@ -142,7 +142,7 @@ public function update(Request $request, $id)
         return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil diperbarui.');
     }
 
-    return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil diperbarui.');
+    return redirect()->route('transaksi-karyawan')->with('success', 'Transaksi berhasil diperbarui.');
 }
 
 public function edit($id)

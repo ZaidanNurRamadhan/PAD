@@ -44,7 +44,7 @@
 
                     <section class="form-group d-flex justify-content-between px-3 mt-4">
                         <label for="terjual">Terjual</label>
-                        <input type="number" name="terjual" id="terjual" class="form-control" style="width:60%;" placeholder="Masukkan produk terjual" required>
+                        <input type="number" name="terjual" id="terjual" class="form-control" style="width:60%;" placeholder="Masukkan produk terjual">
                     </section>
 
                     <section class="form-group d-flex justify-content-between px-3 mt-4">

@@ -27,8 +27,8 @@
                         <p class="fw-light">Selamat datang di aplikasi manajemen stok</p>
                     </div>
                     <div class="mb-3">
-                        <label class="m-0">Username</label>
-                        <input type="text" name="name" class="form-control" id="name" placeholder="Masukkan Username" required>
+                        <label class="m-0">Email</label>
+                        <input type="email" name="email" class="form-control" id="email" placeholder="Masukkan Email" required>
                     </div>
                     <div>
                         <label class="m-0">Password</label>
