@@ -61,5 +61,4 @@
     @include('component.EditManajemenToko')
     {{-- hapus --}}
     @include('component.HapusManajemenToko')
-
 @endsection
