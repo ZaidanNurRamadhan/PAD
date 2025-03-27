@@ -32,12 +32,15 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('/lupa-password',[LoginController::class, 'lupa_password'])->name('lupa-password');
 Route::post('/lupa-password-aksi',[LoginController::class, 'lupa_password_aksi'])->name('lupa-password-aksi');
 
+Route::get('/search', [SearchController::class, 'search'])->name('search');
+
 
 Route::middleware('auth')->group(function () {
     Route::middleware('role:owner')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
         Route::get('export-transaksi', action: [TransaksiController::class, 'export'])->name('laporan.export');
+        Route::get('export-pdf', [LaporanController::class, 'exportPdf'])->name('laporan.export-pdf');
         Route::resource('monitoring',MonitoringController::class);
 
         Route::get('/gudang-owner', [GudangController::class, 'index'])->name('gudang-owner');
