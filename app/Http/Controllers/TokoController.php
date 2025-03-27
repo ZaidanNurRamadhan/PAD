@@ -60,7 +60,7 @@ class TokoController extends Controller
      */
     public function edit(Toko $toko)
     {
-        return view('edit-toko', compact('toko'));
+        return view('manajemen-toko', compact('toko'));
     }
 
     /**
