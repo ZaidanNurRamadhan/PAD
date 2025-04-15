@@ -1,64 +1,75 @@
 <?php
 
-namespace App\Http\Controllers\auth;
+namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\ResetPassword;
 use App\Models\User;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
-
     /**
-     * Display the login form.
-     */
-    public function index()
-    {
-        return view('login');
-    }
-   /**
-     * Handle the login request and redirect based on role.
+     * Handle login request via API
      */
     public function login(Request $request)
-{
-    $credentials = $request->validate([
-        'email' => 'required|string',
-        'password' => 'required|string',
-    ]);
+    {
+        $request->validate([
+            'email' => 'required|string|email',
+            'password' => 'required|string',
+        ]);
 
-    if (Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password']])) {
-        $request->session()->regenerate();
+        if (!Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid credentials'
+            ], 401);
+        }
 
         $user = Auth::user();
 
-        // Redirect berdasarkan peran pengguna
-        if ($user->role === 'owner') {
-            return redirect()->route('dashboard');
-        } elseif ($user->role === 'karyawan') {
-            return redirect()->route('transaksi-karyawan');
-        }
+        // Hapus token lama sebelum membuat yang baru (opsional)
+        $user->tokens()->delete();
+
+        $token = $user->createToken('authToken')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Login successful',
+            'token' => $token,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role // Pastikan role ada dalam model User
+            ]
+        ], 200);
     }
 
-    return back()->withErrors([
-        'email' => 'The provided credentials do not match our records.',
-    ])->onlyInput('email');
-}
-
-    public function lupa_password(){
-        return view('lupa-password');
-    }
-
-    public function showForgotPasswordForm()
+    /**
+     * Logout API
+     */
+    public function logout(Request $request)
     {
-        return view('lupa-password');
+        // Menghapus semua token user saat logout
+        $user = Auth::guard('sanctum')->user();
+        if ($user) {
+            $user->tokens()->delete();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Logout successful'
+        ], 200);
     }
 
+    /**
+     * Handle Forgot Password Request via API
+     */
     public function handleForgotPassword(Request $request)
     {
         $request->validate([
@@ -66,68 +77,77 @@ class LoginController extends Controller
         ]);
 
         $user = User::where('email', $request->email)->first();
-        $token = Str::random(10);
+        $token = Str::random(64);
 
         DB::table('password_reset_tokens')->updateOrInsert(
             ['email' => $user->email],
-            ['token' => $token, 'created_at' => now()]
+            ['token' => Hash::make($token), 'created_at' => now()]
         );
 
+        // Kirim email dengan token reset
         Mail::to($user->email)->send(new \App\Mail\PasswordResetMail($token));
-        return redirect()->route('password.token.form', ['email' => $user->email, 'token' => $token])->with('status' , 'Kami telah mengirimkan kode verifikasi reset password ke email Anda!');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password reset token has been sent to your email'
+        ], 200);
     }
 
-    public function showTokenForm($email, $token)
-    {
-        return view('token-lupa-password', compact('email', 'token'));
-    }
-
+    /**
+     * Validate Token via API
+     */
     public function handleTokenValidation(Request $request)
     {
         $request->validate([
+            'email' => 'required|email',
             'token' => 'required',
         ]);
 
         $record = DB::table('password_reset_tokens')
-                    ->where('email', $request->email)
-                    ->where('token', $request->token)
-                    ->first();
+            ->where('email', $request->email)
+            ->first();
 
-        if (!$record || now()->diffInMinutes($record->created_at) > 10) {
-            return redirect()->back()->withErrors(['token' => 'Token tidak valid atau sudah kedaluwarsa']);
+        if (!$record || !Hash::check($request->token, $record->token) || now()->diffInMinutes($record->created_at) > 10) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Token is invalid or expired'
+            ], 400);
         }
 
-        session(['reset_email' => $request->email]);
-
-        return redirect()->route('password.reset');
+        return response()->json([
+            'success' => true,
+            'message' => 'Token is valid'
+        ], 200);
     }
 
-    public function showResetPasswordForm()
-    {
-        $email = session('reset_email');
-        return view('reset-password',compact('email'));
-    }
-
+    /**
+     * Reset Password via API
+     */
     public function handleResetPassword(Request $request)
     {
         $request->validate([
+            'email' => 'required|email|exists:users,email',
             'password' => 'required|min:8|confirmed',
         ]);
+
         $user = User::where('email', $request->email)->first();
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        // Hash password baru sebelum menyimpannya
         $user->password = Hash::make($request->password);
         $user->save();
 
+        // Hapus token reset password setelah digunakan
         DB::table('password_reset_tokens')->where('email', $user->email)->delete();
 
-        return redirect()->route('login')->with('status', 'Password berhasil diperbarui!');
-    }
-
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect()->route('login');
+        return response()->json([
+            'success' => true,
+            'message' => 'Password has been reset successfully'
+        ], 200);
     }
 }
