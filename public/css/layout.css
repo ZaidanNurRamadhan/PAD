@@ -6,7 +6,7 @@
     flex-direction: column;
     overflow-y: auto;
 }
-@media only screen and (max-width:1024px){
+@media only screen and (max-width:1440px){
     .sidebar{
         width: 100px;
         align-items: center;
@@ -41,7 +41,7 @@
     }
 }
 
-@media only screen and (min-width:1025px){
+@media only screen and (min-width:1440px){
     .image2{
         display: none;
     }
@@ -55,7 +55,7 @@
 
 }
 
-@media only screen and (max-width:1025px){
+@media only screen and (max-width:1440px){
     .image1{
         display: none;
     }

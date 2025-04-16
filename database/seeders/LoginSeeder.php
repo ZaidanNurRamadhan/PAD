@@ -15,19 +15,19 @@ class LoginSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'name' => 'Owner User',
-            'email' => 'owner@example.com',
-            'contact' => '081234567890',
+            'name' => 'MrRonggo',
+            'email' => 'ronggo@gmail.com',
+            'contact' => '089745612345',
             'role' => 'owner',
-            'password' => Hash::make('password'),
+            'password' => Hash::make('12345678'),
         ]);
 
         User::create([
-            'name' => 'Employee User',
-            'email' => 'employee@example.com',
-            'contact' => '081234567891',
+            'name' => 'Zaidan',
+            'email' => 'zaidan@gmail.com',
+            'contact' => '089663452345',
             'role' => 'karyawan',
-            'password' => Hash::make('password'),
+            'password' => Hash::make('12345678'),
         ]);
     }
 }

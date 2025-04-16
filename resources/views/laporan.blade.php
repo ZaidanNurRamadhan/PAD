@@ -97,17 +97,17 @@
     </section>
 </div>
 
-<script>
-    // Add event listener for the download button
+<script>$data = Transaksi::where('status', 'Close')->get();
+    return view('laporan', ['data' => $data]);
     document.getElementById('downloadBtn').addEventListener('click', function(e) {
-        e.preventDefault(); // Prevent default action
-        window.location.href = e.target.href; // Trigger download
+    e.preventDefault(); // Mencegah aksi default, agar bisa memanipulasi pengunduhan
+    window.location.href = e.target.href; // Arahkan ke URL download
 
-        // After downloading, redirect back to the laporan page
-        setTimeout(function() {
-            window.location.href = '/laporan'; // Redirect to laporan page after download
-        }, 2000); // Delay to ensure download starts first
-    });
-</script>
+    // Setelah download, redirect ke halaman laporan
+    setTimeout(function() {
+        window.location.href = '/laporan'; // URL tujuan setelah download
+    }, 2000); // Tunda beberapa detik agar pengunduhan bisa dimulai terlebih dahulu
+});
 
+    </script>
 @endsection

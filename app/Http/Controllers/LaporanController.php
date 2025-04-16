@@ -10,35 +10,31 @@ class LaporanController extends Controller
 {
     public function index()
     {
-        return $this->getLaporanData();
+        $data = $this->getTransaksiData();
+        return view('laporan', compact('data'));
     }
 
-    private function getLaporanData()
+    private function getTransaksiData()
     {
-        // Fetch all transactions
-        $transaksis = Transaksi::all();
+        $transaksis = Transaksi::with('produk')->get();
 
-        // Prepare data for the view
         $data = [];
         foreach ($transaksis as $transaksi) {
-            // Find the product related to the transaction
-            $produk = Produk::where('id', $transaksi->id)->first(); // Assuming there's a relation between Transaksi and Produk
-
-            if ($produk) { // Check if product exists
-                $data[] = [
-                    'total_harga' => $produk->hargaJual * $transaksi->terjual, // Total price (harga jual * terjual)
-                    'jumlah' => $produk->jumlah, // Jumlah dari tabel produk
-                    'produk' => $produk->name, // Nama produk dari tabel produk
-                    'terjual' => $transaksi->terjual, // Terjual dari tabel transaksi
-                    'harga' => $produk->hargaBeli, // Harga beli dari tabel produk
-                    'tanggal_keluar' => $transaksi->transactionDate, // Tanggal keluar dari tabel transaksi
-                    'tanggal_retur' => $transaksi->returDate, // Tanggal retur dari tabel transaksi
-                    'waktu_edar' => $transaksi->waktuEdar, // Waktu edar dari tabel transaksi
-                    'status' => $transaksi->status, // Status dari tabel transaksi
-                ];
-            }
+            $data[] = [
+                'toko' => $transaksi->toko->name ?? 'Toko tidak ditemukan',
+                'id' => $transaksi->id,
+                'produk' => $transaksi->produk->name ?? 'Produk tidak ditemukan',
+                'jumlah_stok' => $transaksi->produk->jumlah ?? 0,
+                'terjual' => $transaksi->terjual,
+                'total_harga' => $transaksi->amount * $transaksi->terjual,
+                'harga' => $transaksi->amount,
+                'tanggal_keluar' => $transaksi->transactionDate,
+                'tanggal_retur' => $transaksi->returDate,
+                'waktu_edar' => $transaksi->waktuEdar,
+                'status' => $transaksi->status,
+            ];
         }
 
-        return view('laporan', compact('data'));
+        return $data;
     }
 }

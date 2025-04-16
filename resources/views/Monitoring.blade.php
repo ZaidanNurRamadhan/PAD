@@ -32,7 +32,7 @@
                         @empty
                             <tr><td colspan="9" class="text-center">Tidak ada data</td></tr>
                     @endforelse
-                    @for ($i = count($data); $i < 20; $i++)
+                    @for ($i = count($data); $i < 10; $i++)
                         <tr><td colspan="6"></td></tr>
                     @endfor
                 </tbody>

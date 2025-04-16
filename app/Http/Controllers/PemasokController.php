@@ -12,10 +12,8 @@ class PemasokController extends Controller
      */
     public function index()
     {
-        // Ambil data pemasok dari database
         $pemasok = Pemasok::all();
 
-        // Kirim data ke view pemasok.blade.php
         return view('pemasok', compact('pemasok'));
     }
 
@@ -32,15 +30,15 @@ class PemasokController extends Controller
      */
     public function store(Request $request)
     {
-    $request->validate([
-        'name' => 'required|max:255',
-        'produkDisediakan' => 'required|max:255',
-        'nomorTelepon' => 'required|numeric',
-        'email' => 'required|email|max:255',
-    ]);
-
-    Pemasok::create($request->all());
-    return redirect()->route('pemasok')->with('success', 'Pemasok berhasil ditambahkan.');
+        $request->validate([
+            'name' => 'required',
+            'produkDisediakan' => 'required',
+            'nomorTelepon' => 'required|numeric',
+            'email' => 'required|email',
+        ]);
+        Pemasok::create($request->all());
+        // return response()->json($pemasok);
+        return redirect()->route('pemasok')->with('success','data telah tambah');
     }
 
     /**
@@ -54,27 +52,24 @@ class PemasokController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
         $pemasok = Pemasok::findOrFail($id);
-        return view('pemasok.edit', compact('pemasok'));
+        return response()->json($pemasok);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id)
     {
-    $request->validate([
-        'name' => 'required|max:255',
-        'produkDisediakan' => 'required|max:255',
-        'nomorTelepon' => 'required|numeric',
-        'email' => 'required|email|max:255',
-    ]);
+        $request->validate([
+            'name' => 'required',
+            'produkDisediakan' => 'required',
+            'nomorTelepon' => 'required|numeric',
+            'email' => 'required|email',
+        ]);
 
-    $pemasok = Pemasok::findOrFail($id);
-    $pemasok->update($request->all());
-    return redirect()->route('pemasok')->with('success', 'Pemasok berhasil diperbarui.');
+        $pemasok = Pemasok::findOrFail($id);
+        $pemasok->update($request->all());
+        return redirect()->route('pemasok')->with('success', 'Pemasok berhasil diperbarui.');
     }
 
     /**
@@ -82,8 +77,14 @@ class PemasokController extends Controller
      */
     public function destroy($id)
     {
-    $pemasok = Pemasok::findOrFail($id);
-    $pemasok->delete();
-    return redirect()->route('pemasok')->with('success', 'Pemasok berhasil dihapus.');
+        // Mencari pemasok berdasarkan ID
+        $pemasok = Pemasok::findOrFail($id);
+
+        // Menghapus pemasok
+        $pemasok->delete();
+
+        // Kembali ke halaman pemasok, tanpa menggunakan alert
+        return redirect()->route('pemasok')->with('success', 'pemasok berhasil dihapus!');
     }
+
 }

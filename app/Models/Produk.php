@@ -8,7 +8,17 @@ use Illuminate\Database\Eloquent\Model;
 class Produk extends Model
 {
     use HasFactory;
-    
     protected $table = 'produk';
-    protected $fillable = ['name', 'hargaBeli', 'hargaJual', 'category', 'jumlah'];
+    protected $fillable = ['name', 'hargaBeli', 'hargaJual', 'batasKritis', 'jumlah'];
+
+
+    public function stok()
+    {
+        return $this->hasOne(Stok::class, 'product_id');
+    }
+    public function pemasok()
+{
+    return $this->belongsTo(Pemasok::class, 'pemasok_id');
+}
+
 }

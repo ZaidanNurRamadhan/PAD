@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('name', 255); // Nama produk
             $table->integer('hargaBeli'); // Harga produk
             $table->integer('hargaJual'); // Harga jual produk
-            $table->string('category', 255); // Kategori produk
             $table->integer('jumlah'); // Jumlah produk
+            $table->integer('batasKritis');
             $table->timestamps();
         });
     }

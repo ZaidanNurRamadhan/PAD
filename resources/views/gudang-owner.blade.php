@@ -57,7 +57,7 @@
                         @empty
                         <tr><td colspan="7" class="text-center">Tidak ada data</td></tr>
                     @endforelse
-                    @for ($i = count($produks); $i < 10; $i++)
+                    @for ($i = count($produks); $i < 19; $i++)
                         <tr><td colspan="7"></td></tr>
                     @endfor
                 </tbody>

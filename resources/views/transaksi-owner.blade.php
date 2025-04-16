@@ -23,22 +23,22 @@
                 <tbody>
                     @forelse($data as $item)
                         <tr colspan="9">
-                            <td>{{ $item->toko->name}}</td>
+                            <td>{{ $item['toko']}}</td>
                         </tr>
                         <tr>
-                            <td>Rp{{ number_format($item->harga * $item->jumlahDibeli, 0, ',', '.') }}</td>
-                            <td>{{ $item->jumlahDibeli }}</td>
-                            <td>{{ $item->produk->name }}</td>
-                            <td>{{ $item->terjual }}</td>
-                            <td>Rp{{ number_format($item->harga, 0, ',', '.') }}</td>
-                            <td>{{ \Carbon\Carbon::parse($item->transactionDate)->format('d/m/Y')}}</td>
-                            <td>{{ \Carbon\Carbon::parse($item->returDate)->format('d/m/Y')}}</td>
-                            <td>{{ $item->waktuEdar }}</td>
+                            <td>Rp{{ number_format($item['total_harga'], 0, ',', '.') }}</td>
+                            <td>{{ $item['jumlahDibeli'] }}</td>
+                            <td>{{ $item['produk'] }}</td>
+                            <td>{{ $item['terjual'] }}</td>
+                            <td>Rp{{ number_format($item['harga'], 0, ',', '.') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($item['tanggal_keluar'])->format('d/m/Y')}}</td>
+                            <td>{{ $item['tanggal_retur'] }}</td>
+                            <td>{{ $item['waktu_edar'] }}</td>
                             <td class="text-center">
-                                <span class="{{ $item->status == 'closed' ? 'text-danger' : 'text-success' }}">
-                                    {{ ucfirst($item->status) }}
+                                <span class="{{ $item['status'] == 'closed' ? 'text-danger' : 'text-success' }}">
+                                    {{ ucfirst($item['status']) }}
                                 </span>
-                                <a class="btn btn-sm p-0 m-0" onclick="editTransaksi({{ $item->id }})">
+                                <a class="btn btn-sm p-0 m-0" onclick="editTransaksi({{ $item['id'] }})">
                                     <i class="fas fa-angle-right"></i>
                                 </a>
                             </td>

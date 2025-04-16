@@ -29,7 +29,11 @@
                         <div class="d-flex justify-content-between">
                             <label for="email">Email</label>
                             <div class="d-flex flex-column">
+<<<<<<< HEAD
                                 <input type="email" name="email" class="form-control" style="width:100%" placeholder="Masukkan email">
+=======
+                                <input type="email" name="email" class="form-control" style="width:100%" placeholder="Masukkan username">
+>>>>>>> 02498b75d1746540a66a8a5579d7bb8492a6eeda
                                 <small style="font-size: 0.8rem" class="text-danger error-email"></small>
                             </div>
                         </div>
@@ -37,9 +41,14 @@
                     <section class="form-group px-3 mt-4">
                         <div class="d-flex justify-content-between">
                             <label for="password">Password</label>
+<<<<<<< HEAD
                             <div class="d-flex flex-column position-relative">
                                 <input type="password" id="password" name="password" class="form-control" style="width:100%" placeholder="Masukkan password">
                                 <i id="toggle-icon" class="fa fa-eye position-absolute" style="top: 10px; right: 10px;" onclick="togglePassword()"></i>
+=======
+                            <div class="d-flex flex-column">
+                                <input type="text" name="password" class="form-control" style="width:100%" placeholder="Masukkan password">
+>>>>>>> 02498b75d1746540a66a8a5579d7bb8492a6eeda
                                 <small style="font-size: 0.8rem" class="text-danger error-password"></small>
                             </div>
                         </div>
@@ -50,11 +59,18 @@
                     <button type="submit" class="btn btn-primary">Tambah</button>
                 </footer>
             </form>
+<<<<<<< HEAD
             {{-- <div id="success-message" class="d-none alert alert-success" role="alert">Karyawan berhasil ditambahkan!</div> --}}
         </main>
     </div>
 </section>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+=======
+            <div id="success-message" class="d-none alert alert-success" role="alert">Karyawan berhasil ditambahkan!</div>
+        </main>
+    </div>
+</section>
+>>>>>>> 02498b75d1746540a66a8a5579d7bb8492a6eeda
 <script>
     document.getElementById('formTambahKaryawan').addEventListener('submit', function(event) {
         event.preventDefault(); // Mencegah form langsung disubmit
@@ -176,7 +192,4 @@
         });
     });
 });
-
-
-
 </script>

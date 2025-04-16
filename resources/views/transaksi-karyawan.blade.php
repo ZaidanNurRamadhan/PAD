@@ -46,7 +46,6 @@
                         @empty
                             <tr><td colspan="9" class="text-center">Tidak ada data</td></tr>
                         @endforelse
-
                         {{-- Menambahkan baris kosong dengan border jika data kurang dari 20 --}}
                         @for ($i = count($data); $i < 10; $i++)
                             <tr><td colspan="9"></td></tr>

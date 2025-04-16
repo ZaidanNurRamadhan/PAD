@@ -21,7 +21,7 @@ class TokoController extends Controller
      */
     public function create()
     {
-        // This method can be used to show a form for creating a new Toko
+
     }
 
     /**
@@ -30,20 +30,22 @@ class TokoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'tname' => 'required|string|max:255',
-            'pemilikname' => 'required|string|max:255',
-            'alamat' => 'nullable|string|max:255',
-            'kontak' => 'nullable|string|max:255',
+            'name' => 'required|string|max:255',
+            'namaPemilik' => 'required|string|max:255',
+            'address' => 'nullable|string|max:255',
+            'phone_number' => 'nullable|string|max:255',
         ]);
 
-        Toko::create([
-            'name' => $request->tname,
-            'namaPemilik' => $request->pemilikname,
-            'address' => $request->alamat,
-            'phone_number' => $request->kontak,
-        ]);
+        // Toko::create([
+        //     'name' => $request->tname,
+        //     'namaPemilik' => $request->pemilikname,
+        //     'address' => $request->alamat,
+        //     'phone_number' => $request->kontak,
+        // ]);
+        Toko::create(attributes: $request->all());
 
-        return redirect()->route('toko.index')->with('success', 'Toko berhasil ditambahkan.');
+        // return redirect()->route('toko.index')->with('success', 'Toko berhasil ditambahkan.');
+        return redirect()->route('manajemen-toko');
     }
 
     /**
@@ -51,7 +53,6 @@ class TokoController extends Controller
      */
     public function show(Toko $toko)
     {
-        // This method can be used to show a specific Toko
     }
 
     /**
@@ -81,7 +82,7 @@ class TokoController extends Controller
             'phone_number' => $request->kontak,
         ]);
 
-        return redirect()->route('toko.index')->with('success', 'Toko berhasil diperbarui.');
+        return redirect()->route('manajemen-toko')->with('success', 'Toko berhasil diperbarui.');
     }
 
     /**
@@ -90,6 +91,7 @@ class TokoController extends Controller
     public function destroy(Toko $toko)
     {
         $toko->delete();
-        return redirect()->route('toko.index')->with('success', 'Toko berhasil dihapus.');
+        return redirect()->route('manajemen-toko')->with('success', 'Toko berhasil dihapus.');
     }
 }
+

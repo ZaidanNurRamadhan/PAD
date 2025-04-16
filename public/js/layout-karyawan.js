@@ -2,11 +2,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const appElement = document.getElementById('app');
     const routes = JSON.parse(appElement.getAttribute('data-routes'));
 
-    // Logout event menggunakan route login dari routes
-    document.getElementById('confirmLogout').addEventListener('click', function () {
-        window.location.href = routes.login; // Gunakan URL dari data routes
-    });
-
     function toggleMobileNavbar() {
         const sidebar = document.querySelector('.sidebar');
         sidebar.classList.toggle('active');
