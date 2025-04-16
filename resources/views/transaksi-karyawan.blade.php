@@ -5,7 +5,7 @@
             <h3>Transaksi</h3>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Tambahtransaksi" type="button">Tambah Transaksi</button>
         </div>
-        <div class="table-responsive flex-grow-1">
+        <div class="table-responsive flex-grow-1 table-data">
             <table class="table">
                 <thead>
                     <tr>
@@ -53,11 +53,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="pagination">
-            <button class="btn btn-secondary">Previous</button>
-            <span>Page 1 of 10</span>
-            <button class="btn btn-secondary">Next</button>
-        </div>
+        {!! $data->links('pagination::bootstrap-5') !!} <!-- This will generate the pagination links -->
     </section>
 
     @include('component.EditTransaksi')

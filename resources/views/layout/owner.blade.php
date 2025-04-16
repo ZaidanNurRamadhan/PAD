@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/layout.css') }}">
 </head>
-<body>
+<body data-page="{{ request()->segment(1) }}">
     <aside class="sidebar">
         <div>
             <div>
@@ -106,8 +106,14 @@
               </nav>
         </header>
         <section class="header">
-            <input placeholder="Cari produk, laporan, transaksi" type="text" class="search"/>
+            @if(Route::currentRouteName() === 'dashboard') <!-- Gantilah 'dashboard' dengan nama route yang sesuai -->
+                <!-- Search bar di sini -->
+                <div></div>
+                <div class="owner float-end">Owner</div>
+            @else
+                <input type="text" name="search" id="search" placeholder="Search..." class="form-control"/>
             <div class="owner">Owner</div>
+            @endif
         </section>
         <section class="main-content">
             @yield('content')

@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{asset('css/layout.css')}}">
 </head>
-<body>
+<body data-page="{{ request()->segment(1) }}">
     <aside class="sidebar">
         <div>
             <div>
@@ -72,7 +72,7 @@
               </nav>
         </header>
         <section class="header">
-            <input placeholder="Cari produk, laporan, transaksi" type="text"/>
+            <input type="text" name="search" id="search" placeholder="Search..." class="form-control"/>
             <div class="karyawan">Karyawan</div>
         </section>
         <section class="main-content">
@@ -81,7 +81,41 @@
     </main>
     @include('component.ModalKeluar')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="{{asset('js/script.js')}}"></script>
     <script src="{{asset('js/layout-karyawan.js')}}"></script>
+    <script>
+        $(document).on('keyup', '#search', function(e) {
+            e.preventDefault();
+            let search_string = $('#search').val(); // Ambil nilai pencarian
+            let page = $('body').data('page');  // Ambil data halaman aktif (toko, transaksi, laporan)
+
+            console.log('Search String: ', search_string);
+            console.log('Page: ', page);
+
+            if (search_string.length < 1) {
+                return;  // Jangan melakukan pencarian jika input kosong
+            }
+
+            $.ajax({
+                url: "{{ route('search.product') }}",  // URL ke controller untuk pencarian
+                method: 'GET',
+                data: {
+                    search: search_string,
+                    page: page // Kirimkan kata kunci pencarian
+                },
+                success: function(res) {
+                    console.log('Search Results:', res);
+                    // Update hasil pencarian hanya di dalam <tbody> (area yang relevan)
+                    $('.table-data tbody').html(res);  // Update hasil pencarian di dalam tabel
+                    applyDeleteListeners(); // Fungsi untuk menerapkan event listener pada tombol delete
+
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX error: ' + error);  // Debugging jika terjadi kesalahan
+                }
+            });
+        });
+    </script>
 </body>
 </html>

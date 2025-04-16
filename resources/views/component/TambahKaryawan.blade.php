@@ -29,7 +29,7 @@
                         <div class="d-flex justify-content-between">
                             <label for="email">Email</label>
                             <div class="d-flex flex-column">
-                                <input type="email" name="email" class="form-control" style="width:100%" placeholder="Masukkan username">
+                                <input type="email" name="email" class="form-control" style="width:100%" placeholder="Masukkan email">
                                 <small style="font-size: 0.8rem" class="text-danger error-email"></small>
                             </div>
                         </div>
@@ -37,8 +37,8 @@
                     <section class="form-group px-3 mt-4">
                         <div class="d-flex justify-content-between">
                             <label for="password">Password</label>
-                            <div class="d-flex flex-column">
-                                <input type="text" name="password" class="form-control" style="width:100%" placeholder="Masukkan password">
+                            <div class="d-flex flex-column position-relative">
+                                <input type="password" id="password" name="password" class="form-control" style="width:100%" placeholder="Masukkan password">
                                 <small style="font-size: 0.8rem" class="text-danger error-password"></small>
                             </div>
                         </div>

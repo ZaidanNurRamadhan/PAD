@@ -20,16 +20,16 @@
             </div>
         </div>
     </section>
-    <section class="card mt-4 p-4 min-vh-100 d-flex justify-content-between flex-column">
+    <section class="mt-4 p-4 min-vh-100 d-flex justify-content-between flex-column table-container">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h5>Produk</h5>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Tambahproduk">
                 Tambah Produk
               </button>
         </div>
-        <div class="table table-responsive flex-grow-1">
-            <table class="table h-100">
-                <thead>
+        <div class="table table-responsive flex-grow-1 table-data">
+            <table class="table">
+                <thead style="z-index: 1500">
                     <tr>
                         <th>ID</th>
                         <th>Produk</th>
@@ -43,7 +43,7 @@
                 <tbody class="h-100">
                     @forelse($produks as $produk)
                         <tr>
-                            <td>{{ $produk['id'] }}</td>
+                            <td> {{ $index + 1 }} </td>
                             <td>{{ $produk['name'] }}</td>
                             <td>Rp{{ number_format($produk['hargaBeli'], 0, ',', '.') }}</td>
                             <td>Rp{{ number_format($produk['hargaJual'], 0, ',', '.') }}</td>
@@ -63,11 +63,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="d-flex justify-content-between">
-            <button class="btn btn-secondary">Prev</button>
-            <span>Page 1 of 10</span>
-            <button class="btn btn-secondary">Next</button>
-        </div>
+        {!! $produks->links('pagination::bootstrap-5') !!} <!-- This will generate the pagination links -->
     </section>
 </div>
 {{-- tambah --}}

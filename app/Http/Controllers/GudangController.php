@@ -25,7 +25,6 @@ class GudangController extends Controller
         $pemasok = Pemasok::paginate(5);
 
         return view('gudang-owner', compact('produks', 'pemasok'));
-
     }
 
     private function getGudangDataKaryawan()

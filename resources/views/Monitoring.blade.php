@@ -5,7 +5,7 @@
             <div class="fs-4">Monitoring Data Produk</div>
             </div>
         </div>
-        <div class="table-responsive scrollable-table w-100 mt-2">
+        <div class="table-responsive scrollable-table w-100 mt-2 flex-grow-1">
             <table class="table mb-0">
                 <thead>
                     <tr>
@@ -40,10 +40,6 @@
         </div>
 
         <!-- Pagination di pojok bawah -->
-        <div class="pagination">
-            <button class="btn btn-secondary">Previous</button>
-            <span>Page 1 of 10</span>
-            <button class="btn btn-secondary">Next</button>
-        </div>
+            {!! $transaksis->links('pagination::bootstrap-5') !!} <!-- This will generate the pagination links -->
     </section>
 @endsection

@@ -5,7 +5,7 @@
             <h3>Transaksi</h3>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Tambahtransaksi" type="button">Tambah Transaksi</button>
         </div>
-        <div class="table-responsive flex-grow-1">
+        <div class="table-responsive flex-grow-1 table-data">
             <table class="table">
                 <thead>
                     <tr>
@@ -48,17 +48,14 @@
                         @endforelse
 
                         {{-- Menambahkan baris kosong dengan border jika data kurang dari 20 --}}
-                        @for ($i = count($data); $i < 19; $i++)
+                        @for ($i = count($data); $i < 10; $i++)
                             <tr><td colspan="9"></td></tr>
                         @endfor
                 </tbody>
             </table>
         </div>
-        <div class="pagination">
-            <button class="btn btn-secondary">Previous</button>
-            <span>Page 1 of 10</span>
-            <button class="btn btn-secondary">Next</button>
-        </div>
+        <br>
+        {!! $data->links('pagination::bootstrap-5') !!} <!-- This will generate the pagination links -->
     </section>
 
     @include('component.EditTransaksi')
