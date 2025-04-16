@@ -56,7 +56,8 @@ function selectOption(element, value) {
                 document.getElementById('toko_id').value = data.toko_id;
                 document.getElementById('produk_id').value = data.produk_id;
                 document.getElementById('transactionDate').value = transactionDate;
-                document.getElementById('harga').value = data.amount;
+                document.getElementById('jumlahDibeli').value = data.jumlahDibeli;
+                document.getElementById('harga').value = data.harga;
                 document.getElementById('terjual').value = data.terjual;
                 document.getElementById('tanggal_retur').value = data.returDate || '';
                 document.getElementById('editTransaksiForm').action = `/transaksi/${data.id}`;

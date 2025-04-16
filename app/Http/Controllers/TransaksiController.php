@@ -19,16 +19,17 @@ class TransaksiController extends Controller
     public function index()
     {
         $data = $this->getTransaksiData();
-        $tokos = Toko::all();
-        $produks = Produk::all();
+        // dd($data);
+        $tokos = Toko::paginate(5); // tambah paginate
+        $produks = Produk::where('jumlah', '>', 0)->paginate(5); // tambah paginate
         return view('transaksi-owner', compact('data', 'tokos', 'produks'));
     }
 
     public function karyawan()
     {
         $data = $this->getTransaksiData();
-        $tokos = Toko::all();
-        $produks = Produk::all();
+        $tokos = Toko::paginate(5);
+        $produks = Produk::where('jumlah', '>', 0)->paginate(5);
         return view('transaksi-karyawan', compact('data', 'tokos', 'produks'));
     }
 
@@ -38,11 +39,11 @@ class TransaksiController extends Controller
         $request->validate([
             'toko_id' => 'required|exists:toko,id',
             'produk_id' => 'required|exists:produk,id',
-            'jumlahDibeli' => 'required|numeric',
-            'harga' => 'required|numeric',
-            'terjual' => 'required|numeric',
+            'jumlahDibeli' => 'required|numeric|min:1',
+            'harga' => 'required|numeric|min:0',
+            'terjual' => 'nullable|numeric|min:0',
             'tanggal_keluar' => 'required|date',
-            'tanggal_retur' => 'nullable|date',
+            'tanggal_retur' => 'nullable|date|after_or_equal:tanggal_keluar',
         ]);
 
         // Ambil data toko dan produk berdasarkan ID yang diberikan
@@ -50,8 +51,8 @@ class TransaksiController extends Controller
         $produk = Produk::findOrFail($request->produk_id);
 
         // Cek apakah jumlah produk mencukupi untuk transaksi
-        if ($produk->jumlah < $request->terjual) {
-            return back()->withErrors(['terjual' => 'Jumlah produk tidak mencukupi.']);
+        if ($produk->jumlah < $request->jumlahDibeli) {
+            return back()->withErrors(['jumlahDibeli' => 'Jumlah produk tidak mencukupi.']);
         }
 
         // Menghitung waktu edar jika ada tanggal retur
@@ -75,15 +76,26 @@ class TransaksiController extends Controller
             'status' => $status,
         ]);
 
-        // Mengupdate jumlah produk setelah transaksi
-        $produk->update(['jumlah' => $produk->jumlah - $request->terjual]);
+        // // Mengupdate jumlah produk setelah transaksi
+        // // $produk->update(['jumlah' => $produk->jumlah - $request->terjual]);
 
-        // Redirect berdasarkan role pengguna
-        if (auth()->user()->role == 'karyawan') {
-            return redirect()->route('transaksi-karyawan')->with('success', 'Transaksi berhasil ditambahkan.');
+        // // Redirect berdasarkan role pengguna
+        // if (auth()->user()->role == 'karyawan') {
+        //     return redirect()->route('transaksi-karyawan')->with('success', 'Transaksi berhasil ditambahkan.');
+        // }
+
+        // return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil ditambahkan.');
+
+        // Produk yang dibeli langsung dikurangi dari gudang saat status open
+        $produk->update(['jumlah' => $produk->jumlah - $request->jumlahDibeli]);
+
+        // Jika ada retur, produk yang tidak terjual dikembalikan ke gudang
+        if ($request->tanggal_retur) {
+            $produk->update(['jumlah' => $produk->jumlah + ($request->jumlahDibeli - $request->terjual)]);
         }
 
-        return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil ditambahkan.');
+        return redirect()->route(auth()->user()->role == 'karyawan' ? 'transaksi-karyawan' : 'transaksi-owner')
+            ->with('success', 'Transaksi berhasil ditambahkan.');
     }
 
 public function update(Request $request, $id)
@@ -105,17 +117,22 @@ public function update(Request $request, $id)
     $toko = Toko::findOrFail($request->toko_id);
 
     // Menghitung selisih terjual untuk mengelola stok
-    $selisihTerjual = $request->jumlahDibeli - $transaksi->terjual;
+    // $selisihTerjual = $request->jumlahDibeli - $transaksi->terjual;
+    $produk->update(['jumlah' => $produk->jumlah + $transaksi->jumlahDibeli]);
+
 
     // Cek apakah stok mencukupi
-    if ($selisihTerjual > 0 && $produk->jumlah < $selisihTerjual) {
-        return back()->withErrors(['terjual' => 'Jumlah produk tidak mencukupi.']);
+    // if ($selisihTerjual > 0 && $produk->jumlah < $selisihTerjual) {
+    //     return back()->withErrors(['terjual' => 'Jumlah produk tidak mencukupi.']);
+    // }
+    if ($produk->jumlah < $request->jumlahDibeli) {
+        return back()->withErrors(['jumlahDibeli' => 'Jumlah produk tidak mencukupi.']);
     }
 
     // Perbarui stok produk jika ada perubahan
-    if ($selisihTerjual != 0) {
-        $produk->update(['jumlah' => $produk->jumlah - $selisihTerjual]);
-    }
+    // if ($selisihTerjual != 0) {
+    //     $produk->update(['jumlah' => $produk->jumlah - $selisihTerjual]);
+    // }
 
     // Hitung waktu edar jika ada tanggal retur
     $waktuEdar = $request->tanggal_retur
@@ -138,11 +155,19 @@ public function update(Request $request, $id)
         'status' => $status,
     ]);
 
+    $produk->update(['jumlah' => $produk->jumlah - $request->jumlahDibeli]);
+
+    if ($request->tanggal_retur) {
+        $produk->update(['jumlah' => $produk->jumlah + ($request->jumlahDibeli - $request->terjual)]);
+    }
+
     // if (auth()->user()->role == 'owner') {
     //     return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil diperbarui.');
     // }
 
-    return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil diperbarui.');
+    // return redirect()->route('transaksi-karyawan')->with('success', 'Transaksi berhasil diperbarui.');
+    return redirect()->route(auth()->user()->role == 'owner' ? 'transaksi-owner' : 'transaksi-karyawan')
+         ->with('success', 'Transaksi berhasil diperbarui.');
 }
 
 public function edit($id)
@@ -163,7 +188,8 @@ public function edit($id)
 
     private function getTransaksiData()
     {
-    $transaksis = Transaksi::with('produk')->get();
+    // Mengambil transaksi dan mengurutkannya berdasarkan ID secara menurun
+    $transaksis = Transaksi::with('produk', 'toko')->orderBy('id', 'desc')->get();
 
     $data = [];
     foreach ($transaksis as $transaksi) {

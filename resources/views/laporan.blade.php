@@ -9,14 +9,30 @@
             <div class="dropdown align-self-start">
                 <div class="dropdown-selected bg-white" onclick="toggleDropdown(this)">
                     <img src="{{ asset('assets/img/kalender.png') }}" alt="Calendar Icon" class="icon">
-                    <span class="selected-text">Harian</span>
+                    <span class="selected-text">
+                        {{ request('filter') === 'bulanan' ? 'Bulanan' : 'Harian' }}
+                    </span>
                     <span class="arrow">▼</span>
                 </div>
                 <div class="dropdown-options">
-                    <div class="dropdown-option" onclick="selectOption(this,'Harian')">Harian</div>
-                    <div class="dropdown-option mt-2" onclick="selectOption(this,'Bulanan')">Bulanan</div>
+                    <div class="dropdown-option" onclick="applyFilter('harian')">Harian</div>
+                    <div class="dropdown-option mt-2" onclick="applyFilter('bulanan')">Bulanan</div>
                 </div>
             </div>
+
+            <script>
+                function applyFilter(filter) {
+                    const url = new URL(window.location.href); // Ambil URL saat ini
+                    url.searchParams.set('filter', filter); // Set parameter filter
+                    window.location.href = url; // Redirect ke URL baru
+                }
+            
+                function toggleDropdown(element) {
+                    const options = element.nextElementSibling; // Dropdown options
+                    options.classList.toggle('show'); // Toggle visibility
+                }
+            </script>
+            
         </div>
         <div class="row mt-3">
             <div class="col text-center">
@@ -29,7 +45,7 @@
             </div>
             <div class="col text-center">
                 <p style="color: #845EBC" class="fw-semibold">Produk Retur</p>
-                <p>{{ $retur }}</p> <!-- Total retur calculated in the controller -->
+                <p>{{ array_sum(array_column($data, 'jumlahDibeli')) - array_sum(array_column($data, 'terjual')) }}</p>
             </div>
         </div>
     </section>
@@ -96,7 +112,6 @@
             {!! $data->links('pagination::bootstrap-5') !!} <!-- This will generate the pagination links -->
     </section>
 </div>
-
 <script>$data = Transaksi::where('status', 'Close')->get();
     return view('laporan', ['data' => $data]);
     document.getElementById('downloadBtn').addEventListener('click', function(e) {

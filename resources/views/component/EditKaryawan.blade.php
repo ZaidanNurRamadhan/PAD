@@ -10,7 +10,7 @@
                 <article class="modal-body">
                     <section class="form-group d-flex justify-content-between px-3">
                         <label for="karyawan-name">Nama Karyawan</label>
-                        <input id="karyawan-name" type="text" name="name" class="form-control" style="max-width: 273px;" placeholder="Masukkan nama karyawan">
+                        <input id="karyawan-name" type="text" name="kname" class="form-control" style="max-width: 273px;" placeholder="Masukkan nama karyawan">
                     </section>
                     <section class="form-group d-flex justify-content-between px-3 mt-4">
                         <label for="karyawan-contact">Kontak</label>

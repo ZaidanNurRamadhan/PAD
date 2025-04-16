@@ -9,7 +9,7 @@ class Toko extends Model
 {
     use HasFactory;
     protected $table = 'toko';
-    protected $fillable = ['name', 'address', 'phone_number', 'namaPemilik'];
+    protected $fillable = ['name', 'namaPemilik', 'address', 'phone_number'];
 
     public function produk()
     {

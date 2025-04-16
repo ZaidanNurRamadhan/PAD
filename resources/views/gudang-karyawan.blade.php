@@ -20,11 +20,7 @@
             </div>
         </div>
     </section>
-<<<<<<< HEAD
     <section class="table-container mt-4 p-4 min-vh-100 d-flex justify-content-between flex-column">
-=======
-    <section class="card mt-4 p-4 min-vh-100 d-flex justify-content-between flex-column">
->>>>>>> 02498b75d1746540a66a8a5579d7bb8492a6eeda
         <div class="mb-3">
             <h5>Produk</h5>
         </div>
@@ -41,11 +37,7 @@
                     </tr>
                 </thead>
                 <tbody class="h-100">
-<<<<<<< HEAD
                     @forelse($produks as $index => $produk)
-=======
-                    @forelse($produks as $produk)
->>>>>>> 02498b75d1746540a66a8a5579d7bb8492a6eeda
                         <tr>
                             <td>{{ $index + 1 }}</td>
                             <td>{{ $produk['name'] }}</td>
@@ -57,11 +49,7 @@
                         @empty
                         <tr><td colspan="7" class="text-center">Tidak ada data</td></tr>
                     @endforelse
-<<<<<<< HEAD
                     @for ($i = count($produks); $i < 9; $i++)
-=======
-                    @for ($i = count($produks); $i < 19; $i++)
->>>>>>> 02498b75d1746540a66a8a5579d7bb8492a6eeda
                         <tr><td colspan="6"></td></tr>
                     @endfor
                 </tbody>

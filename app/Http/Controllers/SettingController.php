@@ -10,7 +10,7 @@
     {
         public function index()
         {
-            $employees = User::where('role', 'karyawan')->get();
+            $employees = User::where('role', 'karyawan')->orderBy('id', 'desc')->paginate(5);
 
             $faker = Faker::create();
 
@@ -24,7 +24,7 @@
                 ];
             }
 
-            return view('settings', compact('data'));
+            return view('settings', compact('data', 'employees'));
         }
 
         // public function store(Request $request)
@@ -98,8 +98,8 @@
 {
     $request->validate([
         'kname' => 'required|string|max:255',
-        'contact' => 'required|string|max:15',
-        'username' => 'required|string|max:255',
+        'contact' => 'required|string|regex:/^[0-9]{10,15}$/|unique:users,contact',
+        'email' => 'required|string|max:255|unique:users,email',
         'password' => 'nullable|string|min:6',
     ]);
 
@@ -107,7 +107,7 @@
     $karyawan->update([
         'name' => $request->kname,
         'contact' => $request->contact,
-        'username' => $request->username,
+        'email' => $request->email,
         'password' => $request->password ? bcrypt($request->password) : $karyawan->password,
     ]);
 

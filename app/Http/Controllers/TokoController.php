@@ -12,7 +12,8 @@ class TokoController extends Controller
      */
     public function index()
     {
-        $tokoList = Toko::all();
+        // Mengambil semua toko dan mengurutkannya berdasarkan ID secara menurun
+        $tokoList = Toko::orderBy('id', 'desc')->paginate(5);
         return view('manajemen-toko', compact('tokoList'));
     }
 
@@ -44,8 +45,7 @@ class TokoController extends Controller
         // ]);
         Toko::create(attributes: $request->all());
 
-        // return redirect()->route('toko.index')->with('success', 'Toko berhasil ditambahkan.');
-        return redirect()->route('manajemen-toko');
+        return redirect()->route('manajemen-toko')->with('success', 'Toko berhasil ditambahkan.');
     }
 
     /**
@@ -60,7 +60,7 @@ class TokoController extends Controller
      */
     public function edit(Toko $toko)
     {
-        return view('edit-toko', compact('toko'));
+        return view('manajemen-toko', compact('toko'));
     }
 
     /**

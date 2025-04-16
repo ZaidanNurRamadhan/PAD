@@ -16,7 +16,7 @@ class LoginSeeder extends Seeder
     {
         User::create([
             'name' => 'MrRonggo',
-            'email' => 'ronggo@gmail.com',
+            'email' => 'isdeaths7@gmail.com',
             'contact' => '089745612345',
             'role' => 'owner',
             'password' => Hash::make('12345678'),

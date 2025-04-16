@@ -2,18 +2,78 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\MonitoringController;
+use App\Http\Controllers\PemasokController;
+use App\Http\Controllers\TokoController;
+use App\Http\Controllers\GudangController;
+use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SearchController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
+Route::post('/login', [LoginController::class, 'login'])->name('api.login');
+Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth:sanctum')->name('api.logout');
+Route::post('/forgot-password', [LoginController::class, 'handleForgotPassword'])->name('api.password.email');
+Route::post('/validate-token', [LoginController::class, 'handleTokenValidation'])->name('api.password.token');
+Route::post('/reset-password', [LoginController::class, 'handleResetPassword'])->name('api.password.reset');
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware('role:owner')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('api.dashboard');
+        Route::get('/laporan', [LaporanController::class, 'index'])->name('api.laporan');
+        Route::get('/export-transaksi', [TransaksiController::class, 'export'])->name('api.laporan.export');
+        Route::get('/export-pdf', [LaporanController::class, 'exportPdf'])->name('api.laporan.export-pdf');
+
+        // Monitoring Routes
+        Route::get('/monitoring', [MonitoringController::class, 'index']);
+        Route::get('/monitoring/{id}', [MonitoringController::class, 'show']);
+
+        // Gudang Routes
+        Route::get('/gudang', [GudangController::class, 'index']);
+        Route::post('/gudang', [GudangController::class, 'store']);
+        Route::get('/gudang/{id}', [GudangController::class, 'show']);
+        Route::put('/gudang/{id}', [GudangController::class, 'update']);
+        Route::delete('/gudang/{id}', [GudangController::class, 'destroy']);
+
+        // Pemasok Routes
+        Route::get('/pemasok', [PemasokController::class, 'index']);
+        Route::post('/pemasok', [PemasokController::class, 'store']);
+        Route::get('/pemasok/{id}', [PemasokController::class, 'show']);
+        Route::put('/pemasok/{id}', [PemasokController::class, 'update']);
+        Route::delete('/pemasok/{id}', [PemasokController::class, 'destroy']);
+
+        // Toko Routes
+        Route::get('/toko', [TokoController::class, 'index']);
+        Route::post('/toko', [TokoController::class, 'store']);
+        Route::get('/toko/{id}', [TokoController::class, 'show']);
+        Route::put('/toko/{id}', [TokoController::class, 'update']);
+        Route::delete('/toko/{id}', [TokoController::class, 'destroy']);
+
+        // Transaksi Routes
+        Route::get('/transaksi', [TransaksiController::class, 'index']);
+        Route::post('/transaksi', [TransaksiController::class, 'store']);
+        Route::get('/transaksi/{id}', [TransaksiController::class, 'show']);
+        Route::put('/transaksi/{id}', [TransaksiController::class, 'update']);
+
+        // Karyawan Routes (Setting)
+        Route::get('/karyawan', [SettingController::class, 'index']);
+        Route::post('/karyawan', [SettingController::class, 'store']);
+        Route::get('/karyawan/{id}', [SettingController::class, 'show']);
+        Route::put('/karyawan/{id}', [SettingController::class, 'update']);
+        Route::delete('/karyawan/{id}', [SettingController::class, 'destroy']);
+    });
+
+    Route::middleware('role:karyawan')->group(function () {
+        Route::get('/gudang-karyawan', [GudangController::class, 'karyawan'])->name('api.gudang.karyawan');
+        Route::get('/transaksi-karyawan', [TransaksiController::class, 'karyawan'])->name('api.transaksi.karyawan');
+
+        // Transaksi Routes for Karyawan
+        Route::get('/transaksi-karyawan', [TransaksiController::class, 'karyawan'])->name('api.transaksi.karyawan');
+        Route::get('/transaksi', [TransaksiController::class, 'index']);
+        Route::get('/transaksi/{id}', [TransaksiController::class, 'show']);
+    });
 });
+
+Route::get('/search', [SearchController::class, 'search'])->name('api.search');
