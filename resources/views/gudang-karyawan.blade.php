@@ -20,12 +20,16 @@
             </div>
         </div>
     </section>
+<<<<<<< HEAD
+    <section class="table-container mt-4 p-4 min-vh-100 d-flex justify-content-between flex-column">
+=======
     <section class="card mt-4 p-4 min-vh-100 d-flex justify-content-between flex-column">
+>>>>>>> 02498b75d1746540a66a8a5579d7bb8492a6eeda
         <div class="mb-3">
             <h5>Produk</h5>
         </div>
-        <div class="table table-responsive flex-grow-1">
-            <table class="table h-100">
+        <div class="table table-responsive flex-grow-1 table-data">
+            <table class="table">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -37,9 +41,13 @@
                     </tr>
                 </thead>
                 <tbody class="h-100">
+<<<<<<< HEAD
+                    @forelse($produks as $index => $produk)
+=======
                     @forelse($produks as $produk)
+>>>>>>> 02498b75d1746540a66a8a5579d7bb8492a6eeda
                         <tr>
-                            <td>{{ $produk['id'] }}</td>
+                            <td>{{ $index + 1 }}</td>
                             <td>{{ $produk['name'] }}</td>
                             <td>Rp{{ number_format($produk['hargaBeli'], 0, ',', '.') }}</td>
                             <td>Rp{{ number_format($produk['hargaJual'], 0, ',', '.') }}</td>
@@ -49,17 +57,17 @@
                         @empty
                         <tr><td colspan="7" class="text-center">Tidak ada data</td></tr>
                     @endforelse
+<<<<<<< HEAD
+                    @for ($i = count($produks); $i < 9; $i++)
+=======
                     @for ($i = count($produks); $i < 19; $i++)
+>>>>>>> 02498b75d1746540a66a8a5579d7bb8492a6eeda
                         <tr><td colspan="6"></td></tr>
                     @endfor
                 </tbody>
             </table>
         </div>
-        <div class="d-flex justify-content-between">
-            <button class="btn btn-secondary">Prev</button>
-            <span>Page 1 of 10</span>
-            <button class="btn btn-secondary">Next</button>
-        </div>
+        {!! $produks->links('pagination::bootstrap-5') !!} <!-- This will generate the pagination links -->
     </section>
 </div>
 @endsection

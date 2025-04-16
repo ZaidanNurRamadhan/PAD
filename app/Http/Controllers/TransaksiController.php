@@ -38,6 +38,7 @@ class TransaksiController extends Controller
         $request->validate([
             'toko_id' => 'required|exists:toko,id',
             'produk_id' => 'required|exists:produk,id',
+            'jumlahDibeli' => 'required|numeric',
             'harga' => 'required|numeric',
             'terjual' => 'required|numeric',
             'tanggal_keluar' => 'required|date',
@@ -67,7 +68,8 @@ class TransaksiController extends Controller
             'produk_id' => $produk->id,
             'transactionDate' => $request->tanggal_keluar,
             'returDate' => $request->tanggal_retur,
-            'amount' => $request->harga,
+            'jumlahDibeli' => $request->jumlahDibeli,
+            'harga' => $request->harga,
             'terjual' => $request->terjual,
             'waktuEdar' => $waktuEdar,
             'status' => $status,
@@ -77,11 +79,11 @@ class TransaksiController extends Controller
         $produk->update(['jumlah' => $produk->jumlah - $request->terjual]);
 
         // Redirect berdasarkan role pengguna
-        if (auth()->user()->role == 'owner') {
-            return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil ditambahkan.');
+        if (auth()->user()->role == 'karyawan') {
+            return redirect()->route('transaksi-karyawan')->with('success', 'Transaksi berhasil ditambahkan.');
         }
 
-        return redirect()->route('transaksi-karyawan')->with('success', 'Transaksi berhasil ditambahkan.');
+        return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil ditambahkan.');
     }
 
 public function update(Request $request, $id)
@@ -90,6 +92,7 @@ public function update(Request $request, $id)
     $request->validate([
         'toko_id' => 'required|exists:toko,id',
         'produk_id' => 'required|exists:produk,id',
+        'jumlahDibeli' => 'required|numeric|min:1',
         'harga' => 'required|numeric|min:0',
         'terjual' => 'required|numeric|min:0',
         'tanggal_keluar' => 'required|date',
@@ -102,7 +105,7 @@ public function update(Request $request, $id)
     $toko = Toko::findOrFail($request->toko_id);
 
     // Menghitung selisih terjual untuk mengelola stok
-    $selisihTerjual = $request->terjual - $transaksi->terjual;
+    $selisihTerjual = $request->jumlahDibeli - $transaksi->terjual;
 
     // Cek apakah stok mencukupi
     if ($selisihTerjual > 0 && $produk->jumlah < $selisihTerjual) {
@@ -128,17 +131,18 @@ public function update(Request $request, $id)
         'produk_id' => $produk->id,
         'transactionDate' => $request->tanggal_keluar,
         'returDate' => $request->tanggal_retur,
-        'amount' => $request->harga,
+        'jumlahDibeli' => $request->jumlahDibeli,
+        'harga' => $request->harga,
         'terjual' => $request->terjual,
         'waktuEdar' => $waktuEdar,
         'status' => $status,
     ]);
 
-    if (auth()->user()->role == 'owner') {
-        return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil diperbarui.');
-    }
+    // if (auth()->user()->role == 'owner') {
+    //     return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil diperbarui.');
+    // }
 
-    return redirect()->route('transaksi-karyawan')->with('success', 'Transaksi berhasil diperbarui.');
+    return redirect()->route('transaksi-owner')->with('success', 'Transaksi berhasil diperbarui.');
 }
 
 public function edit($id)
@@ -169,10 +173,10 @@ public function edit($id)
             'produk_id' => $transaksi->produk_id,
             'toko' => $transaksi->toko->name ?? 'Toko tidak ditemukan',
             'produk' => $transaksi->produk->name ?? 'Produk tidak ditemukan',
-            'jumlah_stok' => $transaksi->produk->jumlah ?? 0,
+            'jumlahDibeli' => $transaksi->jumlahDibeli ?? 0,
             'terjual' => $transaksi->terjual,
-            'total_harga' => $transaksi->amount * $transaksi->terjual,
-            'harga' => $transaksi->amount,
+            'total_harga' => $transaksi->harga * $transaksi->terjual,
+            'harga' => $transaksi->harga,
             'tanggal_keluar' => $transaksi->transactionDate,
             'tanggal_retur' => $transaksi->returDate,
             'waktu_edar' => $transaksi->waktuEdar,

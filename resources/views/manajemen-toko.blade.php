@@ -3,9 +3,9 @@
     <section class="table-container d-flex flex-column min-vh-100">
         <div class="d-flex justify-content-between mb-2 align-items-center">
             <h5 class="text-judul">Manajemen Toko</h5>
-        <button class="btn btn-primary btn-tambah-toko" type="button" data-bs-toggle="modal" data-bs-target="#Tambahtoko">Tambah Toko</button>
+            <button class="btn btn-primary btn-tambah-toko" type="button" data-bs-toggle="modal" data-bs-target="#Tambahtoko">Tambah Toko</button>
         </div>
-        <div class="table-responsive flex-grow-1">
+        <div class="table-responsive flex-grow-1 table-data">
             <table class="table">
                 <thead>
                     <tr>
@@ -42,17 +42,14 @@
                         @empty
                         <tr><td colspan="6" class="text-center">Tidak ada data</td></tr>
                     @endforelse
-                    @for ($i = count($tokoList) ; $i <19 ; $i++)
+                    @for ($i = count($tokoList) ; $i <9 ; $i++)
                         <tr><td colspan="6"></td></tr>
                     @endfor
                 </tbody>
             </table>
         </div>
-        <div class="pagination">
-            <button class="btn btn-secondary">Previous</button>
-            <span>Page 1 of 10</span>
-            <button class="btn btn-secondary">Next</button>
-        </div>
+        {!! $tokoList->links('pagination::bootstrap-5') !!} <!-- This will generate the pagination links -->
+
     </section>
 
     {{-- tambah --}}

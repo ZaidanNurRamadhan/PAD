@@ -21,7 +21,7 @@ return new class extends Migration
                   ->onDelete('cascade'); // Cascade saat dihapus
             $table->date('transactionDate'); // Tanggal transaksi
             $table->date('returDate')->nullable(); // Tanggal pengembalian
-            $table->integer('harga')->nullable(); // Jumlah transaksi
+            $table->integer('harga')->nullable(); // Harga barang
             $table->integer('jumlahDibeli');//jumlah dibeli
             $table->integer('terjual'); // Jumlah terjual
             $table->integer('waktuEdar')->nullable(); // Waktu edar
