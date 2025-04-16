@@ -5,13 +5,13 @@
             <h5>Manajemen Karyawan</h5>
             <button class="btn btn-primary btn-tambah-karyawan" type="button" data-bs-toggle="modal" data-bs-target="#Tambahkaryawan">Tambah Karyawan</button>
         </div>
-        <div class="table-responsive flex-grow-1">
+        <div class="table-responsive flex-grow-1 overflow-auto table-data">
             <table class="table">
                 <thead>
                     <tr>
                         <th>Nama Karyawan</th>
                         <th>Kontak</th>
-                        <th>Username</th>
+                        <th>Email</th>
                         <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -21,10 +21,21 @@
                             <tr>
                                 <td>{{ $employee['name'] }}</td>
                                 <td>{{ $employee['contact'] }}</td>
-                                <td>{{ $employee['username'] }}</td>
+                                <td>{{ $employee['email'] }}</td>
                                 <td class="d-flex justify-content-center">
-                                    <button class="btn btn-warning btn-sm mx-2" type="button" data-bs-toggle="modal" data-bs-target="#Editkaryawan">Edit</button>
-                                    <button class="btn btn-danger btn-sm mx-2" type="button" data-bs-toggle="modal" data-bs-target="#Hapuskaryawan">Hapus</button>
+                                    <!-- Tombol Edit -->
+                                    <button class="btn btn-warning btn-sm mx-2"
+                                        type="button"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#Editkaryawan"
+                                        data-id="{{ $employee['id'] }}"
+                                        data-name="{{ $employee['name'] }}"
+                                        data-contact="{{ $employee['contact'] }}"
+                                        data-email="{{ $employee['email'] }}">
+                                        Edit
+                                    </button>
+                                    <!-- Tombol Hapus -->
+                                    <button class="btn btn-danger btn-sm mx-2 deleteKaryawan" type="button" data-id="{{ $employee['id'] }}" data-bs-toggle="modal" data-bs-target="#Hapuskaryawan">Hapus</button>
                                 </td>
                             </tr>
                         @endforeach
@@ -33,18 +44,20 @@
                     @endif
 
                     {{-- Menambahkan baris kosong jika data kurang dari 20 --}}
-                    @for ($i = count($data); $i < 19; $i++)
+                    @for ($i = count($data); $i < 10; $i++)
                         <tr><td colspan="4"></td></tr>
                     @endfor
                 </tbody>
             </table>
         </div>
 
-        <div class="pagination">
-            <button class="btn btn-secondary">Previous</button>
-            <span>Page 1 of 10</span>
-            <button class="btn btn-secondary">Next</button>
-        </div>
+        {!! $employees->links('pagination::bootstrap-5') !!} <!-- This will generate the pagination links -->
+
     </section>
+    {{-- tambah --}}
     @include('component.TambahKaryawan')
+      {{-- edit --}}
+      @include('component.EditKaryawan')
+      {{-- hapus --}}
+      @include('component.HapusKaryawan')
 @endsection

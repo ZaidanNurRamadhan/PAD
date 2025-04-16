@@ -5,7 +5,7 @@
             <h3>Transaksi</h3>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Tambahtransaksi" type="button">Tambah Transaksi</button>
         </div>
-        <div class="table-responsive flex-grow-1">
+        <div class="table-responsive flex-grow-1 table-data">
             <table class="table">
                 <thead>
                     <tr>
@@ -22,18 +22,25 @@
                 </thead>
                 <tbody>
                     @forelse($data as $item)
+                        <tr colspan="9">
+                            <td>{{ $item->toko->name}}</td>
+                        </tr>
                         <tr>
-                            <td>Rp{{ number_format($item['total_harga'], 0, ',', '.') }}</td>
-                            <td>{{ $item['jumlah'] }}</td>
-                            <td>{{ $item['produk'] }}</td>
-                            <td>{{ $item['terjual'] }}</td>
-                            <td>Rp{{ number_format($item['harga'], 0, ',', '.') }}</td>
-                            <td>{{ $item['tanggal_keluar'] }}</td>
-                            <td>{{ $item['tanggal_retur'] }}</td>
-                            <td>{{ $item['waktu_edar'] }}</td>
-                            <td>
-                                <span class="text-success">{{ $item['status'] }}</span>
-                                <a href="#" style="color: black; float: right;" data-bs-toggle="modal" data-bs-target="#Edittransaksi"><i class="fas fa-angle-right"></i></a>
+                            <td>Rp{{ number_format($item->harga * $item->jumlahDibeli, 0, ',', '.') }}</td>
+                            <td>{{ $item->jumlahDibeli }}</td>
+                            <td>{{ $item->produk->name }}</td>
+                            <td>{{ $item->terjual }}</td>
+                            <td>Rp{{ number_format($item->harga, 0, ',', '.') }}</td>
+                            <td>{{ \Carbon\Carbon::parse($item->transactionDate)->format('d/m/Y')}}</td>
+                            <td>{{ \Carbon\Carbon::parse($item->returDate)->format('d/m/Y')}}</td>
+                            <td>{{ $item->waktuEdar }}</td>
+                            <td class="text-center">
+                                <span class="{{ $item->status == 'closed' ? 'text-danger' : 'text-success' }}">
+                                    {{ ucfirst($item->status) }}
+                                </span>
+                                <a class="btn btn-sm p-0 m-0" onclick="editTransaksi({{ $item->id }})">
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
                             </td>
                         </tr>
                         @empty
@@ -41,20 +48,16 @@
                         @endforelse
 
                         {{-- Menambahkan baris kosong dengan border jika data kurang dari 20 --}}
-                        @for ($i = count($data); $i < 19; $i++)
+                        @for ($i = count($data); $i < 10; $i++)
                             <tr><td colspan="9"></td></tr>
                         @endfor
                 </tbody>
             </table>
         </div>
-        <div class="pagination">
-            <button class="btn btn-secondary">Previous</button>
-            <span>Page 1 of 10</span>
-            <button class="btn btn-secondary">Next</button>
-        </div>
+        {!! $data->links('pagination::bootstrap-5') !!} <!-- This will generate the pagination links -->
     </section>
-    {{-- tambah --}}
-    @include('component.TambahTransaksi')
-    {{-- edit --}}
+
     @include('component.EditTransaksi')
+    @include('component.TambahTransaksi')
+
     @endsection

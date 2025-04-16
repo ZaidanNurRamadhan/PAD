@@ -1,41 +1,55 @@
 <section class="modal fade" id="Edittransaksi" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog-centered modal-dialog">
-      <main class="modal-content">
-        <header class="modal-header">
-          <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Transaksi</h1>
-        </header>
-        <form action="" method="post">
-            <article class="modal-body">
-                <section class="form-group d-flex justify-content-between px-3">
-                    <label for="">Nama Toko</label>
-                    <input type="text" name="tname" class="form-control" style="max-width: 273px;" placeholder="Masukkan nama toko">
-                </section>
-                <section class="form-group d-flex justify-content-between px-3 mt-4">
-                    <label for="">Nama Produk</label>
-                    <input type="text" name="pname" class="form-control" style="max-width: 273px;" placeholder="Masukkan nama produk">
-                </section>
-                <section class="form-group d-flex justify-content-between px-3 mt-4">
-                    <label for="">Tanggal Keluar</label>
-                    <input type="date" name="tglkeluar" class="form-control" style="max-width: 273px;" placeholder="dd/mm/yyyy">
-                </section>
-                <section class="form-group d-flex justify-content-between px-3 mt-4">
-                    <label for="">Harga</label>
-                    <input type="text" name="harga" class="form-control" style="max-width: 273px;" placeholder="Masukkan harga">
-                </section>
-                <section class="form-group d-flex justify-content-between px-3 mt-4">
-                    <label for="">Terjual</label>
-                    <input type="text" name="jstok" class="form-control" style="max-width: 273px;" placeholder="Masukkan produk terjual">
-                </section>
-                <section class="form-group d-flex justify-content-between px-3 mt-4">
-                    <label for="">Tanggal Retur</label>
-                    <input type="date" name="tglretur" class="form-control" style="max-width: 273px;" placeholder="dd/mm/yyyy">
-                </section>
-            </article>
-        </form>
-        <footer class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-          <button type="button" class="btn btn-primary">Simpan</button>
-        </footer>
-    </main>
+    <div class="modal-dialog modal-dialog-centered">
+        <main class="modal-content">
+            <header class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Transaksi</h1>
+            </header>
+            <form method="post" id="editTransaksiForm">
+                @csrf
+                @method('PUT')
+                <article class="modal-body">
+                    <section class="form-group d-flex justify-content-between px-3">
+                        <label for="toko_id">Nama Toko</label>
+                        <select name="toko_id" id="toko_id" class="form-control" style="max-width: 273px;" required>
+                            @foreach ($tokos as $toko)
+                            <option value="{{ $toko->id }}">{{ $toko->name }}</option>
+                            @endforeach
+                        </select>
+                    </section>
+                    <section class="form-group d-flex justify-content-between px-3 mt-4">
+                        <label for="produk_id">Nama Produk</label>
+                        <select name="produk_id" id="produk_id" class="form-control" style="max-width: 273px;">
+                            @foreach ($produks as $produk)
+                            <option value="{{ $produk->id }}">{{ $produk->name }}</option>
+                            @endforeach
+                        </select>
+                    </section>
+                    <section class="form-group d-flex justify-content-between px-3 mt-4">
+                        <label for="tanggal_keluar">Tanggal Keluar</label>
+                        <input type="date" name="tanggal_keluar" id="transactionDate" class="form-control" style="max-width: 273px;">
+                    </section>
+                    <section class="form-group d-flex justify-content-between px-3 mt-4">
+                        <label for="harga">Harga</label>
+                        <input type="text" name="harga" id="harga" class="form-control" style="max-width: 273px;" placeholder="Masukkan harga">
+                    </section>
+                    <section class="form-group d-flex justify-content-between px-3 mt-4">
+                        <label for="harga">Jumlah</label>
+                        <input type="text" name="jumlahDibeli" id="jumlahDibeli" class="form-control" style="max-width: 273px;" placeholder="Masukkan jumlah">
+                    </section>
+                    <section class="form-group d-flex justify-content-between px-3 mt-4">
+                        <label for="terjual">Terjual</label>
+                        <input type="text" name="terjual" id="terjual" class="form-control" style="max-width: 273px;" placeholder="Masukkan produk terjual">
+                    </section>
+                    <section class="form-group d-flex justify-content-between px-3 mt-4">
+                        <label for="tanggal_retur">Tanggal Retur</label>
+                        <input type="date" name="tanggal_retur" id="tanggal_retur" class="form-control" style="max-width: 273px;">
+                    </section>
+                </article>
+                <footer class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </footer>
+            </form>
+        </main>
     </div>
-  </section>
+</section>
