@@ -126,5 +126,57 @@
     <script src="{{ asset('js/layout-owner.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
     <script src="{{ asset('js/script.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Cek apakah kita berada di halaman dashboard
+            if (window.location.pathname === '/dashboard') {
+                // Sembunyikan search bar jika di halaman dashboard
+                document.querySelector('.search-bar').style.display = 'none';
+            }
+        });
+    </script>
+        <script>
+            let originalTableContent = '';
+
+            // Add this when document is ready
+            $(document).ready(function() {
+                // Store the original table content when page loads
+                originalTableContent = $('.table-data tbody').html();
+            });
+
+            $(document).on('keyup', '#search', function(e) {
+                e.preventDefault();
+                let search_string = $('#search').val(); // Ambil nilai pencarian
+                let page = $('body').data('page');  // Ambil data halaman aktif (toko, transaksi, laporan)
+
+                console.log('Search String: ', search_string);
+                console.log('Page: ', page);
+
+                if (search_string.length < 1) {
+                    $('.table-data tbody').html(originalTableContent);
+                    applyDeleteListeners(); // Reapply event handlers if needed
+                    return;
+                }
+
+                $.ajax({
+                    url: "{{ route('search.product') }}",  // URL ke controller untuk pencarian
+                    method: 'GET',
+                    data: {
+                        search: search_string,
+                        page: page // Kirimkan kata kunci pencarian
+                    },
+                    success: function(res) {
+                        console.log('Search Results:', res);
+                        // Update hasil pencarian hanya di dalam <tbody> (area yang relevan)
+                        $('.table-data tbody').html(res);  // Update hasil pencarian di dalam tabel
+                        applyDeleteListeners(); // Fungsi untuk menerapkan event listener pada tombol delete
+
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX error: ' + error);  // Debugging jika terjadi kesalahan
+                    }
+                });
+            });
+        </script>
 </body>
 </html>

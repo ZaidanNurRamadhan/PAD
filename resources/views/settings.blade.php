@@ -31,7 +31,7 @@
                                         data-id="{{ $employee['id'] }}"
                                         data-name="{{ $employee['name'] }}"
                                         data-contact="{{ $employee['contact'] }}"
-                                        data-username="{{ $employee['email'] }}">
+                                        data-email="{{ $employee['email'] }}">
                                         Edit
                                     </button>
                                     <!-- Tombol Hapus -->

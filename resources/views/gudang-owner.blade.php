@@ -40,8 +40,8 @@
                         <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="h-100">
-                    @forelse($produks as $produk)
+                <tbody>
+                    @forelse($produks as $index => $produk)
                         <tr>
                             <td> {{ $index + 1 }} </td>
                             <td>{{ $produk['name'] }}</td>

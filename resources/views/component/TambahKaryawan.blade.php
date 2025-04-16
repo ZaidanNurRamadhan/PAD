@@ -39,6 +39,7 @@
                             <label for="password">Password</label>
                             <div class="d-flex flex-column position-relative">
                                 <input type="password" id="password" name="password" class="form-control" style="width:100%" placeholder="Masukkan password">
+                                <i id="toggle-icon" class="fa fa-eye position-absolute" style="top: 10px; right: 10px;" onclick="togglePassword()"></i>
                                 <small style="font-size: 0.8rem" class="text-danger error-password"></small>
                             </div>
                         </div>
@@ -118,4 +119,60 @@
         var re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
         return re.test(email);
     }
+
+        function togglePassword() {
+        var passwordField = document.getElementById("password");
+        var icon = document.getElementById("toggle-icon");
+
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        } else {
+            passwordField.type = "password";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+        }
+    }
+
+    // Example of using AJAX to submit the form for both Add and Edit actions
+    $(document).ready(function() {
+    // Saat form disubmit
+    $('#formTambahKaryawan').submit(function(e) {
+        e.preventDefault(); // Mencegah form disubmit secara biasa
+
+        var formData = new FormData(this); // Ambil semua data form
+
+        // Debugging: Menampilkan data form yang dikirim ke server
+        for (var [key, value] of formData.entries()) {
+            console.log(key + ': ' + value); // Menampilkan key dan value untuk setiap input
+        }
+
+        $.ajax({
+            url: $(this).attr('action'), // Arahkan ke route yang benar
+            method: 'POST',
+            data: formData, // Data yang akan dikirim
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                // Menangani jika berhasil
+                alert('Karyawan berhasil ditambahkan!');
+                $('#Tambahkaryawan').modal('hide'); // Tutup modal setelah berhasil
+                location.reload(); // Reload halaman untuk menampilkan data terbaru
+            },
+            error: function(xhr) {
+                // Debugging: Menampilkan error di konsol
+                console.log(xhr.responseJSON);
+
+                // Menangani jika terjadi error (misalnya validasi gagal)
+                var errors = xhr.responseJSON.errors;
+                if (errors) {
+                    $.each(errors, function(key, value) {
+                        alert(value); // Menampilkan pesan error
+                    });
+                }
+            }
+        });
+    });
+});
 </script>

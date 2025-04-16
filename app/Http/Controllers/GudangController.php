@@ -31,7 +31,7 @@ class GudangController extends Controller
     {
         $produks = Produk::orderBy('id', 'desc')->paginate(5);
 
-        return view('gudang-karyawan', compact('produks'));
+        return view('gudang-karyawan', compact( 'produks'));
 
     }
 
