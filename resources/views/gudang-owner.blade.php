@@ -40,7 +40,7 @@
                         <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="h-100">
+                <tbody>
                     @forelse($produks as $index => $produk)
                         <tr>
                             <td> {{ $index + 1 }} </td>
