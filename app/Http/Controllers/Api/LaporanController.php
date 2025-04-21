@@ -17,7 +17,6 @@ class LaporanController extends Controller
     {
         $filter = $request->input('filter'); // 'harian', 'bulanan', atau null
         $data = $this->getTransaksiData($filter);
-
         return response()->json([
             'message' => 'Data laporan transaksi berhasil diambil.',
             'filter' => $filter,
