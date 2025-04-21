@@ -14,10 +14,10 @@ class PemasokController extends Controller
      */
     public function index()
     {
-        $pemasoks = Pemasok::orderBy('id', 'desc')->get();
+        $pemasok = Pemasok::orderBy('id', 'desc')->get();
 
         return response()->json([
-            'data' => $pemasoks,
+            'data' => $pemasok,
             'message' => 'Data pemasok berhasil diambil.'
         ], 200);
     }
@@ -31,7 +31,7 @@ class PemasokController extends Controller
             'name' => 'required|string|max:255',
             'produkDisediakan' => 'required|string|max:255',
             'nomorTelepon' => 'required|numeric',
-            'email' => 'required|email|max:255|unique:pemasoks,email',
+            'email' => 'required|email|max:255|unique:pemasok,email',
         ]);
 
         if ($validator->fails()) {
