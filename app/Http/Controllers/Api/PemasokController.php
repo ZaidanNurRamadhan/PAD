@@ -75,7 +75,7 @@ class PemasokController extends Controller
             'name' => 'required|string|max:255',
             'produkDisediakan' => 'required|string|max:255',
             'nomorTelepon' => 'required|numeric',
-            'email' => 'required|email|max:255|unique:pemasoks,email,' . $id,
+            'email' => 'required|email|max:255|unique:pemasok,email,' . $id,
         ]);
 
         if ($validator->fails()) {
