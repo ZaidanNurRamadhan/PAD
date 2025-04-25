@@ -24,6 +24,18 @@ class GudangController extends Controller
         ], 200);
     }
 
+    public function karyawan()
+    {
+        $produks = Produk::orderBy('id', 'desc')->get();
+        $pemasoks = Pemasok::all();
+
+        return response()->json([
+            'message' => 'Data gudang untuk karyawan berhasil diambil.',
+            'produks' => $produks,
+            'pemasoks' => $pemasoks
+        ], 200);
+    }
+
     /**
      * Store a newly created resource in storage.
      */

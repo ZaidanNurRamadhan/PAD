@@ -66,11 +66,10 @@ Route::middleware('auth:sanctum', 'check.role:owner')->group(function () {
 
 Route::middleware('auth:sanctum','check.role:karyawan')->group(function () {
     Route::get('/gudang-karyawan', [GudangController::class, 'karyawan'])->name('api.gudang.karyawan');
-    Route::get('/transaksi-karyawan', [TransaksiController::class, 'karyawan'])->name('api.transaksi.karyawan');
 
     // Transaksi Routes for Karyawan
-    Route::get('/transaksi-karyawan', [TransaksiController::class, 'karyawan'])->name('api.transaksi.karyawan');
-    Route::get('/transaksi/{id}', [TransaksiController::class, 'show']);
+    Route::get('/transaksi-karyawan', [TransaksiController::class, 'getKaryawan'])->name('api.transaksi.karyawan');
+    Route::post('/transaksi-karyawan', [TransaksiController::class, 'postKaryawan'])->name('api.transaksi.karyawan.store');
 });
 
 Route::get('/search', [SearchController::class, 'search'])->name('api.search');
