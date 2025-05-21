@@ -24,7 +24,7 @@
     </style>
 </head>
 <body>
-    <h2>Laporan Transaksi (Status: Closed)</h2>
+    <h2>Laporan Transaksi</h2>
 
     <p><strong>Total Transaksi:</strong> {{ $data->count() }}</p>
     <p><strong>Total Retur:</strong> {{ $retur }}</p>
@@ -47,21 +47,19 @@
         </thead>
         <tbody>
             @foreach($data as $transaksi)
-                @if ($transaksi->status === 'closed')
-                    <tr>
-                        <td>{{ $transaksi->id }}</td>
-                        <td>{{ $transaksi->toko->name ?? 'N/A' }}</td>
-                        <td>{{ $transaksi->produk->name ?? 'N/A' }}</td>
-                        <td>{{ $transaksi->jumlahDibeli }}</td>
-                        <td>{{ $transaksi->terjual }}</td>
-                        <td>{{ number_format($transaksi->harga, 0, ',', '.') }}</td>
-                        <td>{{ number_format($transaksi->harga * $transaksi->terjual, 0, ',', '.') }}</td>
-                        <td>{{ \Carbon\Carbon::parse($transaksi->tanggal_keluar)->format('d/m/Y') }}</td>
-                        <td>{{ $transaksi->tanggal_retur ? \Carbon\Carbon::parse($transaksi->tanggal_retur)->format('d/m/Y') : 'N/A' }}</td>
-                        <td>{{ $transaksi->waktu_edar }}</td>
-                        <td>{{ $transaksi->status }}</td>
-                    </tr>
-                @endif
+                <tr>
+                    <td>{{ $transaksi->id }}</td>
+                    <td>{{ $transaksi->toko->name ?? 'N/A' }}</td>
+                    <td>{{ $transaksi->produk->name ?? 'N/A' }}</td>
+                    <td>{{ $transaksi->jumlahDibeli }}</td>
+                    <td>{{ $transaksi->terjual }}</td>
+                    <td>{{ number_format($transaksi->harga, 0, ',', '.') }}</td>
+                    <td>{{ number_format($transaksi->harga * $transaksi->terjual, 0, ',', '.') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($transaksi->tanggal_keluar)->format('d/m/Y') }}</td>
+                    <td>{{ $transaksi->returDate ? \Carbon\Carbon::parse($transaksi->returDate)->format('d/m/Y') : 'N/A' }}</td>
+                    <td>{{ $transaksi->waktuEdar ?? 'N/A' }}</td>
+                    <td>{{ $transaksi->status }}</td>
+                </tr>
             @endforeach
         </tbody>
     </table>
