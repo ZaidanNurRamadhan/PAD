@@ -21,12 +21,12 @@ class MonitoringController extends Controller
 
         $data = $transaksis->map(function ($transaksi) {
             return [
-                'nama_toko' => $transaksi->toko->name ?? 'Toko tidak ditemukan',
-                'kategori' => $transaksi->produk->name ?? 'Produk tidak ditemukan',
-                'jumlah' => $transaksi->jumlahDibeli,
-                'tanggal_keluar' => $transaksi->transactionDate,
+                'nama_toko' => $transaksi->toko->name ?? 'Tidak ada toko',
+                'waktu_edar' =>  $transaksi->waktuEdar ?? 'Tidak ada waktu edar',
+                'jumlah' => $transaksi->jumlahDibeli ?? 0,
+                'kategori' => $produk ? $produk->name : 'Tidak ada kategori',
                 'hari' => Carbon::parse($transaksi->transactionDate)->translatedFormat('l'),
-                'waktu_edar' => $transaksi->waktuEdar,
+                'tanggal_keluar' => $transaksi->transactionDate,
                 'status' => $transaksi->status,
             ];
         });
