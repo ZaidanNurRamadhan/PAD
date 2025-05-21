@@ -66,7 +66,7 @@ class LaporanController extends Controller
     public function exportPdf()
     {
         $data = Transaksi::with(['produk', 'toko'])
-        ->where('status', 'closed')
+        ->whereIn('status', ['closed', 'open'])
         ->get();
 
         // Hitung total retur dari semua data
