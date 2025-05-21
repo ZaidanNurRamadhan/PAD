@@ -27,7 +27,7 @@ class TransaksiExport implements FromCollection, WithHeadings, WithTitle, WithSt
                 'Nama Produk'    => $transaksi->produk ? $transaksi->produk->name : 'N/A',
                 'Tanggal Transaksi' => $this->formatDate($transaksi->transactionDate),
                 'Tanggal Retur'  => $this->formatDate($transaksi->returDate),
-                'Jumlah Terjual' => $transaksi->terjual,
+                'Terjual'        => $transaksi->terjual,
                 'Waktu Edar'     => $transaksi->waktuEdar,
                 'Status'         => $transaksi->status,
             ];

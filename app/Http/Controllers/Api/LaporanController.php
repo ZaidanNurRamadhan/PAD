@@ -66,10 +66,15 @@ class LaporanController extends Controller
     public function exportPdf()
     {
         $data = Transaksi::with(['produk', 'toko'])
-            ->where('status', 'closed')
-            ->get();
+        ->where('status', 'closed')
+        ->get();
 
-        $html = view('export-pdf', compact('data'))->render();
+        // Hitung total retur dari semua data
+        $retur = $data->sum(function ($item) {
+            return max(0, $item->jumlahDibeli - $item->terjual);
+        });
+
+        $html = view('pdf.laporan', compact('data', 'retur'))->render();
 
         $mpdf = new Mpdf();
         $mpdf->WriteHTML($html);
