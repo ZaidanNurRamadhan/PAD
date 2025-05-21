@@ -24,45 +24,46 @@
     </style>
 </head>
 <body>
+    <h2>Laporan Transaksi (Status: Closed)</h2>
 
-<h2>Laporan Transaksi</h2>
-<p><strong>Total Transaksi:</strong> {{ $data->count() }}</p>
-<p><strong>Total Retur:</strong> {{ $retur }}</p>
+    <p><strong>Total Transaksi:</strong> {{ $data->count() }}</p>
+    <p><strong>Total Retur:</strong> {{ $retur }}</p>
 
-<table>
-    <thead>
-        <tr>
-            <th>Nama Toko</th>
-            <th>Total Harga</th>
-            <th>Jumlah</th>
-            <th>Produk</th>
-            <th>Terjual</th>
-            <th>Harga</th>
-            <th>Tanggal Keluar</th>
-            <th>Tanggal Retur</th>
-            <th>Waktu Edar</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($data as $item)
-            @if ($item->status === 'closed')
-                <tr>
-                    <td>{{ $item->toko->name }}</td>
-                    <td>{{ number_format($item->harga * $item->jumlahDibeli, 0, ',', '.') }}</td>
-                    <td>{{ $item->jumlahDibeli }}</td>
-                    <td>{{ $item->produk->name }}</td>
-                    <td>{{ $item->terjual }}</td>
-                    <td>{{ number_format($item->harga, 0, ',', '.') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($item->tanggal_keluar)->format('d/m/Y') }}</td>
-                    <td>{{ \Carbon\Carbon::parse($item->tanggal_retur)->format('d/m/Y') }}</td>
-                    <td>{{ $item->waktu_edar }}</td>
-                    <td>{{ $item->status }}</td>
-                </tr>
-            @endif
-        @endforeach
-    </tbody>
-</table>
-
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nama Toko</th>
+                <th>Nama Produk</th>
+                <th>Jumlah Dibeli</th>
+                <th>Terjual</th>
+                <th>Harga</th>
+                <th>Total</th>
+                <th>Tanggal Keluar</th>
+                <th>Tanggal Retur</th>
+                <th>Waktu Edar</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($data as $transaksi)
+                @if ($transaksi->status === 'closed')
+                    <tr>
+                        <td>{{ $transaksi->id }}</td>
+                        <td>{{ $transaksi->toko->name ?? 'N/A' }}</td>
+                        <td>{{ $transaksi->produk->name ?? 'N/A' }}</td>
+                        <td>{{ $transaksi->jumlahDibeli }}</td>
+                        <td>{{ $transaksi->terjual }}</td>
+                        <td>{{ number_format($transaksi->harga, 0, ',', '.') }}</td>
+                        <td>{{ number_format($transaksi->harga * $transaksi->terjual, 0, ',', '.') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($transaksi->tanggal_keluar)->format('d/m/Y') }}</td>
+                        <td>{{ $transaksi->tanggal_retur ? \Carbon\Carbon::parse($transaksi->tanggal_retur)->format('d/m/Y') : 'N/A' }}</td>
+                        <td>{{ $transaksi->waktu_edar }}</td>
+                        <td>{{ $transaksi->status }}</td>
+                    </tr>
+                @endif
+            @endforeach
+        </tbody>
+    </table>
 </body>
 </html>

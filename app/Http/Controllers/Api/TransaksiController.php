@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Transaksi;
 use App\Models\Produk;
 use App\Models\Toko;
+use App\Exports\TransaksiExport;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
 
 class TransaksiController extends Controller
@@ -250,5 +252,10 @@ public function postKaryawan(Request $request)
     }
 
     return response()->json(['message' => 'Transaksi karyawan berhasil ditambahkan', 'data' => $transaksi], 201);
+}
+
+public function export()
+{
+    return Excel::download(new TransaksiExport, 'Laporan_Transaksi.xlsx');
 }
 }
