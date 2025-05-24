@@ -1,3 +1,13 @@
+<p>Silahkan untuk Melakukan clone Github pada branch revert-4-be dan FE-VUE</p>
+<p>Berikut langkah-langkahnya</p>
+<p>git clone --branch FE-VUE --single-branch https://github.com/username/nama-repo.git</p>
+<p>git clone --branch revert-4-be --single-branch https://github.com/username/nama-repo.git</p>
+<p>buka folder frontend yang telah di clone dan jalankan perintah 'npm i' pada terminal</p>
+<p>jalankan server dengan menuliskan perintah 'npm run dev'</p>
+<p>akses web dengan mengakses URL pada output perintah sebelumnya</p>
+<p>buka folder backend yang telah di clone dan jalankan perintah 'composer i' pada terminal</p>
+<p>jalankan server dengan menuliskan perintah 'php artisan serve'</p>
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
