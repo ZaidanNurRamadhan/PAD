@@ -58,7 +58,7 @@ export default {
       emit('search', localSearchTerm.value);
     };
 
-    const isDashboardPage = computed(() => route.name === 'dashboard');
+const isDashboardPage = computed(() => route.name === 'Dashboard');
 
     return {
       localSearchTerm,

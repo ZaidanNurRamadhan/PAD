@@ -56,11 +56,6 @@
                     <font-awesome-icon :icon="['fas', 'store']" /> Manajemen Toko
                   </router-link>
               </li>
-              <li class="nav-item">
-                  <router-link v-if="isOwner" to="/settings" :class="[{ active: isActive('/settings') }, 'text-decoration-none']">
-                  <font-awesome-icon :icon="['fas', 'users-cog']" /> Manajemen Karyawan
-                </router-link>
-              </li>
               </template>
 
               <!-- Navigasi Karyawan -->
@@ -77,15 +72,18 @@
                 </li>
               </template>
 
-              <!-- Link settings (khusus owner) -->
-              
-
-              <!-- Link logout -->
-              <li class="nav-item mt-auto">
-                <a href="#" @click.prevent="isLogoutModalOpen = true" class="text-decoration-none">
-                  <font-awesome-icon :icon="['fas', 'sign-out-alt']" /> Keluar
-                </a>
-              </li>
+              <div class="mt-auto">
+                <li class="nav-item">
+                    <router-link v-if="isOwner" to="/settings" :class="[{ active: isActive('/settings') }, 'text-decoration-none']">
+                    <font-awesome-icon :icon="['fas', 'users-cog']" /> Manajemen Karyawan
+                  </router-link>
+                </li>
+                <li class="nav-item mt-auto">
+                  <a href="#" @click.prevent="isLogoutModalOpen = true" class="text-decoration-none">
+                    <font-awesome-icon :icon="['fas', 'sign-out-alt']" /> Keluar
+                  </a>
+                </li>
+              </div>
             </ul>
           </div>
         </div>
