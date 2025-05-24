@@ -9,6 +9,7 @@
     <!-- Halaman selain Dashboard dengan search bar -->
     <template v-else>
       <input
+        v-if="!isDashboardPage"
         type="text"
         v-model="localSearchTerm"
         name="search"
@@ -40,23 +41,24 @@ export default {
   emits: ['search'],
   setup(props, { emit }) {
     const localSearchTerm = ref(props.searchTerm);
-    const route = useRoute(); // Untuk mendapatkan informasi halaman saat ini
-    const userRole = JSON.parse(localStorage.getItem('user_info'))?.role || 'karyawan'; // Mengambil role dari localStorage
+    const route = useRoute();
+    const userRole = JSON.parse(localStorage.getItem('user_info'))?.role || 'karyawan';
 
-    // Watch perubahan props untuk menyinkronkan state lokal
     watch(() => props.searchTerm, (newValue) => {
       localSearchTerm.value = newValue;
     });
 
-    // Emit event pencarian saat input
+    // Watch route change untuk reset search
+    watch(() => route.fullPath, () => {
+      localSearchTerm.value = '';
+      emit('search', '');
+    });
+
     const emitSearch = () => {
       emit('search', localSearchTerm.value);
     };
 
-    // Menentukan apakah halaman saat ini adalah Dashboard
-    const isDashboardPage = computed(() => {
-      return route.name === 'dashboard'; // Ganti 'dashboard' dengan nama route yang sesuai
-    });
+    const isDashboardPage = computed(() => route.name === 'dashboard');
 
     return {
       localSearchTerm,

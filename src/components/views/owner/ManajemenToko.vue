@@ -1,5 +1,5 @@
 <template>
-  <section class="table-container d-flex flex-column min-vh-100 m-4">
+  <section class="table-container d-flex flex-column min-vh-100 m-2">
     <!-- Header -->
     <div class="d-flex justify-content-between mb-2 align-items-center">
       <h5 class="text-judul">Manajemen Toko</h5>
@@ -60,8 +60,8 @@
     </div>
 
     <!-- Pagination -->
-    <div class="d-flex justify-content-center mt-3">
-      <nav>
+    <div class="d-flex justify-content-between mt-3">
+      <nav class="w-100">
         <ul class="pagination">
           <li
             class="page-item"
@@ -75,19 +75,7 @@
               Previous
             </button>
           </li>
-          <li
-            v-for="page in totalPages"
-            :key="page"
-            class="page-item"
-            :class="{ 'active': page === currentPage }"
-          >
-            <button
-              class="page-link"
-              @click="changePage(page)"
-            >
-              {{ page }}
-            </button>
-          </li>
+          <span>Page {{ currentPage }} of {{ totalPages }}</span>
           <li
             class="page-item"
             :class="{ 'disabled': currentPage === totalPages }"
@@ -127,7 +115,7 @@
 </template>
 
 <script>
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
 import axios from 'axios'
 import TambahManajemenToko from '@/components/modals/TambahManajemenToko.vue'
 import EditManajemenToko from '@/components/modals/EditManajemenToko.vue'
@@ -140,7 +128,13 @@ export default {
     EditManajemenToko,
     HapusManajemenToko
   },
-  setup() {
+  props: {
+    searchTerm: {
+      type: String,
+      default: ''
+    }
+  },
+  setup(props) {
     const stores = ref([]) // State for stores
     const currentPage = ref(1)
     const itemsPerPage = ref(9)
@@ -200,6 +194,28 @@ export default {
     onMounted(() => {
       fetchStores()
     })
+
+    // Watch searchTerm prop to perform search
+    watch(() => props.searchTerm, async (newTerm) => {
+      const token = localStorage.getItem('auth_token');
+      if (newTerm && newTerm.trim() !== '') {
+        try {
+          const response = await axios.get('http://127.0.0.1:8000/api/search', {
+            params: { search: newTerm, page: 'manajemen-toko' },
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+          });
+          stores.value = Array.isArray(response.data.data.data) ? response.data.data.data : [];
+        } catch (error) {
+          console.error('Error searching stores:', error);
+        }
+      } else {
+        fetchStores();
+      }
+    }, { immediate: true });
 
     // Pagination methods
     const changePage = (page) => {

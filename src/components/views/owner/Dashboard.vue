@@ -62,7 +62,7 @@
 
         <!-- Terlaris Section -->
         <article class="table-container mt-4 isi-table flex-grow-1 h-auto">
-          <div class="d-flex justify-between bg-white sticky terlaris">
+          <div class="d-flex justify-content-between bg-white sticky terlaris">
             <h5 class="align-self-center text-judul mb-0">Terlaris</h5>
             <div class="dropdown" @click.stop="toggleDropdownTerlaris">
               <div class="dropdown-selected bg-white">
@@ -278,7 +278,9 @@ export default {
       this.$router.push({ path: '/monitoring', state: { monitoring: this.monitoring } });
     },
     viewAllBestSellers() {},
-    viewAllProducts() {}
+    viewAllProducts() {
+      this.$router.push({ path: '/gudang-owner', state: { products: this.products } });
+    }
   }
 };
 </script>

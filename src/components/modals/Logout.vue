@@ -68,7 +68,7 @@ export default {
   position: fixed;
   top: 200px;
   left: 0;
-  z-index: 1050;
+  z-index: 1051;
   width: 100%;
   height: 100%;
   overflow: hidden;

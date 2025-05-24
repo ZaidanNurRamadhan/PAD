@@ -1,5 +1,5 @@
 <template>
-  <section class="table-container d-flex flex-column min-vh-100">
+  <section class="table-container d-flex flex-column min-vh-100 m-2">
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h3 class="text-judul">Pemasok</h3>
@@ -48,17 +48,15 @@
     </div>
 
     <!-- Pagination -->
-    <div class="d-flex justify-content-center mt-3">
-      <nav>
+    <div class="d-flex justify-content-between mt-3">
+      <nav class="w-100">
         <ul class="pagination">
           <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
             <button class="page-link" @click="changePage(currentPage - 1)" :disabled="currentPage === 1">
               Previous
             </button>
           </li>
-          <li v-for="page in totalPages" :key="page" class="page-item" :class="{ 'active': page === currentPage }">
-            <button class="page-link" @click="changePage(page)">{{ page }}</button>
-          </li>
+          <span>Page {{ currentPage }} of {{ totalPages }}</span>
           <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
             <button class="page-link" @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages">
               Next
@@ -92,9 +90,11 @@
 
 <script>
 import { ref, computed, reactive, onMounted } from 'vue';
+import axios from 'axios';
 import TambahPemasokModal from '@/components/modals/TambahPemasok.vue';
 import EditPemasokModal from '@/components/modals/EditPemasok.vue';
 import HapusPemasokModal from '@/components/modals/HapusPemasok.vue';
+import { watch } from 'vue';
 
 export default {
   name: 'SupplierManagement',
@@ -103,7 +103,13 @@ export default {
     EditPemasokModal,
     HapusPemasokModal,
   },
-  setup() {
+  props: {
+    searchTerm: {
+      type: String,
+      default: ''
+    }
+  },
+  setup(props) {
     const suppliers = ref([]);
     const currentPage = ref(1);
     const itemsPerPage = ref(9);
@@ -125,24 +131,41 @@ export default {
     const fetchSuppliers = async () => {
       try {
         const token = localStorage.getItem('auth_token');
-        const response = await fetch('http://127.0.0.1:8000/api/pemasok', {
-          method: 'GET',
+        const response = await axios.get('http://127.0.0.1:8000/api/pemasok', {
           headers: {
             'Content-Type': 'application/json',
             'Accept' : 'application/json',
             'Authorization': `Bearer ${token}`,
           },
         });
-        if (!response.ok) {
-          throw new Error('Gagal mengambil data pemasok');
-        }
-        const data = await response.json();
-        suppliers.value = data.data;
+        suppliers.value = response.data.data;
       } catch (error) {
         console.error(error);
         alert('Terjadi kesalahan saat mengambil data pemasok');
       }
     };
+
+    // Watch searchTerm prop to perform search
+    watch(() => props.searchTerm, async (newTerm) => {
+      const token = localStorage.getItem('auth_token');
+      if (newTerm && newTerm.trim() !== '') {
+        try {
+          const response = await axios.get('http://127.0.0.1:8000/api/search', {
+            params: { search: newTerm, page: 'pemasok' },
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+          });
+          suppliers.value = Array.isArray(response.data.data.data) ? response.data.data.data : [];
+        } catch (error) {
+          console.error('Error searching stores:', error);
+        }
+      } else {
+        fetchSuppliers();
+      }
+    }, { immediate: true });
 
     // Page change method
     const changePage = (page) => {

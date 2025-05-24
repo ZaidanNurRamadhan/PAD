@@ -38,7 +38,7 @@
               <section class="form-group d-flex justify-content-between px-3 mt-4">
                 <label for="pemasok-kontak">Kontak</label>
                 <input
-                  type="number"
+                  type="text"
                   id="pemasok-kontak"
                   v-model="formData.nomorTelepon"
                   class="form-control"

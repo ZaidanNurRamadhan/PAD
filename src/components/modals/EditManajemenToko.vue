@@ -50,7 +50,7 @@
               <section class="form-group d-flex justify-content-between px-3 mt-4">
                 <label for="toko-kontak">Kontak</label>
                 <input
-                  type="number"
+                  type="text"
                   id="toko-kontak"
                   v-model="formData.phone_number"
                   class="form-control"

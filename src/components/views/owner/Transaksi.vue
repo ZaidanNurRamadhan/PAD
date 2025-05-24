@@ -1,5 +1,5 @@
 <template>
-  <section class="table-container d-flex flex-column vh-min-100 m-4">
+  <section class="table-container d-flex flex-column vh-min-100 m-2">
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h3>Transaksi</h3>
@@ -62,19 +62,15 @@
     </div>
 
     <!-- Pagination -->
-    <div class="d-flex justify-content-center mt-3">
-      <nav>
+    <div class="d-flex justify-content-between mt-3">
+      <nav class="w-100">
         <ul class="pagination">
           <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
             <button class="page-link" @click="changePage(currentPage - 1)" :disabled="currentPage === 1">
               Previous
             </button>
           </li>
-          <li v-for="page in totalPages" :key="page" class="page-item" :class="{ 'active': page === currentPage }">
-            <button class="page-link" @click="changePage(page)">
-              {{ page }}
-            </button>
-          </li>
+          <span>Page {{ currentPage }} of {{ totalPages }}</span>
           <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
             <button class="page-link" @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages">
               Next
@@ -129,9 +125,38 @@ export default {
     const currentPage = ref(1);
     const itemsPerPage = ref(10);
     const totalPages = computed(() => Math.ceil(transactions.value.length / itemsPerPage.value));
+    // Map transactions to extract toko and produk as strings if they are arrays
+    const mappedTransactions = computed(() => {
+      return transactions.value.map(item => {
+        let tokoName = '';
+        if (Array.isArray(item.toko)) {
+          tokoName = item.toko.length > 0 ? item.toko[0].name || JSON.stringify(item.toko[0]) : '';
+        } else if (item.toko && typeof item.toko === 'object') {
+          tokoName = item.toko.name || JSON.stringify(item.toko);
+        } else {
+          tokoName = item.toko || '';
+        }
+
+        let produkName = '';
+        if (Array.isArray(item.produk)) {
+          produkName = item.produk.length > 0 ? item.produk[0].name || JSON.stringify(item.produk[0]) : '';
+        } else if (item.produk && typeof item.produk === 'object') {
+          produkName = item.produk.name || JSON.stringify(item.produk);
+        } else {
+          produkName = item.produk || '';
+        }
+
+        return {
+          ...item,
+          toko: tokoName,
+          produk: produkName,
+        };
+      });
+    });
+
     const paginatedTransactions = computed(() => {
       const start = (currentPage.value - 1) * itemsPerPage.value;
-      return transactions.value.slice(start, start + itemsPerPage.value);
+      return mappedTransactions.value.slice(start, start + itemsPerPage.value);
     });
 
     const newTransactionModalVisible = ref(false);
@@ -216,33 +241,26 @@ export default {
     };
 
     // Watch searchTerm prop to perform search
-    watch(() => props.searchTerm, async (newTerm) => {
-  const token = localStorage.getItem('auth_token');
-  if (newTerm && newTerm.trim() !== '') {
-    try {
-      // Kirim data pencarian ke API dengan POST
-      const response = await axios.post('http://127.0.0.1:8000/api/search', {
-        search: newTerm,  // kata kunci pencarian
-        page: "transaksi-owner"  // halaman yang sedang dicari
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      // Ambil hasil dari response POST dan update transaksi
-      transactions.value = response.data.results || [];  // Asumsikan hasil pencarian berada di response.data.results
-
-    } catch (error) {
-      console.error('Error searching transaksi:', error);
-    }
-  } else {
-    // Jika searchTerm kosong, ambil semua transaksi
-    fetchTransactions();
-  }
-}, { immediate: true });
+      watch(() => props.searchTerm, async (newTerm) => {
+        const token = localStorage.getItem('auth_token');
+        if (newTerm && newTerm.trim() !== '') {
+          try {
+            const response = await axios.get('http://127.0.0.1:8000/api/search', {
+              params: { search: newTerm, page: 'transaksi-owner' },
+              headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`,
+              },
+            });
+            transactions.value = response.data.data.data;
+          } catch (error) {
+            console.error('Error searching laporan:', error);
+          }
+        } else {
+          fetchTransactions();
+        }
+      }, { immediate: true });
 
 
     onMounted(() => {

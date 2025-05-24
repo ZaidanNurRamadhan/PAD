@@ -62,19 +62,15 @@
     </div>
 
     <!-- Pagination -->
-    <div class="d-flex justify-content-center mt-3">
-      <nav>
+    <div class="d-flex justify-content-between mt-3">
+      <nav class="w-100">
         <ul class="pagination">
           <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
             <button class="page-link" @click="changePage(currentPage - 1)" :disabled="currentPage === 1">
               Previous
             </button>
           </li>
-          <li v-for="page in totalPages" :key="page" class="page-item" :class="{ 'active': page === currentPage }">
-            <button class="page-link" @click="changePage(page)">
-              {{ page }}
-            </button>
-          </li>
+          <span>Page {{ currentPage }} of {{ totalPages }}</span>
           <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
             <button class="page-link" @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages">
               Next
@@ -105,17 +101,23 @@
 
 <script>
 import axios from 'axios';
-import { ref, computed, reactive, onMounted } from 'vue';
+import { ref, computed, reactive, onMounted, watch } from 'vue';
 import TambahTransaksi from '@/components/modals/TambahTransaksi.vue';
 import EditTransaksiModal from '@/components/modals/EditTransaksi.vue';
 
 export default {
   name: 'OwnerTransactionView',
+  props: {
+    searchTerm: {
+      type: String,
+      default: ''
+    }
+  },
   components: {
     TambahTransaksi,
     EditTransaksiModal,
   },
-  setup() {
+  setup(props) {
     const transactions = ref([]);
     const tokos = ref([]);
     const produks = ref([]);
@@ -131,12 +133,11 @@ export default {
     const editTransactionModalVisible = ref(false);
 
     const newTransaction = reactive({
-      toko_id: '',
-      produk_id: '',
-      jumlahDibeli: '',
-      terjual: '',
-      harga: '',
-      total_harga: '',
+      // Define properties as needed, example:
+      toko: '',
+      produk: '',
+      jumlahDibeli: 0,
+      harga: 0,
       tanggal_keluar: '',
       tanggal_retur: '',
       waktu_edar: '',
@@ -144,13 +145,11 @@ export default {
     });
 
     const editedTransaction = reactive({
-      id: '',
+      id: null,
       toko: '',
       produk: '',
-      jumlahDibeli: '',
-      terjual: '',
-      harga: '',
-      total_harga: '',
+      jumlahDibeli: 0,
+      harga: 0,
       tanggal_keluar: '',
       tanggal_retur: '',
       waktu_edar: '',
@@ -167,52 +166,71 @@ export default {
             'Authorization': `Bearer ${token}`,
           },
         });
-        transactions.value = response.data.data;
-        console.log(transactions.value); // Debugging, periksa data yang diterima
+        transactions.value = Array.isArray(response.data.data) ? response.data.data : [];
       } catch (error) {
-        console.error(error);
-        alert('Terjadi kesalahan saat mengambil data transaksi');
+        console.error('Error fetching transaksi:', error);
       }
     };
 
-    const fetchTokos = async () => {
-      try {
-        const token = localStorage.getItem('auth_token');
-        const response = await axios.get('http://127.0.0.1:8000/api/transaksi-karyawan', {
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-        tokos.value = response.data.toko;
-      } catch (error) {
-        console.error(error);
-        alert('Terjadi kesalahan saat mengambil data toko');
-      }
-    };
+    // const fetchTokos = async () => {
+    //   try {
+    //     const token = localStorage.getItem('auth_token');
+    //     const response = await axios.get('http://127.0.0.1:8000/api/toko', {
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //         'Accept': 'application/json',
+    //         'Authorization': `Bearer ${token}`,
+    //       },
+    //     });
+    //     tokos.value = Array.isArray(response.data.data) ? response.data.data : [];
+    //   } catch (error) {
+    //     console.error('Error fetching tokos:', error);
+    //   }
+    // };
 
-    const fetchProduks = async () => {
-      try {
-        const token = localStorage.getItem('auth_token');
-        const response = await axios.get('http://127.0.0.1:8000/api/gudang-karyawan', {
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-        produks.value = response.data.produks;
-      } catch (error) {
-        console.error(error);
-        alert('Terjadi kesalahan saat mengambil data produk');
+    // const fetchProduks = async () => {
+    //   try {
+    //     const token = localStorage.getItem('auth_token');
+    //     const response = await axios.get('http://127.0.0.1:8000/api/produk', {
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //         'Accept': 'application/json',
+    //         'Authorization': `Bearer ${token}`,
+    //       },
+    //     });
+    //     produks.value = Array.isArray(response.data.data) ? response.data.data : [];
+    //   } catch (error) {
+    //     console.error('Error fetching produks:', error);
+    //   }
+    // };
+
+    // Watch searchTerm prop to perform search
+    
+    watch(() => props.searchTerm, async (newTerm) => {
+      const token = localStorage.getItem('auth_token');
+      if (newTerm && newTerm.trim() !== '') {
+        try {
+          const response = await axios.get('http://127.0.0.1:8000/api/search', {
+            params: { search: newTerm, page: 'transaksi-karyawan' },
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+          });
+          transactions.value = Array.isArray(response.data.data.data) ? response.data.data.data : [];
+        } catch (error) {
+          console.error('Error searching transaksi:', error);
+        }
+      } else {
+        fetchTransactions();
       }
-    };
+    }, { immediate: true });
 
     onMounted(() => {
       fetchTransactions();
-      fetchTokos();
-      fetchProduks();
+      // fetchTokos();
+      // fetchProduks();
     });
 
     const changePage = (page) => {
@@ -253,51 +271,6 @@ export default {
         alert('Terjadi kesalahan saat menambahkan transaksi');
       }
     };
-
-    // const updateTransaction = async (transaction) => {
-    //   try {
-    //     const response = await axios.put(`http://127.0.0.1:8000/api/transaksi/${transaction.id}`, transaction, {
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //         'Accept' : 'application/json',
-    //         'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
-    //       },
-    //     });
-    //     const index = transactions.value.findIndex(t => t.id === transaction.id);
-    //     if (index !== -1) {
-    //       const updated = response.data.data;
-    //       // Convert numeric fields to numbers to avoid NaN in UI
-    //       updated.harga = Number(updated.harga);
-    //       updated.jumlahDibeli = Number(updated.jumlahDibeli);
-    //       updated.terjual = Number(updated.terjual);
-    //       updated.total_harga = Number(updated.total_harga);
-
-    //       // Enrich with toko and produk names from tokos and produks
-    //       const tokoObj = tokos.value.find(t => t.id === updated.toko_id);
-    //       const produkObj = produks.value.find(p => p.id === updated.produk_id);
-    //       updated.toko = tokoObj ? tokoObj.name : '';
-    //       updated.produk = produkObj ? produkObj.name : '';
-
-    //       // Compute total_harga if missing or NaN
-    //       if (!updated.total_harga || isNaN(updated.total_harga)) {
-    //         updated.total_harga = updated.harga * updated.jumlahDibeli;
-    //       }
-
-    //       // Ensure tanggal_keluar, tanggal_retur, waktu_edar, status are assigned safely
-    //       updated.tanggal_keluar = updated.tanggal_keluar || '';
-    //       updated.tanggal_retur = updated.tanggal_retur || '';
-    //       // Preserve waktu_edar from existing transaction if missing in updated
-    //       updated.waktu_edar = updated.waktu_edar || transactions.value[index].waktu_edar || '';
-    //       updated.status = updated.status || 'open';
-
-    //       transactions.value[index] = updated;
-    //     }
-    //     closeEditTransactionModal();
-    //   } catch (error) {
-    //     console.error(error);
-    //     alert('Terjadi kesalahan saat memperbarui transaksi');
-    //   }
-    // };
 
     const updateTransaction = async (transaction) => {
       try {
@@ -344,10 +317,6 @@ export default {
       if (status === 'open') return 'Buka';
       return status;
     };
-
-    onMounted(() => {
-      fetchTransactions();
-    });
 
     return {
       transactions,

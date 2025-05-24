@@ -1,5 +1,5 @@
 <template>
-  <aside class="sidebar">
+  <aside class="sidebar d-flex flex-column">
     <div>
       <div>
         <img alt="KONEK Logo" height="120" src="/src/assets/img/Logo.png" width="170" class="image1 object-fit-cover" />
@@ -41,11 +41,15 @@
           </router-link>
         </nav>
       </div>
+    </div>
 
-      <!-- Link settings (khusus owner) -->
-      <router-link v-if="isOwner" to="/settings" :class="{ active: isActive('/settings') }">
-        <font-awesome-icon :icon="['fas', 'users-cog']" /> Manajemen Karyawan
-      </router-link>
+    <!-- Link settings (khusus owner) dan Logout -->
+    <div class="mt-auto">
+      <div v-if="isOwner">
+        <router-link to="/settings" :class="{ active: isActive('/settings') }">
+          <font-awesome-icon :icon="['fas', 'users-cog']" /> Manajemen Karyawan
+        </router-link>
+      </div>
 
       <!-- Tombol logout -->
       <a href="#" @click.prevent="isLogoutModalOpen = true">
@@ -61,6 +65,7 @@
     />
   </aside>
 </template>
+
 
 
 <script>

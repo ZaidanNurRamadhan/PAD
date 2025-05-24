@@ -1,7 +1,7 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid p-0">
     <!-- Stock Summary Section -->
-    <section class="table-container h-auto p-4">
+    <section class="table-container h-auto p-4 mx-2">
       <h3 class="text-center">Stok Keseluruhan</h3>
       <div class="row mt-4">
         <div class="col text-center">
@@ -20,7 +20,7 @@
     </section>
 
     <!-- Product Management Section -->
-    <section class="mt-4 p-4 min-vh-100 d-flex justify-content-between flex-column table-container">
+    <section class="mt-4 p-4 h-auto d-flex justify-content-between flex-column table-container">
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h5>Produk</h5>
         <button
@@ -48,7 +48,7 @@
           <tbody>
             <template v-if="paginatedProduks.length > 0">
               <tr v-for="(produk, index) in paginatedProduks" :key="produk.id">
-                <td>{{ index + 1 }}</td>
+                <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
                 <td>{{ produk.name }}</td>
                 <td>{{ formatCurrency(produk.hargaBeli) }}</td>
                 <td>{{ formatCurrency(produk.hargaJual) }}</td>
@@ -73,7 +73,7 @@
             <tr v-else>
               <td colspan="7" class="text-center">Tidak ada data</td>
             </tr>
-            <tr v-for="n in (19 - produks.length)" :key="n">
+            <tr v-for="n in (10 - produks.length)" :key="n">
               <td colspan="7"></td>
             </tr>
           </tbody>
@@ -81,38 +81,24 @@
       </div>
 
       <!-- Pagination -->
-      <div class="d-flex justify-content-center mt-3">
-        <nav>
+      <div class="d-flex justify-content-center">
+        <nav class="w-100">
           <ul class="pagination">
-            <li
-              class="page-item"
-              :class="{ 'disabled': currentPage === 1 }"
-            >
+            <!-- Previous Button -->
+            <li class="page-item" :class="{ 'disabled': currentPage === 1 }">
               <button
                 class="page-link"
                 @click="changePage(currentPage - 1)"
                 :disabled="currentPage === 1"
               >
-                Previous
+                Prev
               </button>
             </li>
-            <li
-              v-for="page in totalPages"
-              :key="page"
-              class="page-item"
-              :class="{ 'active': page === currentPage }"
-            >
-              <button
-                class="page-link"
-                @click="changePage(page)"
-              >
-                {{ page }}
-              </button>
-            </li>
-            <li
-              class="page-item"
-              :class="{ 'disabled': currentPage === totalPages }"
-            >
+
+              <span>Page {{ currentPage }} of {{ totalPages }}</span>
+            
+            <!-- Next Button -->
+            <li class="page-item" :class="{ 'disabled': currentPage === totalPages }">
               <button
                 class="page-link"
                 @click="changePage(currentPage + 1)"
@@ -124,6 +110,7 @@
           </ul>
         </nav>
       </div>
+
     </section>
   </div>
 
@@ -154,12 +141,11 @@
 </template>
 
 <script>
-import { ref, computed, reactive, onMounted } from 'vue'
+import { ref, computed, reactive, onMounted, watch } from 'vue'
 import axios from 'axios'
 import TambahGudang from '@/components/modals/TambahGudang.vue'
 import EditGudang from '@/components/modals/EditGudang.vue'
 import HapusGudang from '@/components/modals/HapusGudang.vue'
-import { watch } from 'vue';
 
 export default {
   name: 'OwnerStockManagement',
@@ -238,7 +224,7 @@ export default {
         const data = response.data;
 
         // Update data produk jika berhasil
-        produks.value = data.produks;
+        produks.value = Array.isArray(data.produks) ? data.produks : (data.data || []);
       } catch (error) {
         if (error.response) {
           console.error('Error fetching produk data:', error.response.data.message || 'Tidak dapat mengambil data produk');
@@ -268,20 +254,20 @@ export default {
     };
 
     // Watch searchTerm prop to perform search
-    watch(() => props.searchTerm, async (newTerm) => {
+      watch(() => props.searchTerm, async (newTerm) => {
       const token = localStorage.getItem('auth_token');
       if (newTerm && newTerm.trim() !== '') {
         try {
           const response = await axios.get('http://127.0.0.1:8000/api/search', {
-            params: { query: newTerm },
+            params: { search: newTerm, page: 'gudang-owner' },
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json',
               'Authorization': `Bearer ${token}`,
             },
           });
-          // Assuming response.data.produks contains search results for produk
-          produks.value = response.data.produks || [];
+          // Assign the paginated produk data from response
+          produks.value = Array.isArray(response.data.data.data) ? response.data.data.data : [];
         } catch (error) {
           console.error('Error searching produk:', error);
         }

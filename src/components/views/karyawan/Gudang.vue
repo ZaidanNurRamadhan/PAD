@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid">
     <!-- Stock Summary Section -->
-    <section class="card p-4" style="z-index: 10;">
+    <section class="table-container h-auto p-4" style="z-index: 10;">
       <h3 class="text-center">Stok Keseluruhan</h3>
       <div class="row mt-4">
         <div class="col text-center">
@@ -40,7 +40,7 @@
           <tbody>
             <template v-if="produks.length > 0">
               <tr v-for="(produk, index) in paginatedProduks" :key="produk.id">
-                <td>{{ index + 1 }}</td>
+                <td>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</td>
                 <td>{{ produk.name }}</td>
                 <td>{{ formatCurrency(produk.hargaBeli) }}</td>
                 <td>{{ formatCurrency(produk.hargaJual) }}</td>
@@ -51,7 +51,7 @@
             <tr v-else>
               <td colspan="7" class="text-center">Tidak ada data</td>
             </tr>
-            <tr v-for="n in (19 - produks.length)" :key="n">
+            <tr v-for="n in (10 - produks.length)" :key="n">
               <td colspan="7"></td>
             </tr>
           </tbody>
@@ -59,8 +59,8 @@
       </div>
 
       <!-- Pagination -->
-      <div class="d-flex justify-content-center mt-3">
-        <nav>
+      <div class="d-flex justify-content-between mt-3">
+        <nav class="w-100">
           <ul class="pagination">
             <li
               class="page-item"
@@ -74,19 +74,7 @@
                 Previous
               </button>
             </li>
-            <li
-              v-for="page in totalPages"
-              :key="page"
-              class="page-item"
-              :class="{ 'active': page === currentPage }"
-            >
-              <button
-                class="page-link"
-                @click="changePage(page)"
-              >
-                {{ page }}
-              </button>
-            </li>
+            <span>Page {{ currentPage }} of {{ totalPages }}</span>
             <li
               class="page-item"
               :class="{ 'disabled': currentPage === totalPages }"
@@ -107,7 +95,7 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import axios from 'axios'
 
 export default {
@@ -120,6 +108,10 @@ export default {
     initialPemasoks: {
       type: Array,
       default: () => []
+    },
+        searchTerm: {
+      type: String,
+      default: ''
     }
   },
   setup(props) {
@@ -132,7 +124,6 @@ export default {
     const fetchProduks = async () => {
       try {
         const token = localStorage.getItem('auth_token');  // Get token from localStorage
-        console.log(token)
         const response = await axios.get('http://127.0.0.1:8000/api/gudang-karyawan', {
           headers: {
             'Content-Type': 'application/json',
@@ -142,8 +133,6 @@ export default {
         });
 
         const data = response.data;
-
-        // Update product data if successful
         produks.value = data.produks;
       } catch (error) {
         if (error.response) {
@@ -153,6 +142,29 @@ export default {
         }
       }
     };
+
+    watch(() => props.searchTerm, async (newTerm) => {
+      const token = localStorage.getItem('auth_token');
+      if (newTerm && newTerm.trim() !== '') {
+        try {
+          const response = await axios.get('http://127.0.0.1:8000/api/search', {
+            params: { search: newTerm, page: 'gudang-karyawan' },
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+          });
+          // Assign the paginated produk data from response
+          produks.value = Array.isArray(response.data.data.data) ? response.data.data.data : [];
+        } catch (error) {
+          console.error('Error searching produk:', error);
+        }
+      } else {
+        // If search term is empty, fetch all produk
+        fetchProduks();
+      }
+    }, { immediate: true });
 
     onMounted(() => {
       fetchProduks()

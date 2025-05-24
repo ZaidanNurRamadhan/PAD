@@ -1,5 +1,5 @@
 <template>
-  <section class="table-container d-flex flex-column min-vh-100 m-4">
+  <section class="table-container d-flex flex-column min-vh-100 m-2">
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center">
       <h5 class="text-judul">Manajemen Karyawan</h5>
@@ -61,8 +61,8 @@
     </div>
 
     <!-- Pagination -->
-    <div class="d-flex justify-content-center mt-3">
-      <nav>
+    <div class="d-flex justify-content-between mt-3">
+      <nav class="w-100">
         <ul class="pagination">
           <li
             class="page-item"
@@ -76,19 +76,7 @@
               Previous
             </button>
           </li>
-          <li
-            v-for="page in totalPages"
-            :key="page"
-            class="page-item"
-            :class="{ 'active': page === currentPage }"
-          >
-            <button
-              class="page-link"
-              @click="changePage(page)"
-            >
-              {{ page }}
-            </button>
-          </li>
+          <span>Page {{ currentPage }} of {{ totalPages }}</span>
           <li
             class="page-item"
             :class="{ 'disabled': currentPage === totalPages }"
@@ -127,19 +115,26 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
+import axios from 'axios'
 import TambahKaryawanModal from '@/components/modals/TambahKaryawan.vue'
 import EditKaryawanModal from '@/components/modals/EditKaryawan.vue'
 import HapusKaryawanModal from '@/components/modals/HapusKaryawan.vue'
 
 export default {
   name: 'EmployeeManagement',
+  props: {
+    searchTerm: {
+      type: String,
+      default: ''
+    }
+  },
   components: {
     TambahKaryawanModal,
     EditKaryawanModal,
     HapusKaryawanModal
   },
-  setup() {
+  setup(props) {
     const employees = ref([]) 
     const currentPage = ref(1)
     const itemsPerPage = ref(10)
@@ -168,8 +163,7 @@ export default {
     const fetchEmployees = async () => {
       try {
         const token = localStorage.getItem('auth_token');  // Get the token from localStorage
-        const response = await fetch('http://127.0.0.1:8000/api/karyawan', {
-          method: 'GET',
+        const response = await axios.get('http://127.0.0.1:8000/api/karyawan', {
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
@@ -177,17 +171,35 @@ export default {
           }
         })
 
-        if (!response.ok) {
-          throw new Error('Gagal mengambil data karyawan');
-        }
-        
-        const data = await response.json()
-        employees.value = data.data
+        employees.value = response.data.data
       } catch (error) {
         console.error(error)
         alert('Terjadi kesalahan saat mengambil data karyawan')
       }
     }
+
+    // Watch searchTerm prop to perform search
+    watch(() => props.searchTerm, async (newTerm) => {
+      const token = localStorage.getItem('auth_token');
+      if (newTerm && newTerm.trim() !== '') {
+        try {
+          const response = await axios.get('http://127.0.0.1:8000/api/search', {
+            params: { search: newTerm, page: 'karyawan-owner' },
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            }
+          });
+          employees.value = Array.isArray(response.data.data.data) ? response.data.data.data : [];
+        } catch (error) {
+          console.error('Error searching employees:', error);
+        }
+      } else {
+        // If search term is empty, fetch all employees
+        fetchEmployees();
+      }
+    }, { immediate: true });
 
     onMounted(() => {
       fetchEmployees()
@@ -233,7 +245,8 @@ export default {
       openDeleteEmployeeModal,
       handleEmployeeAdded,
       handleEmployeeUpdated,
-      handleEmployeeDeleted
+      handleEmployeeDeleted,
+      searchTerm: props.searchTerm
     }
   }
 }

@@ -26,7 +26,7 @@
                 <label for="karyawan-contact">Kontak</label>
                 <input
                   id="karyawan-contact"
-                  type="number"
+                  type="text"
                   v-model="formData.contact"
                   class="form-control"
                   style="max-width: 273px;"
