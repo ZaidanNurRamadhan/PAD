@@ -1,7 +1,7 @@
 <p>Silahkan untuk Melakukan clone Github pada branch revert-4-be dan FE-VUE</p>
 <p>Berikut langkah-langkahnya</p>
-<p>git clone --branch FE-VUE --single-branch https://github.com/username/nama-repo.git</p>
-<p>git clone --branch revert-4-be --single-branch https://github.com/username/nama-repo.git</p>
+<p>git clone --branch FE-VUE --single-branch https://github.com/ZaidanNurRamadhan/PAD.git</p>
+<p>git clone --branch revert-4-be --single-branch https://github.com/ZaidanNurRamadhan/PAD.git</p>
 <p>buka folder frontend yang telah di clone dan jalankan perintah 'npm i' pada terminal</p>
 <p>jalankan server dengan menuliskan perintah 'npm run dev'</p>
 <p>akses web dengan mengakses URL pada output perintah sebelumnya</p>
