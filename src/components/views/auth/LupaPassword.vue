@@ -80,153 +80,90 @@
   </template>
 
   <script>
-  import { ref } from 'vue';
-  import Notification from '@/components/modals/Notifikasi.vue';
-  import logoImage from '@/assets/img/wa.jpg'
-  import logoIcon from '@/assets/img/logo-konek.png'
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import Notification from '@/components/modals/Notifikasi.vue';
+import logoImage from '@/assets/img/wa.jpg'
+import logoIcon from '@/assets/img/logo-konek.png'
 
-  export default {
-    name: 'LupaPassword',
-    components: {
-      Notification
-    },
-    setup() {
-      const email = ref('');
-      const isLoading = ref(false);
-      const errorMessage = ref('');
-      const successMessage = ref('');
-      const showNotification = ref(false);
-      const notificationMessage = ref('');
+export default {
+  name: 'LupaPassword',
+  components: {
+    Notification
+  },
+  setup() {
+    const router = useRouter();
+    const email = ref('');
+    const isLoading = ref(false);
+    const errorMessage = ref('');
+    const successMessage = ref('');
+    const showNotification = ref(false);
+    const notificationMessage = ref('');
 
-      // Show notification
-      const showNotificationMessage = (message) => {
-        notificationMessage.value = message;
-        showNotification.value = true;
+    // Show notification
+    const showNotificationMessage = (message) => {
+      notificationMessage.value = message;
+      showNotification.value = true;
 
-        // Auto-hide notification after 3 seconds
-        setTimeout(() => {
-          showNotification.value = false;
-        }, 3000);
-      };
+      // Auto-hide notification after 3 seconds
+      setTimeout(() => {
+        showNotification.value = false;
+      }, 3000);
+    };
 
-      // Handle form submission
-      const handleSubmit = async () => {
-        try {
-          isLoading.value = true;
-          errorMessage.value = '';
-          successMessage.value = '';
+    // Handle form submission
+    const handleSubmit = async () => {
+      try {
+        isLoading.value = true;
+        errorMessage.value = '';
+        successMessage.value = '';
 
-          const response = await fetch('/api/forgot-password', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
-            },
-            body: JSON.stringify({ email: email.value })
-          });
+        const response = await fetch('http://127.0.0.1:8000/api/forgot-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+          },
+          body: JSON.stringify({ email: email.value })
+        });
 
-          const data = await response.json();
+        const data = await response.json();
 
-          if (response.ok) {
-            successMessage.value = data.message || 'Link reset password telah dikirim ke email Anda.';
-            email.value = ''; // Clear the input
-          } else {
-            errorMessage.value = data.message || 'Terjadi kesalahan. Silakan coba lagi.';
-          }
-        } catch (error) {
-          console.error('Forgot password error:', error);
-          errorMessage.value = 'Terjadi kesalahan. Silakan coba lagi.';
-        } finally {
-          isLoading.value = false;
+        if (response.ok) {
+          successMessage.value = data.message || 'Link reset password telah dikirim ke email Anda.';
+          const sentEmail = email.value; // Store email before clearing
+          email.value = ''; // Clear the input
+          // Store email and token in localStorage instead of passing in URL query
+          localStorage.setItem('resetEmail', sentEmail);
+          localStorage.setItem('resetToken', data.token);
+          router.push({ name: 'tokenlupapassword' });
+        } else {
+          errorMessage.value = data.message || 'Terjadi kesalahan. Silakan coba lagi.';
         }
-      };
+      } catch (error) {
+        console.error('Forgot password error:', error);
+        errorMessage.value = 'Terjadi kesalahan. Silakan coba lagi.';
+      } finally {
+        isLoading.value = false;
+      }
+    };
 
-      return {
-        email,
-        isLoading,
-        errorMessage,
-        successMessage,
-        showNotification,
-        notificationMessage,
-        handleSubmit,
-        logoIcon,
-        logoImage
-      };
-    }
-  };
+    return {
+      email,
+      isLoading,
+      errorMessage,
+      successMessage,
+      showNotification,
+      notificationMessage,
+      handleSubmit,
+      logoIcon,
+      logoImage
+    };
+  }
+};
   </script>
 
   <style scoped>
-  /* You can add component-specific styles here */
-  .container-fluid {
-    min-height: 100vh;
-  }
-
-  .logo-utama {
-    width: 372px;
-    height: 372px;
-  }
-
-  .login-form {
-    width: 400px;
-  }
-
-  .icon-login {
-    width: 100px;
-    height: 100px;
-    margin-bottom: 1rem;
-  }
-
-  h1 {
-    margin-bottom: 0.5rem;
-  }
-
-  input, button {
-    width: 100%;
-  }
-
-  @media (max-width: 768px) {
-    aside {
-      display: none;
-    }
-
-    .logo-utama {
-      display: none;
-    }
-
-    section {
-      width: 100%;
-    }
-
-    .container {
-      justify-content: center;
-    }
-
-    main {
-      flex: 1;
-    }
-  }
-
-  @media (max-width: 1023px) {
-    aside {
-      display: none;
-    }
-
-    .logo-utama {
-      display: none;
-    }
-
-    section {
-      width: 100%;
-    }
-
-    .container {
-      justify-content: center;
-    }
-
-    main {
-      flex: 1;
-    }
-  }
+  @import '/src/assets/css/form.css';
   </style>

@@ -48,15 +48,17 @@
     </div>
   </template>
 
-  <script>
-  export default {
-    name: 'PasswordReset',
-    props: {
-      initialEmail: {
-        type: String,
-        default: ''
-      }
-    },
+<script>
+import axios from 'axios'
+
+export default {
+  name: 'PasswordReset',
+  props: {
+    initialEmail: {
+      type: String,
+      default: ''
+    }
+  },
     data() {
       return {
         email: this.initialEmail,
@@ -68,71 +70,60 @@
       }
     },
     created() {
-      // Get email from route query if not provided via props
-      if (!this.email && this.$route.query.email) {
-        this.email = this.$route.query.email
+      // Get email from localStorage if not provided via props
+      if (!this.email) {
+        this.email = localStorage.getItem('resetEmail') || ''
       }
     },
-    methods: {
-      resetPassword() {
-        // Validate passwords match
-        if (this.password !== this.passwordConfirmation) {
-          this.notification = {
-            type: 'error',
-            message: 'Password tidak cocok. Silakan periksa kembali.'
-          }
-          return
+    watch: {
+      // Remove watcher on route query email since no longer used
+      /*
+      '$route.query.email'(newEmail) {
+        this.email = newEmail || ''
+      }
+      */
+    },
+  methods: {
+    resetPassword() {
+      // Validate passwords match
+      if (this.password !== this.passwordConfirmation) {
+        this.notification = {
+          type: 'error',
+          message: 'Password tidak cocok. Silakan periksa kembali.'
+        }
+        return
+      }
+
+      // Replace with your API call logic
+      axios.post('http://127.0.0.1:8000/api/reset-password', {
+        email: this.email,
+        password: this.password,
+        password_confirmation: this.passwordConfirmation
+      })
+      .then(response => {
+        // Handle success
+        this.notification = {
+          type: 'success',
+          message: 'Password berhasil direset. Silakan login dengan password baru Anda.'
         }
 
-        // Replace with your API call logic
-        this.$axios.post('/api/password/reset/submit', {
-          email: this.email,
-          password: this.password,
-          password_confirmation: this.passwordConfirmation
-        })
-        .then(response => {
-          // Handle success
-          this.notification = {
-            type: 'success',
-            message: 'Password berhasil direset. Silakan login dengan password baru Anda.'
-          }
-
-          // Redirect to login page after a delay
-          setTimeout(() => {
-            this.$router.push({ name: 'login' })
-          }, 2000)
-        })
-        .catch(error => {
-          // Handle error
-          this.notification = {
-            type: 'error',
-            message: error.response?.data?.message || 'Terjadi kesalahan. Silakan coba lagi.'
-          }
-        })
-      }
+        // Redirect to login page after a delay
+        setTimeout(() => {
+          this.$router.push({ name: 'login' })
+        }, 2000)
+      })
+      .catch(error => {
+        // Handle error
+        this.notification = {
+          type: 'error',
+          message: error.response?.data?.message || 'Terjadi kesalahan. Silakan coba lagi.'
+        }
+      })
     }
   }
-  </script>
+}
+</script>
 
   <style scoped>
-  /* You can import your form.css here or define styles directly */
-  .notification {
-    padding: 10px;
-    margin-bottom: 15px;
-    border-radius: 4px;
-  }
-
-  .notification.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-  }
-
-  .notification.error {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-  }
-
-  /* Add more styles as needed */
+@import '/src/assets/css/form.css';
   </style>

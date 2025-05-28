@@ -26,20 +26,23 @@ const routes = [
     children: [
       {
         path : '',
-        component : Login
+        component : Login,
+        name: 'login'
       },
 
       {
         path : 'forgot-password',
-        name : LupaPassword
+        component : LupaPassword
       },
       {
         path:'token-forgot-password',
-        component: TokenLupaPassword
+        component: TokenLupaPassword,
+        name: 'tokenlupapassword'
       },
       {
-        path:'/reset-password',
-        component: ResetPassword
+        path:'reset-password',
+        component: ResetPassword,
+        name: 'resetpassword'
       }
     ],
   },
