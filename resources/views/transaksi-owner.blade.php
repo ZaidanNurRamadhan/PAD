@@ -20,37 +20,8 @@
                         <th class="text-center">Status</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @forelse($data as $item)
-                        <tr colspan="9">
-                            <td>{{ $item['toko']}}</td>
-                        </tr>
-                        <tr>
-                            <td>Rp{{ number_format($item['total_harga'], 0, ',', '.') }}</td>
-                            <td>{{ $item['jumlahDibeli'] }}</td>
-                            <td>{{ $item['produk'] }}</td>
-                            <td>{{ $item['terjual'] }}</td>
-                            <td>Rp{{ number_format($item['harga'], 0, ',', '.') }}</td>
-                            <td>{{ \Carbon\Carbon::parse($item['tanggal_keluar'])->format('d/m/Y')}}</td>
-                            <td>{{ $item['tanggal_retur'] }}</td>
-                            <td>{{ $item['waktu_edar'] }}</td>
-                            <td class="text-center">
-                                <span class="{{ $item['status'] == 'closed' ? 'text-danger' : 'text-success' }}">
-                                    {{ ucfirst($item['status']) }}
-                                </span>
-                                <a class="btn btn-sm p-0 m-0" onclick="editTransaksi({{ $item['id'] }})">
-                                    <i class="fas fa-angle-right"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        @empty
-                            <tr><td colspan="9" class="text-center">Tidak ada data</td></tr>
-                        @endforelse
-
-                        {{-- Menambahkan baris kosong dengan border jika data kurang dari 20 --}}
-                        @for ($i = count($data); $i < 19; $i++)
-                            <tr><td colspan="9"></td></tr>
-                        @endfor
+                <tbody id="transaksiTableBody">
+                    <tr><td colspan="9" class="text-center">Loading data...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -63,5 +34,77 @@
 
     @include('component.EditTransaksi')
     @include('component.TambahTransaksi')
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tableBody = document.getElementById('transaksiTableBody');
+            const token = localStorage.getItem('authToken');
+
+            if (!token) {
+                tableBody.innerHTML = '<tr><td colspan="9" class="text-center text-danger">Authentication token not found. Please login again.</td></tr>';
+                return;
+            }
+
+            fetch('http://127.0.0.1:8000/api/transaksi', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json',
+                    'Accept' : 'a   '
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data: ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const transaksiData = data.data;
+                if (!transaksiData || transaksiData.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="9" class="text-center">Tidak ada data</td></tr>';
+                    return;
+                }
+
+                let rows = '';
+                transaksiData.forEach(item => {
+                    rows += `
+                        <tr colspan="9">
+                            <td>${item.toko || ''}</td>
+                        </tr>
+                        <tr>
+                            <td>Rp${Number(item.total_harga).toLocaleString('id-ID')}</td>
+                            <td>${item.jumlahDibeli || ''}</td>
+                            <td>${item.produk || ''}</td>
+                            <td>${item.terjual || ''}</td>
+                            <td>Rp${Number(item.harga).toLocaleString('id-ID')}</td>
+                            <td>${new Date(item.tanggal_keluar).toLocaleDateString('id-ID')}</td>
+                            <td>${item.tanggal_retur || ''}</td>
+                            <td>${item.waktu_edar || ''}</td>
+                            <td class="text-center">
+                                <span class="${item.status === 'closed' ? 'text-danger' : 'text-success'}">
+                                    ${item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : ''}
+                                </span>
+                                <a class="btn btn-sm p-0 m-0" onclick="editTransaksi(${item.id})">
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                // Add empty rows if less than 20
+                const emptyRowsCount = 19 - transaksiData.length;
+                for (let i = 0; i < emptyRowsCount; i++) {
+                    rows += '<tr><td colspan="9"></td></tr>';
+                }
+
+                tableBody.innerHTML = rows;
+            })
+            .catch(error => {
+                tableBody.innerHTML = `<tr><td colspan="9" class="text-center text-danger">${error.message}</td></tr>`;
+            });
+        });
+    </script>
 
     @endsection

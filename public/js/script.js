@@ -46,68 +46,70 @@ function selectOption(element, value) {
             });
     }
 
-    function editTransaksi(id) {
-        // Ambil data transaksi dengan AJAX
-        fetch(`/transaksi/${id}/edit`)
-            .then(response => response.json())
-            .then(data => {
-                let transactionDate = new Date(data.transactionDate).toISOString().split('T')[0];
-                // Isi data ke dalam form
-                document.getElementById('toko_id').value = data.toko_id;
-                document.getElementById('produk_id').value = data.produk_id;
-                document.getElementById('transactionDate').value = transactionDate;
-                document.getElementById('jumlahDibeli').value = data.jumlahDibeli;
-                document.getElementById('harga').value = data.harga;
-                document.getElementById('terjual').value = data.terjual;
-                document.getElementById('tanggal_retur').value = data.returDate || '';
-                document.getElementById('editTransaksiForm').action = `/transaksi/${data.id}`;
+    // function editTransaksi(id) {
+    //     // Ambil data transaksi dengan AJAX
+    //     fetch(`/transaksi/${id}/edit`)
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             let transactionDate = new Date(data.transactionDate).toISOString().split('T')[0];
+    //             // Isi data ke dalam form
+    //             document.getElementById('toko_id').value = data.toko_id;
+    //             document.getElementById('produk_id').value = data.produk_id;
+    //             document.getElementById('transactionDate').value = transactionDate;
+    //             document.getElementById('jumlahDibeli').value = data.jumlahDibeli;
+    //             document.getElementById('harga').value = data.harga;
+    //             document.getElementById('terjual').value = data.terjual;
+    //             document.getElementById('tanggal_retur').value = data.returDate || '';
+    //             document.getElementById('editTransaksiForm').action = `/transaksi/${data.id}`;
 
-                // Tampilkan modal
-                console.log(data)
-                new bootstrap.Modal(document.getElementById('Edittransaksi')).show();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Gagal mengambil data transaksi!');
-            });
-        }
+    //             // Tampilkan modal
+    //             console.log(data)
+    //             new bootstrap.Modal(document.getElementById('Edittransaksi')).show();
+    //         })
+    //         .catch(error => {
+    //             console.error('Error:', error);
+    //             alert('Gagal mengambil data transaksi!');
+    //         });
+    //     }
 
 
-    // bagian gudang
-    const editButtons = document.querySelectorAll('.edit-btn');
-    editButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const id = this.dataset.id;
-            const name = this.dataset.name;
-            const hbeli = this.dataset.hbeli;
-            const hjual = this.dataset.hjual;
-            const jstok = this.dataset.jstok;
-            const astok = this.dataset.astok;
+// bagian gudang
+const editButtons = document.querySelectorAll('.edit-btn');
+editButtons.forEach(button => {
+    button.addEventListener('click', function() {
+        const id = this.dataset.id;
+        const name = this.dataset.name;
+        const hbeli = this.dataset.hbeli;
+        const hjual = this.dataset.hjual;
+        const jstok = this.dataset.jstok;
+        const astok = this.dataset.astok;
 
-            document.querySelector('#editForm').action = `/gudang/update/${id}`;
-            document.querySelector('#editName').value = name;
-            document.querySelector('#editHargaBeli').value = hbeli;
-            document.querySelector('#editHargaJual').value = hjual;
-            document.querySelector('#editJumlahStok').value = jstok;
-            document.querySelector('#editAmbangKritis').value = astok;
-        });
+        document.querySelector('#editForm').action = `/gudang/${id}`;
+        document.querySelector('#editName').value = name;
+        document.querySelector('#editHargaBeli').value = hbeli;
+        document.querySelector('#editHargaJual').value = hjual;
+        document.querySelector('#editJumlahStok').value = jstok;
+        document.querySelector('#editAmbangKritis').value = astok;
     });
+});
 
-    // Hapus Produk
-    const deleteProduk = document.querySelectorAll('.deleteProduk');
-    deleteProduk.forEach(button => {
-        button.addEventListener('click', function() {
-            const id = this.dataset.id;
-            document.querySelector('#deleteProdukForm').action = `/gudang/destroy/${id}`;
-        });
+
+// Hapus Produk
+const deleteProduk = document.querySelectorAll('.deleteProduk');
+deleteProduk.forEach(button => {
+    button.addEventListener('click', function() {
+        const id = this.dataset.id;
+        document.querySelector('#deleteProdukForm').action = `/gudang/${id}`;
     });
-    const deletePemasok = document.querySelectorAll('.deletePemasok');
-    deletePemasok.forEach(button => {
-        button.addEventListener('click', function() {
-            const id = this.dataset.id;
-            document.querySelector('#deletePemasokForm').action = `/pemasok/destroy/${id}`;
-        });
+});
+
+const deletePemasok = document.querySelectorAll('.deletePemasok');
+deletePemasok.forEach(button => {
+    button.addEventListener('click', function() {
+        const id = this.dataset.id;
+        document.querySelector('#deletePemasokForm').action = `/pemasok/${id}`;
     });
+});
     const deleteToko = document.querySelectorAll('.deleteToko');
     deleteToko.forEach(button => {
         button.addEventListener('click', function() {
@@ -115,10 +117,63 @@ function selectOption(element, value) {
             document.querySelector('#deleteTokoForm').action = `/toko/destroy/${id}`;
         });
     });
-    const deleteKaryawan = document.querySelectorAll('.deleteKaryawan');
-    deleteKaryawan.forEach(button => {
-        button.addEventListener('click', function() {
-            const id = this.dataset.id;
-            document.querySelector('#deleteKaryawanForm').action = `/karyawan/destroy/${id}`;
-        });
+const deleteKaryawan = document.querySelectorAll('.deleteKaryawan');
+deleteKaryawan.forEach(button => {
+    button.addEventListener('click', function() {
+        const id = this.dataset.id;
+        document.querySelector('#deleteKaryawanForm').action = `/karyawan/destroy/${id}`;
     });
+});
+
+// Edit Transaksi form submission using API
+document.getElementById('editTransaksiForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        alert('Authentication token not found. Please login again.');
+        return;
+    }
+
+    const form = event.target;
+    const id = form.action.split('/').pop();
+
+    const formData = {
+        toko_id: document.getElementById('toko_id').value,
+        produk_id: document.getElementById('produk_id').value,
+        tanggal_keluar: document.getElementById('transactionDate').value,
+        harga: parseFloat(document.getElementById('harga').value),
+        jumlahDibeli: parseInt(document.getElementById('jumlahDibeli').value),
+        terjual: parseInt(document.getElementById('terjual').value),
+        tanggal_retur: document.getElementById('tanggal_retur').value || null,
+    };
+
+    fetch(`http://127.0.0.1:8000/api/transaksi/${id}`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(data => {
+                throw new Error(data.message || 'Failed to update transaksi');
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        alert('Transaksi berhasil diperbarui');
+        // Close modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('Edittransaksi'));
+        modal.hide();
+
+        // Optionally, refresh the transaksi table by reloading the page or calling a function
+        location.reload();
+    })
+    .catch(error => {
+        alert('Error: ' + error.message);
+    });
+});

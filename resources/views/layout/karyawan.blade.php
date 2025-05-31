@@ -98,7 +98,7 @@
             }
 
             $.ajax({
-                url: "{{ route('search.product') }}",  // URL ke controller untuk pencarian
+                url: "{{ route('search') }}",  // URL ke controller untuk pencarian
                 method: 'GET',
                 data: {
                     search: search_string,
