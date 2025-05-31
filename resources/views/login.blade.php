@@ -105,7 +105,7 @@
                 // Redirect based on user role
                 if (data.user && data.user.role) {
                     if (data.user.role === 'owner') {
-                        window.location.href = '/dashboard-owner';
+                        window.location.href = '/dashboard';
                     } else if (data.user.role === 'karyawan') {
                         window.location.href = '/transaksi-karyawan';
                     } else {

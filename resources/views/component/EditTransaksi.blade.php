@@ -11,17 +11,11 @@
                     <section class="form-group d-flex justify-content-between px-3">
                         <label for="toko_id">Nama Toko</label>
                         <select name="toko_id" id="toko_id" class="form-control" style="max-width: 273px;" required>
-                            @foreach ($tokos as $toko)
-                            <option value="{{ $toko->id }}">{{ $toko->name }}</option>
-                            @endforeach
                         </select>
                     </section>
                     <section class="form-group d-flex justify-content-between px-3 mt-4">
                         <label for="produk_id">Nama Produk</label>
                         <select name="produk_id" id="produk_id" class="form-control" style="max-width: 273px;">
-                            @foreach ($produks as $produk)
-                            <option value="{{ $produk->id }}">{{ $produk->name }}</option>
-                            @endforeach
                         </select>
                     </section>
                     <section class="form-group d-flex justify-content-between px-3 mt-4">
@@ -53,3 +47,44 @@
         </main>
     </div>
 </section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Fetch toko data and populate select
+        fetch('http://127.0.0.1:8000/api/toko')
+            .then(response => response.json())
+            .then(data => {
+                const tokoSelect = document.getElementById('toko_id');
+                tokoSelect.innerHTML = '';
+                const tokoList = data.data ? data.data : data;
+                tokoList.forEach(toko => {
+                    const option = document.createElement('option');
+                    option.value = toko.id;
+                    option.textContent = toko.name;
+                    tokoSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching toko data:', error);
+            });
+
+        // Fetch produk data and populate select
+        fetch('http://127.0.0.1:8000/api/gudang')
+            .then(response => response.json())
+            .then(data => {
+                const produkSelect = document.getElementById('produk_id');
+                produkSelect.innerHTML = '';
+                const produkList = data.produks ? data.produks : data;
+                produkList.forEach(produk => {
+                    const option = document.createElement('option');
+                    option.value = produk.id;
+                    option.textContent = produk.name;
+                    produkSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching produk data:', error);
+            });
+    });
+</script>
+</create_file>

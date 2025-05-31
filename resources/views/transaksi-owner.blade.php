@@ -45,26 +45,26 @@
                 return;
             }
 
-            fetch('http://127.0.0.1:8000/api/transaksi', {
-                method: 'GET',
-                headers: {
-                    'Authorization': 'Bearer ' + token,
-                    'Content-Type': 'application/json',
-                    'Accept' : 'a   '
-                },
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch data: ' + response.statusText);
-                }
-                return response.json();
-            })
-            .then(data => {
-                const transaksiData = data.data;
-                if (!transaksiData || transaksiData.length === 0) {
-                    tableBody.innerHTML = '<tr><td colspan="9" class="text-center">Tidak ada data</td></tr>';
-                    return;
-                }
+                fetch('http://127.0.0.1:8000/api/transaksi', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Content-Type': 'application/json',
+                        'Accept' : 'application/json'
+                    },
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch data: ' + response.statusText);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const transaksiData = data.data ? data.data : data;
+                    if (!transaksiData || transaksiData.length === 0) {
+                        tableBody.innerHTML = '<tr><td colspan="9" class="text-center">Tidak ada data</td></tr>';
+                        return;
+                    }
 
                 let rows = '';
                 transaksiData.forEach(item => {
@@ -75,7 +75,7 @@
                         <tr>
                             <td>Rp${Number(item.total_harga).toLocaleString('id-ID')}</td>
                             <td>${item.jumlahDibeli || ''}</td>
-                            <td>${item.produk || ''}</td>
+                            <td>${item.produk ? item.produk.name : ''}</td>
                             <td>${item.terjual || ''}</td>
                             <td>Rp${Number(item.harga).toLocaleString('id-ID')}</td>
                             <td>${new Date(item.tanggal_keluar).toLocaleDateString('id-ID')}</td>
@@ -101,9 +101,9 @@
 
                 tableBody.innerHTML = rows;
             })
-            .catch(error => {
-                tableBody.innerHTML = `<tr><td colspan="9" class="text-center text-danger">${error.message}</td></tr>`;
-            });
+                .catch(error => {
+                    tableBody.innerHTML = `<tr><td colspan="9" class="text-center text-danger">${error.message}</td></tr>`;
+                });
         });
     </script>
 
