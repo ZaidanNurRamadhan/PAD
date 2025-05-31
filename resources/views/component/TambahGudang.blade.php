@@ -4,7 +4,7 @@
             <header class="modal-header">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">Tambah Produk</h1>
             </header>
-            <form id="formTambahProduk" action="{{ route('gudang.store') }}" method="post">
+            <form id="formTambahProduk">
                 @csrf
                 <article class="modal-body">
                     <section class="form-group px-3">
@@ -69,69 +69,90 @@
     </div>
 </section>
 <script>
-    document.getElementById('submitProduk').addEventListener('click', function(event) {
-        event.preventDefault(); // Prevent form from submitting immediately
-
-        // Get form elements
-        var name = document.getElementById('name');
-        var hargaBeli = document.getElementById('hargaBeli');
-        var hargaJual = document.getElementById('hargaJual');
-        var jumlah = document.getElementById('jumlah');
-        var batasKritis = document.getElementById('batasKritis');
-
-        var valid = true; // Flag to check if the form is valid
+    document.getElementById('formTambahProduk').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
 
         // Clear previous error messages
         document.querySelectorAll('.text-danger').forEach(function(errorElement) {
             errorElement.innerText = '';
         });
 
-        // Validate Nama Produk (select dropdown)
-        if (name.value.trim() === '') {
+        // Gather form data
+        const data = {
+            name: document.getElementById('name').value.trim(),
+            hargaBeli: document.getElementById('hargaBeli').value.trim(),
+            hargaJual: document.getElementById('hargaJual').value.trim(),
+            jumlah: document.getElementById('jumlah').value.trim(),
+            batasKritis: document.getElementById('batasKritis').value.trim(),
+        };
+
+        // Basic client-side validation
+        let valid = true;
+        if (!data.name) {
             document.querySelector('.error-name').innerText = 'Nama produk tidak boleh kosong.';
             valid = false;
         }
-
-        // Validate Harga Beli (required and must be numeric)
-        if (hargaBeli.value.trim() === '') {
-            document.querySelector('.error-hargaBeli').innerText = 'Harga beli tidak boleh kosong.';
-            valid = false;
-        } else if (isNaN(hargaBeli.value.trim())) {
-            document.querySelector('.error-hargaBeli').innerText = 'Harga beli harus berupa angka.';
+        if (!data.hargaBeli || isNaN(data.hargaBeli)) {
+            document.querySelector('.error-hargaBeli').innerText = 'Harga beli harus berupa angka dan tidak boleh kosong.';
             valid = false;
         }
-
-        // Validate Harga Jual (required and must be numeric)
-        if (hargaJual.value.trim() === '') {
-            document.querySelector('.error-hargaJual').innerText = 'Harga jual tidak boleh kosong.';
-            valid = false;
-        } else if (isNaN(hargaJual.value.trim())) {
-            document.querySelector('.error-hargaJual').innerText = 'Harga jual harus berupa angka.';
+        if (!data.hargaJual || isNaN(data.hargaJual)) {
+            document.querySelector('.error-hargaJual').innerText = 'Harga jual harus berupa angka dan tidak boleh kosong.';
             valid = false;
         }
-
-        // Validate Jumlah Stok (required and must be numeric)
-        if (jumlah.value.trim() === '') {
-            document.querySelector('.error-jumlah').innerText = 'Jumlah stok tidak boleh kosong.';
-            valid = false;
-        } else if (isNaN(jumlah.value.trim())) {
-            document.querySelector('.error-jumlah').innerText = 'Jumlah stok harus berupa angka.';
+        if (!data.jumlah || isNaN(data.jumlah)) {
+            document.querySelector('.error-jumlah').innerText = 'Jumlah stok harus berupa angka dan tidak boleh kosong.';
             valid = false;
         }
-
-        // Validate Ambang Kritis (optional, can be text or numeric)
-        if (batasKritis.value.trim() === '') {
-            document.querySelector('.error-batasKritis').innerText = 'Batas Kritis tidak boleh kosong.';
-            valid = false;
-        }else if (batasKritis.value.trim() !== '' && isNaN(batasKritis.value.trim())) {
+        if (data.batasKritis && isNaN(data.batasKritis)) {
             document.querySelector('.error-batasKritis').innerText = 'Batas kritis harus berupa angka jika diisi.';
             valid = false;
         }
 
-        // If form is valid, submit it
-        if (valid) {
-            var form = document.getElementById('formTambahProduk');
-            form.submit(); // Submit the form if valid
+        if (!valid) {
+            return;
         }
+
+        const token = localStorage.getItem('authToken'); // Get token from localStorage
+
+        // Send data to API endpoint
+        fetch('http://127.0.0.1:8000/api/gudang', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Authorization': `Bearer ${token}` // Add Authorization header
+            },
+            body: JSON.stringify(data)
+        })
+        .then(async response => {
+            if (response.ok) {
+                const resData = await response.json();
+                alert(resData.message);
+                // Optionally reset form or close modal
+                document.getElementById('formTambahProduk').reset();
+                var modal = bootstrap.Modal.getInstance(document.getElementById('Tambahproduk'));
+                modal.hide();
+                fetchProdukData();
+                // Optionally refresh the page or update the product list dynamically
+            } else if (response.status === 422) {
+                const errorData = await response.json();
+                if (errorData.errors) {
+                    for (const [key, messages] of Object.entries(errorData.errors)) {
+                        const errorElement = document.querySelector('.error-' + key);
+                        if (errorElement) {
+                            errorElement.innerText = messages.join(' ');
+                        }
+                    }
+                }
+            } else {
+                alert('Terjadi kesalahan saat menambahkan produk.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan jaringan.');
+        });
     });
 </script>

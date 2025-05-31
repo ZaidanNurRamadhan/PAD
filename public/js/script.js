@@ -149,57 +149,6 @@ editForm.addEventListener('submit', function(event) {
     });
 });
 
-// Hapus Produk modal setup and submission via API
-const deleteProdukButtons = document.querySelectorAll('.deleteProduk');
-deleteProdukButtons.forEach(button => {
-    button.addEventListener('click', function() {
-        const id = this.dataset.id;
-        const deleteForm = document.querySelector('#deleteProdukForm');
-        deleteForm.dataset.id = id;
-    });
-});
-
-const deleteProdukForm = document.querySelector('#deleteProdukForm');
-deleteProdukForm.addEventListener('submit', function(event) {
-    event.preventDefault();
-    const id = this.dataset.id;
-
-    fetch(`http://127.0.0.1:8000/api/gudang/${id}`, {
-        method: 'DELETE',
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            'Accept': 'application/json',
-            'Authorization': 'Bearer ' + localStorage.getItem('authToken')
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            return response.json().then(data => { throw new Error(data.message || 'Gagal menghapus produk'); });
-        }
-        return response.json();
-    })
-    .then(data => {
-        alert(data.message);
-        // Close modal
-        const modal = bootstrap.Modal.getInstance(document.getElementById('Hapusproduk'));
-        modal.hide();
-        // Reload page or refresh data
-        location.reload();
-    })
-    .catch(error => {
-        alert('Error: ' + error.message);
-    });
-});
-
-// Hapus Produk
-const deleteProduk = document.querySelectorAll('.deleteProduk');
-deleteProduk.forEach(button => {
-    button.addEventListener('click', function() {
-        const id = this.dataset.id;
-        document.querySelector('#deleteProdukForm').action = `/gudang/${id}`;
-    });
-});
 
 const deletePemasok = document.querySelectorAll('.deletePemasok');
 deletePemasok.forEach(button => {

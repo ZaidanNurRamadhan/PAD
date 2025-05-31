@@ -1,3 +1,4 @@
+{{-- Modal Hapus Produk --}}
 <div class="modal fade" id="Hapusproduk" tabindex="-1">
     <div class="modal-dialog">
         <form id="deleteProdukForm" method="POST" class="modal-content">
@@ -16,3 +17,55 @@
         </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteProdukForm = document.querySelector('#deleteProdukForm');
+
+        // Tangkap tombol delete dan inject action ke form
+        const deleteProdukButtons = document.querySelectorAll('.deleteProduk');
+        deleteProdukButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const id = this.dataset.id;
+                const form = document.getElementById('deleteProdukForm');
+                form.setAttribute('action', `http://127.0.0.1:8000/api/gudang/${id}`);
+                // console.log('Selected product id for deletion:', id);
+            });
+        });
+
+        // Saat submit form delete
+        deleteProdukForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const url = this.getAttribute('action');
+
+            fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json',
+                    'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(data => {
+                        throw new Error(data.message || 'Gagal menghapus produk');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert(data.message || 'Produk berhasil dihapus');
+                // Tutup modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('Hapusproduk'));
+                modal.hide();
+                // Refresh data
+                location.reload();
+            })
+            .catch(error => {
+                alert('Error: ' + error.message);
+            });
+        });
+    });
+</script>
