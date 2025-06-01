@@ -56,7 +56,7 @@
                 return response.json();
             })
             .then(data => {
-                alert(data.message || 'Produk berhasil dihapus');
+                // alert(data.message || 'Produk berhasil dihapus');
                 // Tutup modal
                 const modal = bootstrap.Modal.getInstance(document.getElementById('Hapusproduk'));
                 modal.hide();

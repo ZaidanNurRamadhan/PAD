@@ -105,7 +105,6 @@
             return response.json();
         })
         .then(data => {
-            alert('Karyawan berhasil diperbarui!');
             var modal = bootstrap.Modal.getInstance(document.getElementById('Editkaryawan'));
             modal.hide();
             location.reload();

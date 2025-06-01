@@ -39,6 +39,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             const tableBody = document.getElementById('transaksiTableBody');
             const token = localStorage.getItem('authToken');
+            let transaksiData = [];
 
             if (!token) {
                 tableBody.innerHTML = '<tr><td colspan="9" class="text-center text-danger">Authentication token not found. Please login again.</td></tr>';
@@ -60,7 +61,7 @@
                     return response.json();
                 })
                 .then(data => {
-                    const transaksiData = data.data ? data.data : data;
+                    transaksiData = data.data ? data.data : data;
                     if (!transaksiData || transaksiData.length === 0) {
                         tableBody.innerHTML = '<tr><td colspan="9" class="text-center">Tidak ada data</td></tr>';
                         return;
@@ -75,7 +76,7 @@
                         <tr>
                             <td>Rp${Number(item.total_harga).toLocaleString('id-ID')}</td>
                             <td>${item.jumlahDibeli || ''}</td>
-                            <td>${item.produk ? item.produk.name : ''}</td>
+                            <td>${item.produk ? item.produk : ''}</td>
                             <td>${item.terjual || ''}</td>
                             <td>Rp${Number(item.harga).toLocaleString('id-ID')}</td>
                             <td>${new Date(item.tanggal_keluar).toLocaleDateString('id-ID')}</td>
@@ -104,6 +105,31 @@
                 .catch(error => {
                     tableBody.innerHTML = `<tr><td colspan="9" class="text-center text-danger">${error.message}</td></tr>`;
                 });
+
+            window.editTransaksi = function(id) {
+                const transaksi = transaksiData.find(item => item.id === id);
+                if (!transaksi) {
+                    alert('Data transaksi tidak ditemukan');
+                    return;
+                }
+
+                // Populate the modal form fields
+                document.getElementById('toko_id').value = transaksi.toko_id || '';
+                document.getElementById('produk_id').value = transaksi.produk_id || '';
+                document.getElementById('transactionDate').value = transaksi.tanggal_keluar ? new Date(transaksi.tanggal_keluar).toISOString().split('T')[0] : '';
+                document.getElementById('harga').value = transaksi.harga || '';
+                document.getElementById('jumlahDibeli').value = transaksi.jumlahDibeli || '';
+                document.getElementById('terjual').value = transaksi.terjual || '';
+                document.getElementById('tanggal_retur').value = transaksi.tanggal_retur || '';
+
+                // Set form action to the correct update route
+                const editForm = document.getElementById('editTransaksiForm');
+                editForm.action = `http://127.0.0.1:8000/transaksi/${id}`;
+
+                // Show the modal
+                const editModal = new bootstrap.Modal(document.getElementById('Edittransaksi'));
+                editModal.show();
+            };
         });
     </script>
 

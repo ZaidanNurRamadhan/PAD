@@ -26,13 +26,13 @@
                     </section>
 
                     <section class="form-group d-flex justify-content-between px-3 mt-4">
-                        <label for="harga">Harga</label>
-                        <input type="number" name="harga" id="harga" class="form-control" style="width:60%;" placeholder="Masukkan harga" required>
+                        <label for="harga_tambah">Harga</label>
+                        <input type="number" name="harga" id="harga_tambah" class="form-control" style="width:60%;" placeholder="Masukkan harga" required>
                     </section>
 
                     <section class="form-group d-flex justify-content-between px-3 mt-4">
-                        <label for="harga">Jumlah</label>
-                        <input type="number" name="jumlahDibeli" id="jumlahDibeli" class="form-control" style="width:60%;" placeholder="Masukkan jumlah" required>
+                        <label for="jumlahDibeli_tambah">Jumlah</label>
+                        <input type="number" name="jumlahDibeli" id="jumlahDibeli_tambah" class="form-control" style="width:60%;" placeholder="Masukkan jumlah" required>
                     </section>
 
                     <section class="form-group d-flex justify-content-between px-3 mt-4">
@@ -92,53 +92,60 @@
             });
 
         // Existing form submission handler
-        document.getElementById('tambahTransaksiForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+            document.getElementById('tambahTransaksiForm').addEventListener('submit', function(event) {
+                event.preventDefault();
 
-            const token = localStorage.getItem('authToken');
-            if (!token) {
-                alert('Authentication token not found. Please login again.');
-                return;
-            }
-
-            const formData = {
-                toko_id: document.getElementById('toko_id').value,
-                produk_id: document.getElementById('produk_id').value,
-                tanggal_keluar: document.getElementById('tanggal_keluar').value,
-                harga: parseFloat(document.getElementById('harga').value),
-                jumlahDibeli: parseInt(document.getElementById('jumlahDibeli').value),
-                terjual: document.getElementById('terjual').value ? parseInt(document.getElementById('terjual').value) : 0,
-                tanggal_retur: document.getElementById('tanggal_retur').value || null,
-            };
-
-            fetch('http://127.0.0.1:8000/api/transaksi', {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + token,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(data => {
-                        throw new Error(data.message || 'Failed to add transaksi');
-                    });
+                const token = localStorage.getItem('authToken');
+                if (!token) {
+                    alert('Authentication token not found. Please login again.');
+                    return;
                 }
-                return response.json();
-            })
-            .then(data => {
-                alert('Transaksi berhasil ditambahkan');
-                // Close modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('Tambahtransaksi'));
-                modal.hide();
 
-                // Optionally, refresh the transaksi table by reloading the page or calling a function
-                location.reload();
-            })
-            .catch(error => {
-                alert('Error: ' + error.message);
+                const formData = {
+                    toko_id: document.getElementById('toko_id_tambah').value,
+                    produk_id: document.getElementById('produk_id_tambah').value,
+                    tanggal_keluar: document.getElementById('tanggal_keluar').value,
+                    harga: parseFloat(document.getElementById('harga_tambah').value),
+                    jumlahDibeli: parseInt(document.getElementById('jumlahDibeli_tambah').value),
+                    terjual: document.getElementById('terjual').value ? parseInt(document.getElementById('terjual').value) : 0,
+                    tanggal_retur: document.getElementById('tanggal_retur').value || null,
+                };
+
+                console.log('Submitting formData:', formData);
+
+                fetch('http://127.0.0.1:8000/api/transaksi', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(data => {
+                            if (data.errors) {
+                                const errorMessages = Object.values(data.errors).flat().join('\\n');
+                                throw new Error(errorMessages);
+                            }
+                            throw new Error(data.message || 'Failed to add transaksi');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // alert('Transaksi berhasil ditambahkan');
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('Tambahtransaksi'));
+                    modal.hide();
+
+                    // Optionally, refresh the transaksi table by reloading the page or calling a function
+                    location.reload();
+                })
+                .catch(error => {
+                    alert('Error: ' + error.message);
+                    console.error('Error details:', error);
+                });
             });
-        });
     });
 </script>

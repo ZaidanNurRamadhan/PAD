@@ -119,7 +119,7 @@
                 alert(resData.message);
                 var editModal = bootstrap.Modal.getInstance(document.getElementById('Editproduk'));
                 editModal.hide();
-                fetchProdukData();
+                location.reload();
                 // Optionally refresh the page or update the product list dynamically
             } else if (response.status === 422) {
                 const errorData = await response.json();
@@ -137,7 +137,6 @@
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Terjadi kesalahan jaringan.');
         });
     });
 </script>

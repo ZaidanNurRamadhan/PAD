@@ -137,7 +137,6 @@
                         return response.json();
                     })
                     .then(data => {
-                        alert('Karyawan berhasil ditambahkan!');
                         var modal = bootstrap.Modal.getInstance(document.getElementById('Tambahkaryawan'));
                         modal.hide();
                         location.reload();

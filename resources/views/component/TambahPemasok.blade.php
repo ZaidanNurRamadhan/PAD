@@ -133,13 +133,11 @@ document.getElementById('submitPemasok').addEventListener('click', async functio
         });
 
         if (response.status === 201) {
-            // Success
-            alert('Pemasok berhasil ditambahkan.');
             // Optionally reset form and close modal
             document.getElementById('formTambahPemasok').reset();
             var modal = bootstrap.Modal.getInstance(document.getElementById('Tambahpemasok'));
             modal.hide();
-            fetchAndRenderPemasok();
+            location.reload();
         } else if (response.status === 422) {
             // Validation errors from server
             const result = await response.json();

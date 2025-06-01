@@ -134,7 +134,7 @@
                 document.getElementById('formTambahProduk').reset();
                 var modal = bootstrap.Modal.getInstance(document.getElementById('Tambahproduk'));
                 modal.hide();
-                fetchProdukData();
+                location.reload();
                 // Optionally refresh the page or update the product list dynamically
             } else if (response.status === 422) {
                 const errorData = await response.json();
@@ -152,7 +152,6 @@
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Terjadi kesalahan jaringan.');
         });
     });
 </script>

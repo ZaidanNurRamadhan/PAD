@@ -54,17 +54,18 @@ function editPemasok(id) {
 }
 
 const editFormPemasok = document.querySelector('#editPemasokForm');
-editFormPemasok.addEventListener('submit', function(event) {
-    event.preventDefault();
-    const id = this.dataset.id;
-    if (!id) {
-        alert('ID pemasok tidak ditemukan.');
-        return;
-    }
+if (editFormPemasok) {
+    editFormPemasok.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const id = this.dataset.id;
+        if (!id) {
+            alert('ID pemasok tidak ditemukan.');
+            return;
+        }
 
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-        alert('Authentication token not found. Please login again.');
+        const token = localStorage.getItem('authToken');
+        if (!token) {
+            alert('Authentication token not found. Please login again.');
         return;
     }
 
@@ -94,7 +95,6 @@ editFormPemasok.addEventListener('submit', function(event) {
         return response.json();
     })
     .then(data => {
-        alert(data.message);
         const modal = bootstrap.Modal.getInstance(document.getElementById('Editpemasok'));
         modal.hide();
         location.reload();
@@ -102,7 +102,8 @@ editFormPemasok.addEventListener('submit', function(event) {
     .catch(error => {
         alert('Error: ' + error.message);
     });
-});
+    });
+};
 
 // Removed duplicate declaration of editForm and event listener to avoid redeclaration errors
 
@@ -185,27 +186,112 @@ editForm.addEventListener('submit', function(event) {
 });
 
 
-const deletePemasok = document.querySelectorAll('.deletePemasok');
-deletePemasok.forEach(button => {
-    button.addEventListener('click', function() {
-        const id = this.dataset.id;
-        document.querySelector('#deletePemasokForm').action = `/pemasok/${id}`;
+function deletePemasokById(pemasokId) {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        alert('Authentication token not found. Please login again.');
+        return;
+    }
+    if (!pemasokId) {
+        alert('No pemasok ID provided for deletion.');
+        return;
+    }
+
+    fetch(`http://127.0.0.1:8000/api/pemasok/${pemasokId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to delete pemasok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        alert('Pemasok berhasil dihapus');
+        // Optionally refresh the pemasok list if a global function exists
+        if (window.fetchAndRenderPemasok) {
+            window.fetchAndRenderPemasok();
+        } else {
+            location.reload();
+        }
+    })
+    .catch(error => {
+        alert('Error deleting pemasok: ' + error.message);
+        console.error('Error deleting pemasok:', error);
     });
-});
-const deleteToko = document.querySelectorAll('.deleteToko');
-deleteToko.forEach(button => {
-    button.addEventListener('click', function() {
-        const id = this.dataset.id;
-        document.querySelector('#deleteTokoForm').action = `/toko/destroy/${id}`;
+}
+function deleteTokoById(tokoId) {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        alert('Authentication token not found. Please login again.');
+        return;
+    }
+    if (!tokoId) {
+        alert('No toko ID provided for deletion.');
+        return;
+    }
+
+    fetch(`http://127.0.0.1:8000/api/toko/${tokoId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to delete toko');
+        }
+        return response.json();
+    })
+    .then(data => {
+            location.reload();
+    })
+    .catch(error => {
+        alert('Error deleting toko: ' + error.message);
+        console.error('Error deleting toko:', error);
     });
-});
-const deleteKaryawan = document.querySelectorAll('.deleteKaryawan');
-deleteKaryawan.forEach(button => {
-    button.addEventListener('click', function() {
-        const id = this.dataset.id;
-        document.querySelector('#deleteKaryawanForm').action = `/karyawan/destroy/${id}`;
+}
+function deletekaryawanById(karyawanId) {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        alert('Authentication token not found. Please login again.');
+        return;
+    }
+    if (!karyawanId) {
+        alert('No karyawan ID provided for deletion.');
+        return;
+    }
+
+    fetch(`http://127.0.0.1:8000/api/karyawan/${karyawanId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to delete karyawan');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Optionally refresh the pemasok list if a global function exists
+            location.reload();
+    })
+    .catch(error => {
+        alert('Error deleting karyawan: ' + error.message);
+        console.error('Error deleting karyawan:', error);
     });
-});
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     const editTransaksiForm = document.getElementById('editTransaksiForm');
@@ -262,7 +348,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
 
 // window.editTransaksi = function(id) {
 //     // Ambil data transaksi dengan AJAX
