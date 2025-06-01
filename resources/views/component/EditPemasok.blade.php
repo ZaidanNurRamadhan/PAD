@@ -4,7 +4,7 @@
             <header class="modal-header">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Pemasok</h1>
             </header>
-            <form id="edit-form" method="post">
+            <form id="editPemasokForm" method="post">
                 @csrf
                 @method('PUT')
                 <article class="modal-body">

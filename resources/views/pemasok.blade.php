@@ -10,6 +10,7 @@
             <table class="table">
                 <thead>
                     <tr>
+                        <th>No</th>
                         <th>Nama</th>
                         <th>Produk</th>
                         <th>Kontak</th>
@@ -17,30 +18,11 @@
                         <th class="text-center">Aksi</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @forelse($pemasok as $data)
-                    <tr>
-                        <td>{{ $data->name }}</td>
-                        <td>{{ $data->produkDisediakan }}</td>
-                        <td>{{ $data->nomorTelepon }}</td>
-                        <td>{{ $data->email }}</td>
-                        <td class="d-flex justify-content-center">
-                            <button class="btn btn-warning btn-sm mx-2" onclick="editPemasok({{ $data->id }})">Edit</button>
-                            <button class="btn btn-danger btn-sm deletePemasok mx-2" data-id="{{$data->id}}" type="button" data-bs-toggle="modal" data-bs-target="#Hapuspemasok">Hapus</button>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr><td colspan="5" class="text-center">Tidak ada data</td></tr>
-                    @endforelse
-
-                    {{-- Menambahkan baris kosong dengan border jika data kurang dari 20 --}}
-                    @for ($i = count($pemasok); $i < 9; $i++)
-                    <tr><td colspan="5"></td></tr>
-                    @endfor
+                <tbody id="pemasok-table-body">
+                    {{-- Data will be populated by JavaScript --}}
                 </tbody>
             </table>
         </div>
-        {!! $pemasok->links('pagination::bootstrap-5') !!} <!-- This will generate the pagination links -->
 </section>
 
 {{-- hapus --}}
@@ -49,4 +31,111 @@
 @include('component.TambahPemasok')
 {{-- edit --}}
 @include('component.EditPemasok')
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let pemasokIdToDelete = null;
+
+    function fetchAndRenderPemasok() {
+        const token = localStorage.getItem('authToken');
+
+        fetch('http://127.0.0.1:8000/api/pemasok', {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                'Accept' : 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch pemasok data');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const pemasokList = data.data;
+            const tbody = document.getElementById('pemasok-table-body');
+            tbody.innerHTML = '';
+
+            if (pemasokList.length === 0) {
+                const tr = document.createElement('tr');
+                const td = document.createElement('td');
+                td.colSpan = 6;
+                td.className = 'text-center';
+                td.textContent = 'Tidak ada data';
+                tr.appendChild(td);
+                tbody.appendChild(tr);
+                return;
+            }
+
+            pemasokList.forEach((pemasok, index) => {
+                const tr = document.createElement('tr');
+
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${pemasok.name}</td>
+                    <td>${pemasok.produkDisediakan}</td>
+                    <td>${pemasok.nomorTelepon}</td>
+                    <td>${pemasok.email}</td>
+                    <td class="justify-content-center d-flex">
+                        <button class="m-2 btn btn-warning btn-sm" onclick="editPemasok(${pemasok.id})">Edit</button>
+                        <button class="m-2 btn btn-danger btn-sm deletePemasok" data-id="${pemasok.id}" data-bs-toggle="modal" data-bs-target="#Hapuspemasok">Hapus</button>
+                    </td>
+                `;
+
+                tbody.appendChild(tr);
+            });
+
+            const deleteButtons = document.querySelectorAll('.deletePemasok');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    pemasokIdToDelete = this.dataset.id;
+                });
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching pemasok data:', error);
+        });
+    }
+
+    // Handle delete form submission
+    const deleteForm = document.getElementById('deletePemasokForm');
+    deleteForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const token = localStorage.getItem('authToken');
+        if (!pemasokIdToDelete) {
+            console.error('No pemasok ID selected for deletion');
+            return;
+        }
+
+        fetch(`http://127.0.0.1:8000/api/pemasok/${pemasokIdToDelete}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to delete pemasok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Close the modal
+            const hapusModal = bootstrap.Modal.getInstance(document.getElementById('Hapuspemasok'));
+            hapusModal.hide();
+
+            // Refresh the pemasok list
+            fetchAndRenderPemasok();
+        })
+        .catch(error => {
+            console.error('Error deleting pemasok:', error);
+        });
+    });
+
+    fetchAndRenderPemasok();
+});
+</script>
 @endsection
