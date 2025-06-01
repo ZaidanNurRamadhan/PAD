@@ -47,12 +47,6 @@
         </nav>
     </section>
 </div>
-{{-- tambah --}}
-    @include('component.TambahGudang')
-    {{-- edit --}}
-    @include('component.EditGudang')
-      {{-- hapus --}}
-    @include('component.HapusGudang')
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -63,7 +57,7 @@ function fetchProdukData() {
         const produkTableBody = document.getElementById('produk-table-body');
         const paginationNav = document.getElementById('pagination-nav');
         const token = localStorage.getItem('authToken'); // Adjust this as needed to get the actual token
-        fetch('http://127.0.0.1:8000/api/gudang', {
+        fetch('http://127.0.0.1:8000/api/gudang-karyawan', {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
@@ -106,28 +100,11 @@ function fetchProdukData() {
                     `;
 
                     produkTableBody.appendChild(tr);
-
-                    // Add click event listener for edit button to open modal and populate data
-                    tr.querySelector('.edit-btn').addEventListener('click', () => {
-                        openEditModal(produk);
-                    });
                 });
-
-                // Attach delete button event listeners after rendering rows
-                const deleteButtons = document.querySelectorAll('.deleteProduk');
-                deleteButtons.forEach(button => {
-                    button.addEventListener('click', function () {
-                        const id = this.dataset.id;
-                        const form = document.getElementById('deleteProdukForm');
-                        form.setAttribute('action', `http://127.0.0.1:8000/api/gudang/${id}`);
-                        // console.log('Selected product id for deletion:', id);
-                    });
-                });
-
                 // TODO: Implement pagination if API supports it
             })
             .catch(error => {
-                produkTableBody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Gagal memuat data</td></tr>';
+                produkTableBody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">Gagal memuat data</td></tr>';
                 console.error('Error fetching produk data:', error);
             });
     }

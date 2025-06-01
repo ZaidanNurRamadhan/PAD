@@ -46,7 +46,7 @@
                 return;
             }
 
-                fetch('http://127.0.0.1:8000/api/transaksi', {
+                fetch('http://127.0.0.1:8000/api/transaksi-karyawan', {
                     method: 'GET',
                     headers: {
                         'Authorization': 'Bearer ' + token,
