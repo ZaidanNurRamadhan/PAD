@@ -5,7 +5,7 @@
             <h3>Transaksi</h3>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#Tambahtransaksi" type="button">Tambah Transaksi</button>
         </div>
-        <div class="table-responsive flex-grow-1">
+        <div class="table-responsive flex-grow-1 table-data">
             <table class="table">
                 <thead>
                     <tr>

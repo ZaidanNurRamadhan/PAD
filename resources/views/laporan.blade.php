@@ -62,7 +62,7 @@
             <button class="btn btn-outline-secondary">Download</button>
         </a>
     </div>
-    <div class="table-responsive flex-grow-1">
+    <div class="table-responsive flex-grow-1 table-data">
         <table class="table">
             <thead>
                 <tr>
@@ -150,7 +150,7 @@
             tbody.appendChild(tr);
             return;
         }
-
+        console.log(laporanData);
         laporanData.forEach(item => {
             if (item.status === 'closed') {
                 const trToko = document.createElement('tr');

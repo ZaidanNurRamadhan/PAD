@@ -54,7 +54,7 @@
             return response.json();
         })
         .then(data => {
-            alert('Karyawan berhasil dihapus!');
+            // alert('Karyawan berhasil dihapus!');
             var modal = bootstrap.Modal.getInstance(document.getElementById('Hapuskaryawan'));
             modal.hide();
             location.reload();
