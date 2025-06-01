@@ -98,14 +98,14 @@
             }
 
             $.ajax({
-                url: "{{ route('search.product') }}",  // URL ke controller untuk pencarian
+                url: "{{ url('http://127.0.0.1:8000/api/search') }}",  // URL ke controller untuk pencarian
                 method: 'GET',
                 data: {
                     search: search_string,
                     page: page // Kirimkan kata kunci pencarian
                 },
                 success: function(res) {
-                    console.log('Search Results:', res);
+                    // console.log('Search Results:', res);
                     // Update hasil pencarian hanya di dalam <tbody> (area yang relevan)
                     $('.table-data tbody').html(res);  // Update hasil pencarian di dalam tabel
                     applyDeleteListeners(); // Fungsi untuk menerapkan event listener pada tombol delete
@@ -117,5 +117,39 @@
             });
         });
     </script>
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('User not authenticated.');
+                return;
+            }
+            fetch('http://127.0.0.1:8000/api/logout', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    localStorage.removeItem('authToken');
+                    window.location.href = '/';
+                } else {
+                    alert('Logout failed.');
+                }
+            })
+            .catch(() => {
+                alert('Logout failed.');
+            });
+        });
+    }
+});
+</script>
 </body>
 </html>

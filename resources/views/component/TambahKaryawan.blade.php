@@ -4,7 +4,7 @@
             <header class="modal-header">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">Tambah Karyawan</h1>
             </header>
-            <form id="formTambahKaryawan" action="{{ route('karyawan.store') }}" method="POST">
+            <form id="formTambahKaryawan" method="POST">
                 @csrf
                 <article class="modal-body">
                     <section class="form-group px-3">
@@ -55,63 +55,113 @@
     </div>
 </section>
 <script>
-    document.getElementById('formTambahKaryawan').addEventListener('submit', function(event) {
-        event.preventDefault(); // Mencegah form langsung disubmit
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('formTambahKaryawan').addEventListener('submit', function(event) {
+            event.preventDefault(); // Mencegah form langsung disubmit
 
-        // Ambil elemen form
-        var name = document.querySelector('[name="name"]');
-        var contact = document.querySelector('[name="contact"]');
-        var email = document.querySelector('[name="email"]');
-        var password = document.querySelector('[name="password"]');
+            // Ambil elemen form
+            var name = document.querySelector('[name="name"]');
+            var contact = document.querySelector('[name="contact"]');
+            var email = document.querySelector('[name="email"]');
+            var password = document.querySelector('[name="password"]');
 
-        var valid = true;
+            var valid = true;
 
-        // Clear error messages
-        document.querySelectorAll('.text-danger').forEach(function(errorElement) {
-            errorElement.innerText = '';
+            // Clear error messages
+            document.querySelectorAll('.text-danger').forEach(function(errorElement) {
+                errorElement.innerText = '';
+            });
+
+            // Validasi Nama Karyawan
+            if (name.value.trim() === '') {
+                document.querySelector('.error-name').innerText = 'Nama karyawan tidak boleh kosong.';
+                valid = false;
+            }
+
+            // Validasi Kontak
+            if (contact.value.trim() === '') {
+                document.querySelector('.error-contact').innerText = 'Kontak tidak boleh kosong.';
+                valid = false;
+            } else if (isNaN(contact.value.trim())) {
+                document.querySelector('.error-contact').innerText = 'Kontak harus berupa angka.';
+                valid = false;
+            }
+
+            // Validasi Email
+            if (email.value.trim() === '') {
+                document.querySelector('.error-email').innerText = 'Email tidak boleh kosong.';
+                valid = false;
+            } else if (!validateEmail(email.value.trim())) {
+                document.querySelector('.error-email').innerText = 'Format email tidak valid.';
+                valid = false;
+            }
+
+            // Validasi Password
+            if (password.value.trim() === '') {
+                document.querySelector('.error-password').innerText = 'Password tidak boleh kosong.';
+                valid = false;
+            } else if (password.value.trim().length < 8) {
+                document.querySelector('.error-password').innerText = 'Password harus memiliki minimal 8 karakter.';
+                valid = false;
+            }
+
+                // Jika validasi sukses, submit form via API with bearer token
+                if (valid) {
+                    var token = localStorage.getItem('authToken');
+                    if (!token) {
+                        alert('Authentication token not found. Please login again.');
+                        return;
+                    }
+
+                    var formData = {
+                        name: name.value.trim(),
+                        contact: contact.value.trim(),
+                        email: email.value.trim(),
+                        password: password.value.trim()
+                    };
+
+                    fetch('http://127.0.0.1:8000/api/karyawan', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'Authorization': 'Bearer ' + token,
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(data => { throw new Error(data.message || 'Gagal menambahkan karyawan'); });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        var modal = bootstrap.Modal.getInstance(document.getElementById('Tambahkaryawan'));
+                        modal.hide();
+                        location.reload();
+                    })
+                .catch(error => {
+                    if (error.errors) {
+                        // Display validation errors
+                        if (error.errors.name) {
+                            document.querySelector('.error-name').innerText = error.errors.name.join(', ');
+                        }
+                        if (error.errors.contact) {
+                            document.querySelector('.error-contact').innerText = error.errors.contact.join(', ');
+                        }
+                        if (error.errors.email) {
+                            document.querySelector('.error-email').innerText = error.errors.email.join(', ');
+                        }
+                        if (error.errors.password) {
+                            document.querySelector('.error-password').innerText = error.errors.password.join(', ');
+                        }
+                    } else {
+                        alert('Error: ' + error.message);
+                    }
+                });
+            }
         });
-
-        // Validasi Nama Karyawan
-        if (name.value.trim() === '') {
-            document.querySelector('.error-name').innerText = 'Nama karyawan tidak boleh kosong.';
-            valid = false;
-        }
-
-        // Validasi Kontak
-        if (contact.value.trim() === '') {
-            document.querySelector('.error-contact').innerText = 'Kontak tidak boleh kosong.';
-            valid = false;
-        } else if (isNaN(contact.value.trim())) {
-            document.querySelector('.error-contact').innerText = 'Kontak harus berupa angka.';
-            valid = false;
-        }
-
-        // Validasi Email
-        if (email.value.trim() === '') {
-            document.querySelector('.error-email').innerText = 'Email tidak boleh kosong.';
-            valid = false;
-        } else if (!validateEmail(email.value.trim())) {
-            document.querySelector('.error-email').innerText = 'Format email tidak valid.';
-            valid = false;
-        }
-
-        // Validasi Password
-        if (password.value.trim() === '') {
-            document.querySelector('.error-password').innerText = 'Password tidak boleh kosong.';
-            valid = false;
-        } else if (password.value.trim().length < 8) {
-            document.querySelector('.error-password').innerText = 'Password harus memiliki minimal 8 karakter.';
-            valid = false;
-        }
-
-        // Jika validasi sukses, submit form
-        if (valid) {
-            var form = document.getElementById('formTambahKaryawan');
-            form.submit();
-
-            // Menampilkan pesan sukses setelah form disubmit
-            document.getElementById('success-message').classList.remove('d-none');
-        }
     });
 
     // Fungsi untuk validasi email
@@ -120,7 +170,7 @@
         return re.test(email);
     }
 
-        function togglePassword() {
+    function togglePassword() {
         var passwordField = document.getElementById("password");
         var icon = document.getElementById("toggle-icon");
 
@@ -134,45 +184,4 @@
             icon.classList.add("fa-eye");
         }
     }
-
-    // Example of using AJAX to submit the form for both Add and Edit actions
-    $(document).ready(function() {
-    // Saat form disubmit
-    $('#formTambahKaryawan').submit(function(e) {
-        e.preventDefault(); // Mencegah form disubmit secara biasa
-
-        var formData = new FormData(this); // Ambil semua data form
-
-        // Debugging: Menampilkan data form yang dikirim ke server
-        for (var [key, value] of formData.entries()) {
-            console.log(key + ': ' + value); // Menampilkan key dan value untuk setiap input
-        }
-
-        $.ajax({
-            url: $(this).attr('action'), // Arahkan ke route yang benar
-            method: 'POST',
-            data: formData, // Data yang akan dikirim
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                // Menangani jika berhasil
-                alert('Karyawan berhasil ditambahkan!');
-                $('#Tambahkaryawan').modal('hide'); // Tutup modal setelah berhasil
-                location.reload(); // Reload halaman untuk menampilkan data terbaru
-            },
-            error: function(xhr) {
-                // Debugging: Menampilkan error di konsol
-                console.log(xhr.responseJSON);
-
-                // Menangani jika terjadi error (misalnya validasi gagal)
-                var errors = xhr.responseJSON.errors;
-                if (errors) {
-                    $.each(errors, function(key, value) {
-                        alert(value); // Menampilkan pesan error
-                    });
-                }
-            }
-        });
-    });
-});
 </script>

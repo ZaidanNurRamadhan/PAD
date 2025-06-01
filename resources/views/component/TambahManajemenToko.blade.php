@@ -4,7 +4,7 @@
             <header class="modal-header">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">Tambah Toko</h1>
             </header>
-            <form id="formTambahToko" action="{{ route('toko.store') }}" method="post">
+            <form id="formTambahToko" action="#" method="post">
                 @csrf
                 <article class="modal-body">
                     <section class="form-group mb-3">
@@ -51,13 +51,13 @@
     </div>
 </section>
 <script>
-document.getElementById('submitToko').addEventListener('click', function(event) {
+document.getElementById('formTambahToko').addEventListener('submit', function(event) {
     event.preventDefault();
 
-    var name = document.getElementById('name');
-    var namaPemilik = document.getElementById('namaPemilik');
-    var address = document.getElementById('address');
-    var phone_number = document.getElementById('phone_number');
+    var name = document.getElementById('name').value.trim();
+    var namaPemilik = document.getElementById('namaPemilik').value.trim();
+    var address = document.getElementById('address').value.trim();
+    var phone_number = document.getElementById('phone_number').value.trim();
 
     var valid = true;
 
@@ -65,23 +65,64 @@ document.getElementById('submitToko').addEventListener('click', function(event) 
         errorElement.innerText = '';
     });
 
-    if (name.value.trim() === '') {
+    if (name === '') {
         document.querySelector('.error-name').innerText = 'Nama toko tidak boleh kosong.';
         valid = false;
     }
 
-    if (namaPemilik.value.trim() === '') {
+    if (namaPemilik === '') {
         document.querySelector('.error-namaPemilik').innerText = 'Nama pemilik tidak boleh kosong.';
         valid = false;
     }
 
-    if(isNaN(phone_number.value.trim())) {
+    if (phone_number !== '' && isNaN(phone_number)) {
         document.querySelector('.error-phone_number').innerText = 'Nomor telepon harus berupa angka.';
         valid = false;
     }
 
-    if (valid) {
-        var form = document.getElementById('formTambahToko');
-        form.submit();
+    if (!valid) {
+        return;
     }
-});</script>
+
+    fetch('http://127.0.0.1:8000/api/toko', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            'Authorization': 'Bearer ' + localStorage.getItem('authToken')
+        },
+        body: JSON.stringify({
+            name: name,
+            namaPemilik: namaPemilik,
+            address: address,
+            phone_number: phone_number
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.errors) {
+            for (const key in data.errors) {
+                const errorElement = document.querySelector('.error-' + key);
+                if (errorElement) {
+                    errorElement.innerText = data.errors[key][0];
+                }
+            }
+        } else {
+            // Close modal
+            var modal = bootstrap.Modal.getInstance(document.getElementById('Tambahtoko'));
+            modal.hide();
+
+            // Clear form
+            document.getElementById('formTambahToko').reset();
+
+            // Refresh toko list
+            if (typeof refreshTokoList === 'function') {
+                refreshTokoList();
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+});
+</script>

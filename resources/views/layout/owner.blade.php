@@ -159,7 +159,7 @@
                 }
 
                 $.ajax({
-                    url: "{{ route('search.product') }}",  // URL ke controller untuk pencarian
+                    url: "{{ url('/api/search') }}",  // URL ke controller untuk pencarian
                     method: 'GET',
                     data: {
                         search: search_string,
@@ -177,6 +177,60 @@
                     }
                 });
             });
+
+            function applyDeleteListeners() {
+                // Remove old listeners and add new for deletePemasok buttons
+                $('.deletePemasok').off('click').on('click', function() {
+                    window.pemasokIdToDelete = $(this).data('id');
+                    $('#Hapuspemasok').modal('show');
+                });
+
+                // Remove old listeners and add new for modal confirm button
+                $('#deletePemasokForm').off('submit').on('submit', function(e) {
+                    e.preventDefault();
+                    if (!window.pemasokIdToDelete) {
+                        alert('No pemasok selected for deletion.');
+                        return;
+                    }
+                    deletePemasokById(window.pemasokIdToDelete);
+                    $('#Hapuspemasok').modal('hide');
+                });
+                
+            }
         </script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('User not authenticated.');
+                return;
+            }
+            fetch('http://127.0.0.1:8000/api/logout', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    localStorage.removeItem('authToken');
+                    window.location.href = '/';
+                } else {
+                    alert('Logout failed.');
+                }
+            })
+            .catch(() => {
+                alert('Logout failed.');
+            });
+        });
+    }
+});
+</script>
 </body>
 </html>
