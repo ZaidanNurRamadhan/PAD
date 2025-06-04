@@ -1,47 +1,41 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Models\Transaksi;
 use App\Models\Produk;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
-        $filter = $request->input('filter', 'harian'); // default harian
+        $filter = $request->input('filter', 'harian');
+        $data = $this->getMonitoringData($filter);
 
-        // Monitoring data transaksi "open"
-        $monitoringData = $this->getMonitoringData();
+        // Ambil data penjualan dan retur
+        if ($filter === 'bulanan') {
+            $salesData = $this->getMonthlySalesAndReturns();
+        } else {
+            $salesData = $this->getDailySalesAndReturns();
+        }
 
-        // Penjualan dan retur (daily/monthly)
-        $salesData = $filter === 'bulanan'
-            ? $this->getMonthlySalesAndReturns()
-            : $this->getDailySalesAndReturns();
-
-        // Transaksi lengkap (untuk chart atau data list)
         $transaksiData = Transaksi::with(['toko', 'produk'])
-            ->select('toko_id', 'produk_id', 'created_at', 'transactionDate', 'harga', 'terjual')
-            ->when($filter === 'bulanan', function ($query) {
-                $query->whereMonth('transactionDate', now()->month)
-                      ->whereYear('transactionDate', now()->year);
-            })
-            ->when($filter === 'harian', function ($query) {
-                $query->whereDate('transactionDate', now()->toDateString());
-            })
-            ->get();
+            ->select('toko_id', 'created_at', 'transactionDate', 'harga', 'terjual');
 
-        // Produk stok menipis
+            if ($filter === 'bulanan') {
+                $transaksiData->whereMonth('transactionDate', now()->month)
+                              ->whereYear('transactionDate', now()->year);
+            } else {
+                $transaksiData->whereDate('transactionDate', now()->toDateString());
+            }
+
+            $transaksiData = $transaksiData->get();
+        
         $produkMenipis = Produk::where('jumlah', '<', 20)->get();
 
-        // Produk terlaris
         $bestSellers = Transaksi::with('produk')
             ->select('produk_id', DB::raw('SUM(terjual) as total_terjual'))
             ->when($filter === 'bulanan', function ($query) {
@@ -56,15 +50,21 @@ class DashboardController extends Controller
             ->take(10)
             ->get();
 
-        return response()->json([
-            'status' => 'success',
-            'filter' => $filter,
-            'monitoring_data' => $monitoringData,
-            'sales_data' => $salesData,
-            'produk_menipis' => $produkMenipis,
-            'produk_terlaris' => $bestSellers,
-            'transaksi' => $transaksiData,
-        ]);
+            // $data = [];
+            // foreach ($transaksiData as $transaksi) {
+            //     $produk = $transaksi->produk;
+
+            //     $data[] = [
+            //         'nama_toko' => $transaksi->toko->name ?? 'Tidak ada toko',
+            //         'waktu_edar' =>  $transaksi->waktuEdar ?? 'Tidak ada waktu edar',
+            //         'jumlah' => $produk ? $produk->jumlah : 'Produk tidak ditemukan',
+            //         'kategori' => $produk ? $produk->category : 'Tidak ada kategori',
+            //         'hari' => Carbon::parse($transaksi->transactionDate)->translatedFormat('l'),
+            //         'tanggal_keluar' => $transaksi->transactionDate,
+            //     ];
+            // }
+            // dd($data);
+        return view('dashboard', compact('data', 'produkMenipis','bestSellers', 'filter', 'salesData'));
     }
 
     private function getMonthlySalesAndReturns()
@@ -84,7 +84,7 @@ class DashboardController extends Controller
         }
 
         return [
-            'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            'labels' => ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
             'sales' => $monthlySales,
             'returns' => $monthlyReturns,
         ];
@@ -94,78 +94,44 @@ class DashboardController extends Controller
     {
         $dailySales = [];
         $dailyReturns = [];
-        $labels = [];
 
-        for ($day = 6; $day >= 0; $day--) {
-            $date = Carbon::now()->subDays($day);
-            $sales = Transaksi::whereDate('transactionDate', $date->toDateString())->sum('terjual');
-            $returns = Transaksi::whereDate('transactionDate', $date->toDateString())
+        for ($day = 0; $day < 7; $day++) {
+            $sales = Transaksi::whereDate('transactionDate', Carbon::now()->subDays($day)->toDateString())
+                ->sum('terjual');
+
+            $returns = Transaksi::whereDate('transactionDate', Carbon::now()->subDays($day)->toDateString())
                 ->sum(DB::raw('jumlahDibeli - terjual'));
 
             $dailySales[] = $sales;
             $dailyReturns[] = $returns;
-            $labels[] = $date->translatedFormat('l'); // Nama hari
         }
 
         return [
-            'labels' => $labels,
-            'sales' => $dailySales,
-            'returns' => $dailyReturns,
+            'labels' => ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            'sales' => array_reverse($dailySales), // Reverse to match the order of days
+            'returns' => array_reverse($dailyReturns),
         ];
     }
 
     private function getMonitoringData()
     {
-        $transaksis = Transaksi::with(['produk', 'toko'])
-            // ->where('status', 'open')
-            ->orderBy('transactionDate', 'desc')
+        $transaksis = Transaksi::with('produk')
+            ->where('status', 'open') // Hanya ambil transaksi dengan status "open"
             ->get();
 
         $data = [];
         foreach ($transaksis as $transaksi) {
             $data[] = [
-                'nama_toko' => $transaksi->toko->name ?? 'Tidak ada toko',
-                'waktu_edar' =>  $transaksi->waktuEdar ?? 'Tidak ada waktu edar',
-                'jumlah' => $transaksi->jumlahDibeli ?? 0,
-                'kategori' => $transaksi->produk ? $transaksi->produk->name : 'Tidak ada kategori',
-                'hari' => Carbon::parse($transaksi->transactionDate)->translatedFormat('l'),
+                'nama_toko' => $transaksi->toko->name ?? 'Toko tidak ditemukan',
+                'kategori' => $transaksi->produk->name ?? 'Produk tidak ditemukan',
+                'jumlah' => $transaksi->jumlahDibeli,
                 'tanggal_keluar' => $transaksi->transactionDate,
+                'hari' => Carbon::parse($transaksi->transactionDate)->translatedFormat('l'),
+                'waktu_edar' => $transaksi->waktuEdar,
                 'status' => $transaksi->status,
             ];
         }
 
         return $data;
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }
