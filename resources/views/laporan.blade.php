@@ -1,5 +1,19 @@
 @extends('layout.owner')
 @section('content')
+<style>
+    /* Make thead sticky */
+    .table-responsive {
+        max-height: 570px; /* Adjust as needed */
+        overflow-y: auto;
+    }
+    thead th {
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 1500;
+        box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+    }
+</style>
 <div class="container-fluid">
     <section class="card p-3">
         <div class="card-header d-flex justify-content-between align-items-center border-0">
@@ -104,7 +118,7 @@
 
     function fetchData() {
         const token = localStorage.getItem('authToken');
-        const url = `http://127.0.0.1:8000/api/laporan?filter=${currentFilter}`;
+        const url = `/api/laporan?filter=${currentFilter}`;
         // document.getElementById('debugUrl').textContent = `Fetching data from URL: ${url}`;
         fetch(url, {
             headers: {
