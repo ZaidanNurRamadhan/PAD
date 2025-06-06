@@ -17,11 +17,11 @@ class SearchController extends Controller
             // Validate input
             $request->validate([
                 'search' => 'required|string|max:255',
-                'page' => 'required|string|in:transaksi-owner,gudang-owner,pemasok,manajemen-toko,settings,laporan, transaksi-karyawan, gudang-karyawan', // Validate page
+                'page' => 'required|string|in:transaksi-owner,gudang-owner,pemasok,manajemen-toko,settings,laporan,transaksi-karyawan,gudang-karyawan', // Validate page
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Log the validation errors if validation fails
-            \Log::debug('Validation Errors:', $e->errors());
+            // \Log::debug('Validation Errors:', $e->errors());
             return response()->json(['error' => 'Validation failed', 'details' => $e->errors()], 422);
         }
 
@@ -29,8 +29,8 @@ class SearchController extends Controller
         $query = $request->input('search');
         $page = $request->input('page');
 
-        \Log::debug('Page: ' . $page);
-        \Log::debug('Query: ' . $query);
+        // \Log::debug('Page: ' . $page);
+        // \Log::debug('Query: ' . $query);
 
         if (!in_array($page, ['transaksi-owner', 'gudang-owner', 'pemasok', 'manajemen-toko', 'settings','laporan', 'transaksi-karyawan', 'gudang-karyawan'])) {
             return response()->json(['error' => 'Invalid page'], 422);

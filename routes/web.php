@@ -118,7 +118,7 @@ Route::get('/forgot-password', [LoginController::class, 'showForgotPasswordForm'
 Route::post('/forgot-password', [LoginController::class, 'handleForgotPassword'])->name('password.email.submit');
 
 // Route untuk halaman memasukkan token
-Route::get('/validate-token/{email}/{token}', [LoginController::class, 'showTokenForm'])->name('password.token.form');
+Route::get('/token-lupa-password', [LoginController::class, 'showTokenLupaPasswordForm'])->name('password.token.form');
 
 // Route untuk menangani submit token
 Route::post('/validate-token', [LoginController::class, 'handleTokenValidation'])->name('password.token.submit');

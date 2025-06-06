@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
+    public function index(){
+        return view('login');
+    }
+
     /**
      * Handle login request via API
      */
@@ -52,6 +56,15 @@ class LoginController extends Controller
     }
 
     /**
+     * Show token lupa password form
+     */
+    public function showTokenLupaPasswordForm(Request $request)
+    {
+        $email = $request->query('email', '');
+        return view('token-lupa-password', ['email' => $email, 'token' => '']);
+    }
+
+    /**
      * Logout API
      */
     public function logout(Request $request)
@@ -66,6 +79,11 @@ class LoginController extends Controller
             'success' => true,
             'message' => 'Logout successful'
         ], 200);
+    }
+
+
+    public function showForgotPasswordForm(){
+        return view('lupa-password');
     }
 
     /**
@@ -119,6 +137,10 @@ class LoginController extends Controller
             'success' => true,
             'message' => 'Token is valid'
         ], 200);
+    }
+
+    public function showResetPasswordForm(){
+        return view('reset-password');
     }
 
     /**

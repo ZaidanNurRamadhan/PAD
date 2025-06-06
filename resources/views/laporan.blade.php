@@ -70,8 +70,8 @@
     </section>
 </div>
 <section class="card mt-4 p-4 min-vh-100 d-flex flex-column">
-    <div class="card-header d-flex justify-content-between border-0 mb-2">
-        <h5 class="align-self-end">Rekap Transaksi</h5>
+    <div class="card-header d-flex justify-content-between border-0 px-0">
+        <h5 class="align-self-end text-judul">Rekap Transaksi</h5>
         <a href="{{ route('laporan.export') }}" id="downloadBtn">
             <button class="btn btn-outline-secondary">Download</button>
         </a>
@@ -99,27 +99,26 @@
 </section>
 <script>
     let currentFilter = '{{ $filter ?? "harian" }}';
-    let currentPage = 1;
     const itemsPerPage = 10;
     let laporanData = [];
+    let currentPage = 1;
 
     function toggleDropdown(element) {
         const options = element.nextElementSibling; // Dropdown options
         options.classList.toggle('show'); // Toggle visibility
     }
 
-    // function applyFilter(filter) {
-    //     currentFilter = filter;
-    //     currentPage = 1;
-    //     document.getElementById('filterText').textContent = filter.charAt(0).toUpperCase() + filter.slice(1);
-    //     fetchData();
-    //     toggleDropdown(document.querySelector('.dropdown-selected'));
-    // }
+    function applyFilter(filter) {
+        currentFilter = filter;
+        currentPage = 1;
+        document.getElementById('filterText').textContent = filter.charAt(0).toUpperCase() + filter.slice(1);
+        fetchData();
+        toggleDropdown(document.querySelector('.dropdown-selected'));
+    }
 
     function fetchData() {
         const token = localStorage.getItem('authToken');
         const url = `/api/laporan?filter=${currentFilter}`;
-        // document.getElementById('debugUrl').textContent = `Fetching data from URL: ${url}`;
         fetch(url, {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -130,7 +129,6 @@
             .then(response => response.json())
             .then(data => {
                 laporanData = data.data;
-                // console.log(laporanData)
                 renderSummary();
                 renderTable();
                 renderPagination();
@@ -164,8 +162,12 @@
             tbody.appendChild(tr);
             return;
         }
-        console.log(laporanData);
-        laporanData.forEach(item => {
+
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const pageData = laporanData.slice(startIndex, endIndex);
+
+        pageData.forEach(item => {
             if (item.status === 'closed') {
                 const trToko = document.createElement('tr');
                 const tdToko = document.createElement('td');
@@ -226,11 +228,73 @@
     }
 
     function renderPagination() {
-        // Pagination removed as per user request
+        let paginationNav = document.getElementById('pagination-nav');
+        if (!paginationNav) {
+            // Create pagination nav if it doesn't exist
+            const section = document.querySelector('section.card.mt-4.p-4.min-vh-100.d-flex.flex-column');
+            paginationNav = document.createElement('nav');
+            paginationNav.id = 'pagination-nav';
+            paginationNav.setAttribute('aria-label', 'Page navigation');
+            paginationNav.className = 'mt-3 d-flex justify-content-between';
+            section.appendChild(paginationNav);
+        }
+
+        paginationNav.innerHTML = '';
+
+        const totalPages = Math.ceil(laporanData.length / itemsPerPage);
+
+        if (totalPages <= 1) {
+            return; // No need for pagination if only one page
+        }
+
+        // Previous button
+        const prevBtn = document.createElement('button');
+        prevBtn.textContent = 'Previous';
+        prevBtn.className = 'btn btn-outline-primary me-2';
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+                renderPagination();
+            }
+        });
+        paginationNav.appendChild(prevBtn);
+
+        // Page buttons as buttons inside a div container
+        const pageButtonsContainer = document.createElement('div');
+        pageButtonsContainer.className = 'd-inline-flex';
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.textContent = i;
+            pageButton.className = 'btn me-2 ' + (i === currentPage ? 'btn-primary' : 'btn-outline-primary');
+            pageButton.type = 'button';
+            pageButton.addEventListener('click', () => {
+                currentPage = i;
+                renderTable();
+                renderPagination();
+            });
+            pageButtonsContainer.appendChild(pageButton);
+        }
+        paginationNav.appendChild(pageButtonsContainer);
+
+        // Next button
+        const nextBtn = document.createElement('button');
+        nextBtn.textContent = 'Next';
+        nextBtn.className = 'btn btn-outline-primary';
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTable();
+                renderPagination();
+            }
+        });
+        paginationNav.appendChild(nextBtn);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        // Removed pagination button event listeners
         document.getElementById('downloadBtn').addEventListener('click', function(e) {
             e.preventDefault();
             window.location.href = 'http://127.0.0.1:8000/api/laporan/export-pdf';

@@ -35,6 +35,9 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     let pemasokIdToDelete = null;
+    let pemasokList = [];
+    let currentPage = 1;
+    const itemsPerPage = 10;
 
     function fetchAndRenderPemasok() {
         const token = localStorage.getItem('authToken');
@@ -53,60 +56,116 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(data => {
-            const pemasokList = data.data;
-            const tbody = document.getElementById('pemasok-table-body');
-            tbody.innerHTML = '';
-
-            if (pemasokList.length === 0) {
-                const tr = document.createElement('tr');
-                const td = document.createElement('td');
-                td.colSpan = 6;
-                td.className = 'text-center';
-                td.textContent = 'Tidak ada data';
-                tr.appendChild(td);
-                tbody.appendChild(tr);
-                return;
-            }
-
-            pemasokList.forEach((pemasok, index) => {
-                const tr = document.createElement('tr');
-
-                tr.innerHTML = `
-                    <td>${index + 1}</td>
-                    <td>${pemasok.name}</td>
-                    <td>${pemasok.produkDisediakan}</td>
-                    <td>${pemasok.nomorTelepon}</td>
-                    <td>${pemasok.email}</td>
-                    <td class="justify-content-center d-flex">
-                        <button class="m-2 btn btn-warning btn-sm" onclick="editPemasok(${pemasok.id})">Edit</button>
-                        <button class="m-2 btn btn-danger btn-sm deletePemasok" data-id="${pemasok.id}" data-bs-toggle="modal" data-bs-target="#Hapuspemasok">Hapus</button>
-                    </td>
-                `;
-
-                tbody.appendChild(tr);
-            });
-
-            const deleteButtons = document.querySelectorAll('.deletePemasok');
-            deleteButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    pemasokIdToDelete = this.dataset.id;
-                });
-            });
+            pemasokList = data.data;
+            renderPemasokTable();
+            renderPagination();
         })
         .catch(error => {
             console.error('Error fetching pemasok data:', error);
         });
     }
 
-    // Handle delete form submission
+    function renderPemasokTable() {
+        const tbody = document.getElementById('pemasok-table-body');
+        tbody.innerHTML = '';
+
+        if (pemasokList.length === 0) {
+            const tr = document.createElement('tr');
+            const td = document.createElement('td');
+            td.colSpan = 6;
+            td.className = 'text-center';
+            td.textContent = 'Tidak ada data';
+            tr.appendChild(td);
+            tbody.appendChild(tr);
+            return;
+        }
+
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const pageData = pemasokList.slice(startIndex, endIndex);
+
+        pageData.forEach((pemasok, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${startIndex + index + 1}</td>
+                <td>${pemasok.name}</td>
+                <td>${pemasok.produkDisediakan}</td>
+                <td>${pemasok.nomorTelepon}</td>
+                <td>${pemasok.email}</td>
+                <td class="justify-content-center d-flex">
+                    <button class="m-2 btn btn-warning btn-sm" onclick="editPemasok(${pemasok.id})">Edit</button>
+                    <button class="m-2 btn btn-danger btn-sm deletePemasok" data-id="${pemasok.id}" data-bs-toggle="modal" data-bs-target="#Hapuspemasok">Hapus</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        document.querySelectorAll('.deletePemasok').forEach(button => {
+            button.addEventListener('click', function() {
+                pemasokIdToDelete = this.dataset.id;
+            });
+        });
+    }
+
+    function renderPagination() {
+        let paginationNav = document.getElementById('pagination-nav');
+        if (!paginationNav) {
+            paginationNav = document.createElement('nav');
+            paginationNav.id = 'pagination-nav';
+            paginationNav.className = 'mt-3 d-flex justify-content-between';
+            const container = document.querySelector('.table-container');
+            container.appendChild(paginationNav);
+        }
+
+        paginationNav.innerHTML = '';
+
+        const totalPages = Math.ceil(pemasokList.length / itemsPerPage);
+        if (totalPages <= 1) return;
+
+        const prevBtn = document.createElement('button');
+        prevBtn.textContent = 'Previous';
+        prevBtn.className = 'btn btn-outline-primary me-2';
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.addEventListener('click', () => {
+            currentPage--;
+            renderPemasokTable();
+            renderPagination();
+        });
+        paginationNav.appendChild(prevBtn);
+
+        const pageContainer = document.createElement('div');
+        pageContainer.className = 'd-inline-flex';
+
+        for (let i = 1; i <= totalPages; i++) {
+            const btn = document.createElement('button');
+            btn.textContent = i;
+            btn.className = 'btn me-2 ' + (i === currentPage ? 'btn-primary' : 'btn-outline-primary');
+            btn.addEventListener('click', () => {
+                currentPage = i;
+                renderPemasokTable();
+                renderPagination();
+            });
+            pageContainer.appendChild(btn);
+        }
+        paginationNav.appendChild(pageContainer);
+
+        const nextBtn = document.createElement('button');
+        nextBtn.textContent = 'Next';
+        nextBtn.className = 'btn btn-outline-primary';
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.addEventListener('click', () => {
+            currentPage++;
+            renderPemasokTable();
+            renderPagination();
+        });
+        paginationNav.appendChild(nextBtn);
+    }
+
     const deleteForm = document.getElementById('deletePemasokForm');
     deleteForm.addEventListener('submit', function(event) {
         event.preventDefault();
         const token = localStorage.getItem('authToken');
-        if (!pemasokIdToDelete) {
-            console.error('No pemasok ID selected for deletion');
-            return;
-        }
+        if (!pemasokIdToDelete) return;
 
         fetch(`http://127.0.0.1:8000/api/pemasok/${pemasokIdToDelete}`, {
             method: 'DELETE',
@@ -116,26 +175,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 'Content-Type': 'application/json'
             }
         })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to delete pemasok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Close the modal
+        .then(response => response.json())
+        .then(() => {
             const hapusModal = bootstrap.Modal.getInstance(document.getElementById('Hapuspemasok'));
             hapusModal.hide();
-
-            // Refresh the pemasok list
             fetchAndRenderPemasok();
         })
-        .catch(error => {
-            console.error('Error deleting pemasok:', error);
-        });
+        .catch(error => console.error('Error deleting pemasok:', error));
     });
 
     fetchAndRenderPemasok();
 });
 </script>
+
 @endsection

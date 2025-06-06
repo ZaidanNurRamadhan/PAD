@@ -57,7 +57,7 @@
                             </a>
                           </li>
                           <li class="nav-item">
-                            <a href="{{ route('gudang-karyawan') }}" id="gudangLink" class="text-decoration-none fst-normal {{ request()->routeIs('transaksi-karyawan') ? 'active' : '' }}"><i class="fas fa-warehouse"></i><i class="d-none lg d-lg-inline fst-normal"> Gudang</i></a>
+                            <a href="{{ route('gudang-karyawan') }}" id="gudangLink" class="text-decoration-none fst-normal {{ request()->routeIs('gudang-karyawan') ? 'active' : '' }}"><i class="fas fa-warehouse"></i><i class="d-none lg d-lg-inline fst-normal"> Gudang</i></a>
                           </li>
 
                           <!-- Bagian bawah dengan `mt-auto` agar berada di bagian paling bawah -->
