@@ -29,8 +29,8 @@
     <nav id="pagination-nav" class="mt-3 d-flex justify-content-between"></nav>
 </section>
 
-@include('component.EditTransaksi')
-@include('component.TambahTransaksi')
+@include('component.EditTransaksiKaryawan')
+@include('component.TambahTransaksiKaryawan')
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -45,7 +45,7 @@
             return;
         }
 
-        fetch('http://127.0.0.1:8000/api/transaksi-karyawan', {
+        fetch('/api/transaksi-karyawan', {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + token,

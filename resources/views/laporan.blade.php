@@ -10,8 +10,23 @@
         position: sticky;
         top: 0;
         background: white;
-        z-index: 1500;
+        z-index: 0;
         box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+    }
+    /* Dropdown menu above thead */
+    .dropdown {
+        position: relative;
+    }
+    .dropdown-options {
+        position: absolute;
+        z-index: 1000;
+        background: white;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        display: none;
+    }
+    .dropdown-options.show {
+        display: block;
     }
 </style>
 <div class="container-fluid">
@@ -72,9 +87,15 @@
 <section class="card mt-4 p-4 min-vh-100 d-flex flex-column">
     <div class="card-header d-flex justify-content-between border-0 px-0">
         <h5 class="align-self-end text-judul">Rekap Transaksi</h5>
-        <a href="{{ route('laporan.export') }}" id="downloadBtn">
-            <button class="btn btn-outline-secondary">Download</button>
-        </a>
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="downloadDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Download
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="downloadDropdown">
+                <li><a class="dropdown-item" href="#" id="downloadPdf">Download PDF</a></li>
+                <li><a class="dropdown-item" href="#" id="downloadExcel">Download Excel</a></li>
+            </ul>
+        </div>
     </div>
     <div class="table-responsive flex-grow-1 table-data">
         <table class="table">
@@ -91,9 +112,9 @@
                     <th class="text-center">Status</th>
                 </tr>
             </thead>
-            <tbody id="laporanTableBody">
-                {{-- Table body will be rendered by JavaScript --}}
-            </tbody>
+<tbody id="laporanTableBody">
+    {{-- Table body will be rendered by JavaScript --}}
+</tbody>
         </table>
     </div>
 </section>
@@ -152,12 +173,14 @@
         const tbody = document.getElementById('laporanTableBody');
         tbody.innerHTML = '';
 
-        if (laporanData.length === 0) {
+        const closedData = laporanData.filter(item => item.status === 'closed');
+
+        if (closedData.length === 0) {
             const tr = document.createElement('tr');
             const td = document.createElement('td');
             td.colSpan = 9;
             td.className = 'text-center';
-            td.textContent = 'Tidak ada data';
+            td.textContent = 'tidak ada rekap transaksi saat ini';
             tr.appendChild(td);
             tbody.appendChild(tr);
             return;
@@ -165,65 +188,63 @@
 
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
-        const pageData = laporanData.slice(startIndex, endIndex);
+        const pageData = closedData.slice(startIndex, endIndex);
 
         pageData.forEach(item => {
-            if (item.status === 'closed') {
-                const trToko = document.createElement('tr');
-                const tdToko = document.createElement('td');
-                tdToko.colSpan = 9;
-                tdToko.textContent = item.toko;
-                trToko.appendChild(tdToko);
-                tbody.appendChild(trToko);
+            const trToko = document.createElement('tr');
+            const tdToko = document.createElement('td');
+            tdToko.colSpan = 9;
+            tdToko.textContent = item.toko;
+            trToko.appendChild(tdToko);
+            tbody.appendChild(trToko);
 
-                const tr = document.createElement('tr');
+            const tr = document.createElement('tr');
 
-                const totalHargaTd = document.createElement('td');
-                totalHargaTd.textContent = `Rp${item.total_harga.toLocaleString('id-ID')}`;
-                tr.appendChild(totalHargaTd);
+            const totalHargaTd = document.createElement('td');
+            totalHargaTd.textContent = `Rp${item.total_harga.toLocaleString('id-ID')}`;
+            tr.appendChild(totalHargaTd);
 
-                const jumlahTd = document.createElement('td');
-                jumlahTd.className = 'text-center';
-                jumlahTd.textContent = item.jumlahDibeli;
-                tr.appendChild(jumlahTd);
+            const jumlahTd = document.createElement('td');
+            jumlahTd.className = 'text-center';
+            jumlahTd.textContent = item.jumlahDibeli;
+            tr.appendChild(jumlahTd);
 
-                const produkTd = document.createElement('td');
-                produkTd.className = 'text-center';
-                produkTd.textContent = item.produk;
-                tr.appendChild(produkTd);
+            const produkTd = document.createElement('td');
+            produkTd.className = 'text-center';
+            produkTd.textContent = item.produk;
+            tr.appendChild(produkTd);
 
-                const terjualTd = document.createElement('td');
-                terjualTd.className = 'text-center';
-                terjualTd.textContent = item.terjual;
-                tr.appendChild(terjualTd);
+            const terjualTd = document.createElement('td');
+            terjualTd.className = 'text-center';
+            terjualTd.textContent = item.terjual;
+            tr.appendChild(terjualTd);
 
-                const hargaTd = document.createElement('td');
-                hargaTd.className = 'text-center';
-                hargaTd.textContent = `Rp${item.harga.toLocaleString('id-ID')}`;
-                tr.appendChild(hargaTd);
+            const hargaTd = document.createElement('td');
+            hargaTd.className = 'text-center';
+            hargaTd.textContent = `Rp${item.harga.toLocaleString('id-ID')}`;
+            tr.appendChild(hargaTd);
 
-                const tanggalKeluarTd = document.createElement('td');
-                tanggalKeluarTd.className = 'text-center';
-                tanggalKeluarTd.textContent = new Date(item.tanggal_keluar).toLocaleDateString('id-ID');
-                tr.appendChild(tanggalKeluarTd);
+            const tanggalKeluarTd = document.createElement('td');
+            tanggalKeluarTd.className = 'text-center';
+            tanggalKeluarTd.textContent = new Date(item.tanggal_keluar).toLocaleDateString('id-ID');
+            tr.appendChild(tanggalKeluarTd);
 
-                const tanggalReturTd = document.createElement('td');
-                tanggalReturTd.className = 'text-center';
-                tanggalReturTd.textContent = item.tanggal_retur ? new Date(item.tanggal_retur).toLocaleDateString('id-ID') : '';
-                tr.appendChild(tanggalReturTd);
+            const tanggalReturTd = document.createElement('td');
+            tanggalReturTd.className = 'text-center';
+            tanggalReturTd.textContent = item.tanggal_retur ? new Date(item.tanggal_retur).toLocaleDateString('id-ID') : '';
+            tr.appendChild(tanggalReturTd);
 
-                const waktuEdarTd = document.createElement('td');
-                waktuEdarTd.className = 'text-center';
-                waktuEdarTd.textContent = item.waktu_edar;
-                tr.appendChild(waktuEdarTd);
+            const waktuEdarTd = document.createElement('td');
+            waktuEdarTd.className = 'text-center';
+            waktuEdarTd.textContent = item.waktu_edar;
+            tr.appendChild(waktuEdarTd);
 
-                const statusTd = document.createElement('td');
-                statusTd.className = 'text-danger text-center';
-                statusTd.textContent = item.status;
-                tr.appendChild(statusTd);
+            const statusTd = document.createElement('td');
+            statusTd.className = 'text-danger text-center';
+            statusTd.textContent = item.status;
+            tr.appendChild(statusTd);
 
-                tbody.appendChild(tr);
-            }
+            tbody.appendChild(tr);
         });
     }
 
@@ -295,9 +316,13 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('downloadBtn').addEventListener('click', function(e) {
+        document.getElementById('downloadExcel').addEventListener('click', function(e) {
             e.preventDefault();
-            window.location.href = 'http://127.0.0.1:8000/api/laporan/export-pdf';
+            window.location.href = '/api/export-transaksi';
+        });
+        document.getElementById('downloadPdf').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = '/api/export-pdf';
         });
         applyFilter(currentFilter);
     });

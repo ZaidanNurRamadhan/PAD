@@ -40,7 +40,7 @@
     });
 
     function fetchTokoData() {
-        fetch('http://127.0.0.1:8000/api/toko')
+        fetch('/api/toko')
             .then(response => response.json())
             .then(data => {
                 tokoList = data.data;

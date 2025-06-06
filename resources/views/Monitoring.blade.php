@@ -32,7 +32,7 @@
 
     function fetchMonitoringData(page = 1) {
         const token = localStorage.getItem('authToken');
-        const url = `http://127.0.0.1:8000/api/monitoring?page=${page}`;
+        const url = `/api/monitoring?page=${page}`;
 
         fetch(url, {
             headers: {

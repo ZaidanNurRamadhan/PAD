@@ -27,7 +27,7 @@ function selectOption(element, value) {
 // bagian pemasok
 function editPemasok(id) {
     // Ambil data pemasok dari server API endpoint
-    fetch(`http://127.0.0.1:8000/api/pemasok/${id}`)
+    fetch(`/api/pemasok/${id}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Data pemasok tidak ditemukan');
@@ -77,7 +77,7 @@ if (editFormPemasok) {
         _method: 'PUT'
     };
 
-    fetch(`http://127.0.0.1:8000/api/pemasok/${id}`, {
+    fetch(`/api/pemasok/${id}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -155,7 +155,7 @@ editForm.addEventListener('submit', function(event) {
         _method: 'PUT' // method override for POST
     };
 
-    fetch(`http://127.0.0.1:8000/api/gudang/${id}`, {
+    fetch(`/api/gudang/${id}`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -197,7 +197,7 @@ function deletePemasokById(pemasokId) {
         return;
     }
 
-    fetch(`http://127.0.0.1:8000/api/pemasok/${pemasokId}`, {
+    fetch(`/api/pemasok/${pemasokId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -236,7 +236,7 @@ function deleteTokoById(tokoId) {
         return;
     }
 
-    fetch(`http://127.0.0.1:8000/api/toko/${tokoId}`, {
+    fetch(`/api/toko/${tokoId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -269,7 +269,7 @@ function deletekaryawanById(karyawanId) {
         return;
     }
 
-    fetch(`http://127.0.0.1:8000/api/karyawan/${karyawanId}`, {
+    fetch(`/api/karyawan/${karyawanId}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -318,7 +318,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 tanggal_retur: document.getElementById('tanggal_retur').value || null,
             };
 
-            fetch(`http://127.0.0.1:8000/api/transaksi/${id}`, {
+            fetch(`/api/transaksi/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': 'Bearer ' + token,

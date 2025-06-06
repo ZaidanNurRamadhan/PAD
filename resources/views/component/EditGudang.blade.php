@@ -103,7 +103,7 @@
 
         // Send data to API endpoint
         const token = localStorage.getItem('authToken'); // Get bearer token from localStorage
-        fetch(`http://127.0.0.1:8000/api/gudang/${currentEditId}`, {
+        fetch(`/api/gudang/${currentEditId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

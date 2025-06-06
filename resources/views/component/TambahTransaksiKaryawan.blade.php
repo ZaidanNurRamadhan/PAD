@@ -56,12 +56,12 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Fetch toko data and populate select
-        fetch('http://127.0.0.1:8000/api/toko')
+        fetch('/api/transaksi-karyawan')
             .then(response => response.json())
             .then(data => {
                 const tokoSelect = document.getElementById('toko_id_tambah');
                 tokoSelect.innerHTML = '<option value="">Pilih Toko</option>';
-                const tokoList = data.data ? data.data : data;
+                const tokoList = data.toko ? data.toko : data;
                 tokoList.forEach(toko => {
                     const option = document.createElement('option');
                     option.value = toko.id;
@@ -74,12 +74,12 @@
             });
 
         // Fetch produk data and populate select
-        fetch('/api/gudang')
+        fetch('/api/transaksi-karyawan')
             .then(response => response.json())
             .then(data => {
                 const produkSelect = document.getElementById('produk_id_tambah');
                 produkSelect.innerHTML = '<option value="">Pilih Produk</option>';
-                const produkList = data.produks ? data.produks : data;
+                const produkList = data.gudang ? data.gudang : data;
                 produkList.forEach(produk => {
                     const option = document.createElement('option');
                     option.value = produk.id;
@@ -113,7 +113,7 @@
 
                 console.log('Submitting formData:', formData);
 
-                fetch('/api/transaksi', {
+                fetch('/api/transaksi-karyawan', {
                     method: 'POST',
                     headers: {
                         'Authorization': 'Bearer ' + token,

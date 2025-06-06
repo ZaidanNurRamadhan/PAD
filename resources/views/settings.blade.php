@@ -47,7 +47,7 @@
         let lastPage = 1;
 
         function fetchEmployees(page = 1) {
-            fetch(`http://127.0.0.1:8000/api/karyawan?page=${page}`, {
+            fetch(`/api/karyawan?page=${page}`, {
                 headers: {
                     'Accept': 'application/json',
                     'Authorization': 'Bearer ' + token

@@ -51,12 +51,12 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Fetch toko data and populate select
-        fetch('/api/toko')
+        fetch('/api/transaksi-karyawan')
             .then(response => response.json())
             .then(data => {
                 const tokoSelect = document.getElementById('toko_id');
                 tokoSelect.innerHTML = '';
-                const tokoList = data.data ? data.data : data;
+                const tokoList = data.toko ? data.toko : data;
                 tokoList.forEach(toko => {
                     const option = document.createElement('option');
                     option.value = toko.id;
@@ -69,12 +69,12 @@
             });
 
         // Fetch produk data and populate select
-        fetch('/api/gudang')
+        fetch('/api/transaksi-karyawan')
             .then(response => response.json())
             .then(data => {
                 const produkSelect = document.getElementById('produk_id');
                 produkSelect.innerHTML = '';
-                const produkList = data.produks ? data.produks : data;
+                const produkList = data.gudang ? data.gudang : data;
                 produkList.forEach(produk => {
                     const option = document.createElement('option');
                     option.value = produk.id;

@@ -96,7 +96,7 @@
             return;
         }
 
-            fetch('http://127.0.0.1:8000/api/toko/' + currentId, {
+            fetch('/api/toko/' + currentId, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

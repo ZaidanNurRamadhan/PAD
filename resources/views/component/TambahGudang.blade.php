@@ -116,7 +116,7 @@
         const token = localStorage.getItem('authToken'); // Get token from localStorage
 
         // Send data to API endpoint
-        fetch('http://127.0.0.1:8000/api/gudang', {
+        fetch('/api/gudang', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

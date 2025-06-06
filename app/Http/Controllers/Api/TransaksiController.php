@@ -184,6 +184,9 @@ public function getKaryawan()
 {
     $transaksis = Transaksi::with('produk', 'toko')->orderBy('id', 'desc')->get();
 
+    $toko = Toko::get();
+    $gudang = Produk::get();
+
     $data = $transaksis->map(function ($transaksi) {
         return [
             'id' => $transaksi->id,
@@ -202,7 +205,7 @@ public function getKaryawan()
         ];
     });
 
-    return response()->json(['data' => $data], 200);
+    return response()->json(['data' => $data, 'toko' => $toko, 'gudang' => $gudang], 200);
 }
 
 // POST transaksi khusus karyawan

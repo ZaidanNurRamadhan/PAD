@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        fetch('http://127.0.0.1:8000/api/pemasok', {
+        fetch('/api/pemasok', {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const token = localStorage.getItem('authToken');
         if (!pemasokIdToDelete) return;
 
-        fetch(`http://127.0.0.1:8000/api/pemasok/${pemasokIdToDelete}`, {
+        fetch(`/api/pemasok/${pemasokIdToDelete}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`,

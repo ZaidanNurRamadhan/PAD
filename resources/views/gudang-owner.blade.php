@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function fetchProdukData() {
         const token = localStorage.getItem('authToken');
-        fetch('http://127.0.0.1:8000/api/gudang', {
+        fetch('/api/gudang', {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',

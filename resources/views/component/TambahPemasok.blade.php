@@ -121,7 +121,7 @@ document.getElementById('submitPemasok').addEventListener('click', async functio
         // Get token from localStorage or other storage
         const token = localStorage.getItem('authToken'); // Adjust key as needed
 
-        const response = await fetch('http://127.0.0.1:8000/api/pemasok', {
+        const response = await fetch('/api/pemasok', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

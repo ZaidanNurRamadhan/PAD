@@ -50,7 +50,7 @@
         document.getElementById('karyawan-email').value = email;
 
         const form = document.getElementById('edit-form');
-        form.action = `http://127.0.0.1:8000/api/karyawan/${id}`; // Correctly update the action for the form
+        form.action = `/api/karyawan/${id}`; // Correctly update the action for the form
     });
 });
 
