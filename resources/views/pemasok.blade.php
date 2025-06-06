@@ -34,6 +34,7 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    const tableBody = document.getElementById('pemasok-table-body');
     let pemasokIdToDelete = null;
     let pemasokList = [];
     let currentPage = 1;
@@ -41,6 +42,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function fetchAndRenderPemasok() {
         const token = localStorage.getItem('authToken');
+
+        if (!token) {
+            tableBody.innerHTML = '<tr><td colspan="9" class="text-center text-danger">Authentication token not found. Please login again.</td></tr>';
+            return;
+        }
 
         fetch('http://127.0.0.1:8000/api/pemasok', {
             headers: {
