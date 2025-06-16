@@ -116,17 +116,20 @@
             @endif
         </section>
         <section class="main-content">
+	    <script>
+    		// Simpan token dari session ke localStorage setelah login berhasil
+    		@if(session('token'))
+        	  localStorage.setItem('authToken', "{{ session('token') }}");
+    	  	@endif
+	  </script>
+
             @yield('content')
         </section>
     </main>
 
     @include('component.ModalKeluar')
 
-    @if(session('token'))
-    <script>
-        localStorage.setItem('authToken', "{{ session('token') }}");
-    </script>
-    @endif
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="{{ asset('js/layout-owner.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
@@ -213,20 +216,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('User not authenticated.');
                 return;
             }
-            fetch('{{ route("logout") }}', {
+            fetch('/api/logout', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    'X-Requested-With': 'XMLHttpRequest'
                 }
             })
             .then(response => {
                 if (response.ok) {
                     localStorage.removeItem('authToken');
-                    window.location.href = '/login';
+                    window.location.href = '/';
                 } else {
                     alert('Logout failed.');
                 }
@@ -236,7 +238,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
-});
-</script>
+});</script>
 </body>
 </html>

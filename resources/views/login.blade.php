@@ -101,4 +101,36 @@
         }
     }
 </script>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault(); // Jangan submit default form
+
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                localStorage.setItem('auth_token', data.token);// Ganti dengan halaman tujuan
+            } else {
+                alert(data.message || 'Login gagal');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            alert('Terjadi kesalahan saat login.');
+        }
+    });
+</script>
+
 </html>

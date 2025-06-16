@@ -102,7 +102,12 @@
         </section>
     </section>
 </section>
-
+<script>
+    @if(session('token'))
+        // Simpan token ke localStorage
+        localStorage.setItem('authToken', "{{ session('token') }}");
+    @endif
+</script>
 <script>
     let currentSalesFilter = 'harian';
     let currentBestSellerFilter = 'harian';

@@ -105,7 +105,7 @@
             }
 
             $.ajax({
-                url: "{{ url('http://127.0.0.1:8000/api/search') }}",  // URL ke controller untuk pencarian
+                url: "{{ url('/api/search') }}",  // URL ke controller untuk pencarian
                 method: 'GET',
                 data: {
                     search: search_string,
@@ -115,7 +115,7 @@
                     // console.log('Search Results:', res);
                     // Update hasil pencarian hanya di dalam <tbody> (area yang relevan)
                     $('.table-data tbody').html(res);  // Update hasil pencarian di dalam tabel
-                    applyDeleteListeners(); // Fungsi untuk menerapkan event listener pada tombol delete
+                    //applyDeleteListeners(); Fungsi untuk menerapkan event listener pada tombol delete
 
                 },
                 error: function(xhr, status, error) {
@@ -146,7 +146,6 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => {
                 if (response.ok) {
                     localStorage.removeItem('authToken');
-                    window.location.href = '/';
                 } else {
                     alert('Logout failed.');
                 }

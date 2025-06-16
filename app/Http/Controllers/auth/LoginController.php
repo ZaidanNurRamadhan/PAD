@@ -27,6 +27,7 @@ class LoginController extends Controller
 
             // Simpan token di session, atau kirim ke Blade untuk disimpan di localStorage
             session(['api_token' => $token]);
+            session(['level' => $user->level]);
 
             if ($user->role === 'owner') {
                 return redirect()->route('dashboard')->with('token', $token);
