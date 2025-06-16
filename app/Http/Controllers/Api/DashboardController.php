@@ -41,20 +41,33 @@ class DashboardController extends Controller
         // Produk stok menipis
         $produkMenipis = Produk::where('jumlah', '<', 20)->get();
 
+        // --- PERUBAHAN DIMULAI DI SINI ---
+
         // Produk terlaris
-        $bestSellers = Transaksi::with('produk')
-            ->select('produk_id', DB::raw('SUM(terjual) as total_terjual'))
+        // Query ini diubah untuk mengambil stok dari tabel 'produk' dan total penjualan dari 'transaksi'.
+        $bestSellers = Produk::select(
+                'produk.id',
+                'produk.name',
+                'produk.jumlah as produk_tersisa', // Mengambil stok tersisa dari gudang (tabel produk)
+                DB::raw('SUM(transaksi.terjual) as produk_keluar') // Menjumlahkan total produk terjual dari transaksi
+            )
+            ->join('transaksi', 'produk.id', '=', 'transaksi.produk_id')
             ->when($filter === 'bulanan', function ($query) {
-                return $query->whereMonth('transactionDate', now()->month)
-                             ->whereYear('transactionDate', now()->year);
+                // Filter berdasarkan bulan dan tahun saat ini dari tabel transaksi
+                return $query->whereMonth('transaksi.transactionDate', now()->month)
+                             ->whereYear('transaksi.transactionDate', now()->year);
             })
             ->when($filter === 'harian', function ($query) {
-                return $query->whereDate('transactionDate', now()->toDateString());
+                // Filter berdasarkan tanggal hari ini dari tabel transaksi
+                return $query->whereDate('transaksi.transactionDate', now()->toDateString());
             })
-            ->groupBy('produk_id')
-            ->orderBy('total_terjual', 'desc')
+            ->groupBy('produk.id', 'produk.name', 'produk.jumlah') // Group by untuk agregasi yang benar
+            ->orderBy('produk_keluar', 'desc') // Urutkan berdasarkan produk yang paling banyak keluar (terjual)
             ->take(10)
             ->get();
+
+        // --- PERUBAHAN SELESAI DI SINI ---
+
 
         return response()->json([
             'status' => 'success',
@@ -62,7 +75,7 @@ class DashboardController extends Controller
             'monitoring_data' => $monitoringData,
             'sales_data' => $salesData,
             'produk_menipis' => $produkMenipis,
-            'produk_terlaris' => $bestSellers,
+            'produk_terlaris' => $bestSellers, // Data ini sekarang berisi 'produk_tersisa' and 'produk_keluar'
             'transaksi' => $transaksiData,
         ]);
     }
@@ -73,10 +86,14 @@ class DashboardController extends Controller
         $monthlyReturns = [];
 
         for ($month = 1; $month <= 12; $month++) {
-            $sales = Transaksi::whereMonth('transactionDate', $month)
+            // Menambahkan filter tahun agar data akurat untuk tahun berjalan
+            $sales = Transaksi::whereYear('transactionDate', now()->year)
+                ->whereMonth('transactionDate', $month)
                 ->sum('terjual');
 
-            $returns = Transaksi::whereMonth('transactionDate', $month)
+            // Menambahkan filter tahun untuk perhitungan retur
+            $returns = Transaksi::whereYear('transactionDate', now()->year)
+                ->whereMonth('transactionDate', $month)
                 ->sum(DB::raw('jumlahDibeli - terjual'));
 
             $monthlySales[] = $sales;
@@ -117,7 +134,7 @@ class DashboardController extends Controller
     private function getMonitoringData()
     {
         $transaksis = Transaksi::with(['produk', 'toko'])
-            // ->where('status', 'open')
+            // ->where('status', 'open') // Komentar ini dipertahankan sesuai kode asli
             ->orderBy('transactionDate', 'desc')
             ->get();
 
