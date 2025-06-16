@@ -17,7 +17,6 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $filter = $request->input('filter', 'harian'); // default harian
-        $batas_menipis = 20; // Definisikan batas stok menipis di sini agar mudah diubah
 
         // Monitoring data transaksi "open"
         $monitoringData = $this->getMonitoringData();
@@ -39,22 +38,23 @@ class DashboardController extends Controller
             })
             ->get();
 
-        // Produk stok menipis (menggunakan variabel yang sudah didefinisikan)
-        $produkMenipis = Produk::where('jumlah', '<', $batas_menipis)->get();
+        // --- PERUBAHAN 1: LOGIKA PRODUK MENIPIS ---
+        // Produk stok menipis sekarang menggunakan 'batasKritis' dari setiap produk.
+        $produkMenipis = Produk::whereColumn('jumlah', '<=', 'batasKritis')->get();
 
 
-        // --- PERUBAHAN DIMULAI DI SINI ---
-
-        // Produk terlaris yang stoknya menipis
-        // Query ini HANYA menampilkan produk terlaris yang stoknya sudah memasuki batas menipis.
+        // --- PERUBAHAN 2: LOGIKA PRODUK TERLARIS YANG MENIPIS ---
+        // Query ini HANYA menampilkan produk terlaris yang stoknya sudah di bawah atau sama dengan 'batasKritis'.
         $bestSellers = Produk::select(
                 'produk.id',
                 'produk.name',
                 'produk.jumlah as produk_tersisa',
+                'produk.batasKritis', // Opsional: tampilkan juga batas kritisnya di hasil
                 DB::raw('SUM(transaksi.terjual) as produk_keluar')
             )
             ->join('transaksi', 'produk.id', '=', 'transaksi.produk_id')
-            ->where('produk.jumlah', '<', $batas_menipis) // <-- KONDISI BARU DITAMBAHKAN DI SINI
+            // Menggunakan whereColumn untuk membandingkan stok dengan batas kritis per produk
+            ->whereColumn('produk.jumlah', '<=', 'produk.batasKritis') 
             ->when($filter === 'bulanan', function ($query) {
                 return $query->whereMonth('transaksi.transactionDate', now()->month)
                              ->whereYear('transaksi.transactionDate', now()->year);
@@ -62,12 +62,10 @@ class DashboardController extends Controller
             ->when($filter === 'harian', function ($query) {
                 return $query->whereDate('transaksi.transactionDate', now()->toDateString());
             })
-            ->groupBy('produk.id', 'produk.name', 'produk.jumlah')
+            ->groupBy('produk.id', 'produk.name', 'produk.jumlah', 'produk.batasKritis')
             ->orderBy('produk_keluar', 'desc')
             ->take(10)
             ->get();
-
-        // --- PERUBAHAN SELESAI DI SINI ---
 
 
         return response()->json([
