@@ -17,6 +17,7 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $filter = $request->input('filter', 'harian'); // default harian
+        $batas_menipis = 20; // Definisikan batas stok menipis di sini agar mudah diubah
 
         // Monitoring data transaksi "open"
         $monitoringData = $this->getMonitoringData();
@@ -38,31 +39,31 @@ class DashboardController extends Controller
             })
             ->get();
 
-        // Produk stok menipis
-        $produkMenipis = Produk::where('jumlah', '<', 20)->get();
+        // Produk stok menipis (menggunakan variabel yang sudah didefinisikan)
+        $produkMenipis = Produk::where('jumlah', '<', $batas_menipis)->get();
+
 
         // --- PERUBAHAN DIMULAI DI SINI ---
 
-        // Produk terlaris
-        // Query ini diubah untuk mengambil stok dari tabel 'produk' dan total penjualan dari 'transaksi'.
+        // Produk terlaris yang stoknya menipis
+        // Query ini HANYA menampilkan produk terlaris yang stoknya sudah memasuki batas menipis.
         $bestSellers = Produk::select(
                 'produk.id',
                 'produk.name',
-                'produk.jumlah as produk_tersisa', // Mengambil stok tersisa dari gudang (tabel produk)
-                DB::raw('SUM(transaksi.terjual) as produk_keluar') // Menjumlahkan total produk terjual dari transaksi
+                'produk.jumlah as produk_tersisa',
+                DB::raw('SUM(transaksi.terjual) as produk_keluar')
             )
             ->join('transaksi', 'produk.id', '=', 'transaksi.produk_id')
+            ->where('produk.jumlah', '<', $batas_menipis) // <-- KONDISI BARU DITAMBAHKAN DI SINI
             ->when($filter === 'bulanan', function ($query) {
-                // Filter berdasarkan bulan dan tahun saat ini dari tabel transaksi
                 return $query->whereMonth('transaksi.transactionDate', now()->month)
                              ->whereYear('transaksi.transactionDate', now()->year);
             })
             ->when($filter === 'harian', function ($query) {
-                // Filter berdasarkan tanggal hari ini dari tabel transaksi
                 return $query->whereDate('transaksi.transactionDate', now()->toDateString());
             })
-            ->groupBy('produk.id', 'produk.name', 'produk.jumlah') // Group by untuk agregasi yang benar
-            ->orderBy('produk_keluar', 'desc') // Urutkan berdasarkan produk yang paling banyak keluar (terjual)
+            ->groupBy('produk.id', 'produk.name', 'produk.jumlah')
+            ->orderBy('produk_keluar', 'desc')
             ->take(10)
             ->get();
 
@@ -75,23 +76,23 @@ class DashboardController extends Controller
             'monitoring_data' => $monitoringData,
             'sales_data' => $salesData,
             'produk_menipis' => $produkMenipis,
-            'produk_terlaris' => $bestSellers, // Data ini sekarang berisi 'produk_tersisa' and 'produk_keluar'
+            'produk_terlaris' => $bestSellers,
             'transaksi' => $transaksiData,
         ]);
     }
 
+    // ... (sisa metode lainnya tidak berubah)
+    
     private function getMonthlySalesAndReturns()
     {
         $monthlySales = [];
         $monthlyReturns = [];
 
         for ($month = 1; $month <= 12; $month++) {
-            // Menambahkan filter tahun agar data akurat untuk tahun berjalan
             $sales = Transaksi::whereYear('transactionDate', now()->year)
                 ->whereMonth('transactionDate', $month)
                 ->sum('terjual');
 
-            // Menambahkan filter tahun untuk perhitungan retur
             $returns = Transaksi::whereYear('transactionDate', now()->year)
                 ->whereMonth('transactionDate', $month)
                 ->sum(DB::raw('jumlahDibeli - terjual'));
@@ -134,7 +135,7 @@ class DashboardController extends Controller
     private function getMonitoringData()
     {
         $transaksis = Transaksi::with(['produk', 'toko'])
-            // ->where('status', 'open') // Komentar ini dipertahankan sesuai kode asli
+            // ->where('status', 'open')
             ->orderBy('transactionDate', 'desc')
             ->get();
 
@@ -154,35 +155,9 @@ class DashboardController extends Controller
         return $data;
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+    // ... (metode store, show, update, destroy tetap ada di sini)
+    public function store(Request $request) { /* ... */ }
+    public function show(string $id) { /* ... */ }
+    public function update(Request $request, string $id) { /* ... */ }
+    public function destroy(string $id) { /* ... */ }
 }
