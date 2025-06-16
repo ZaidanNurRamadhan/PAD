@@ -31,6 +31,11 @@
 
 @include('component.EditTransaksi')
 @include('component.TambahTransaksi')
+@if(session('token'))
+    <script>
+        localStorage.setItem('authToken', "{{ session('token') }}");
+    </script>
+@endif
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -174,7 +179,7 @@
             document.getElementById('tanggal_retur').value = transaksi.tanggal_retur || '';
 
             const editForm = document.getElementById('editTransaksiForm');
-            editForm.action = `http://127.0.0.1:8000/transaksi/${id}`;
+            editForm.action = `/transaksi/${id}`;
 
             const editModal = new bootstrap.Modal(document.getElementById('Edittransaksi'));
             editModal.show();

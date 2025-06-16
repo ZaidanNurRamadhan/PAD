@@ -32,6 +32,12 @@
 @include('component.EditTransaksiKaryawan')
 @include('component.TambahTransaksiKaryawan')
 
+@if(session('token'))
+<script>
+    localStorage.setItem('authToken', "{{ session('token') }}");
+</script>
+@endif
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const tableBody = document.getElementById('transaksiTableBody');
@@ -165,19 +171,34 @@
                 return;
             }
 
-            document.getElementById('toko_id').value = transaksi.toko_id || '';
-            document.getElementById('produk_id').value = transaksi.produk_id || '';
-            document.getElementById('transactionDate').value = transaksi.tanggal_keluar ? new Date(transaksi.tanggal_keluar).toISOString().split('T')[0] : '';
-            document.getElementById('harga').value = transaksi.harga || '';
-            document.getElementById('jumlahDibeli').value = transaksi.jumlahDibeli || '';
-            document.getElementById('terjual').value = transaksi.terjual || '';
-            document.getElementById('tanggal_retur').value = transaksi.tanggal_retur || '';
+            // Wait until toko and produk selects are populated
+            function setSelectValues() {
+                const tokoSelect = document.getElementById('toko_id');
+                const produkSelect = document.getElementById('produk_id');
 
-            const editForm = document.getElementById('editTransaksiForm');
-            editForm.action = `http://127.0.0.1:8000/transaksi/${id}`;
+                if (tokoSelect.options.length === 0 || produkSelect.options.length === 0) {
+                    // Options not loaded yet, retry after delay
+                    setTimeout(setSelectValues, 100);
+                    return;
+                }
 
-            const editModal = new bootstrap.Modal(document.getElementById('Edittransaksi'));
-            editModal.show();
+                tokoSelect.value = transaksi.toko_id || '';
+                produkSelect.value = transaksi.produk_id || '';
+
+                document.getElementById('transactionDate').value = transaksi.tanggal_keluar ? new Date(transaksi.tanggal_keluar).toISOString().split('T')[0] : '';
+                document.getElementById('harga').value = transaksi.harga || '';
+                document.getElementById('jumlahDibeli').value = transaksi.jumlahDibeli || '';
+                document.getElementById('terjual').value = transaksi.terjual || '';
+                document.getElementById('tanggal_retur').value = transaksi.tanggal_retur || '';
+
+                const editForm = document.getElementById('editTransaksiForm');
+                editForm.action = `/api/transaksi-karyawan/${id}`;
+
+                const editModal = new bootstrap.Modal(document.getElementById('Edittransaksi'));
+                editModal.show();
+            }
+
+            setSelectValues();
         };
     });
 </script>

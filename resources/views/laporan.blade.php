@@ -92,8 +92,8 @@
                 Download
             </button>
             <ul class="dropdown-menu" aria-labelledby="downloadDropdown">
-                <li><a class="dropdown-item" href="#" id="downloadPdf">Download PDF</a></li>
-                <li><a class="dropdown-item" href="#" id="downloadExcel">Download Excel</a></li>
+                <li><a class="dropdown-item fs-5" href="#" id="downloadPdf">Download PDF</a></li>
+                <li><a class="dropdown-item fs-5" href="#" id="downloadExcel">Download Excel</a></li>
             </ul>
         </div>
     </div>
@@ -316,14 +316,62 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('authToken');
+
         document.getElementById('downloadExcel').addEventListener('click', function(e) {
             e.preventDefault();
-            window.location.href = '/api/export-transaksi';
+            fetch('/api/export-transaksi', {
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to download Excel file');
+                return response.blob();
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'Laporan_Transaksi.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                alert(error.message);
+            });
         });
+
         document.getElementById('downloadPdf').addEventListener('click', function(e) {
             e.preventDefault();
-            window.location.href = '/api/export-pdf';
+            fetch('/api/export-pdf', {
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': 'application/pdf'
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to download PDF file');
+                return response.blob();
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'Laporan_Transaksi.pdf';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                alert(error.message);
+            });
         });
+
         applyFilter(currentFilter);
     });
 </script>

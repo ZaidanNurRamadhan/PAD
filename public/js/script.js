@@ -24,86 +24,6 @@ function selectOption(element, value) {
         });
 }
 
-// bagian pemasok
-function editPemasok(id) {
-    // Ambil data pemasok dari server API endpoint
-    fetch(`/api/pemasok/${id}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Data pemasok tidak ditemukan');
-            }
-            return response.json();
-        })
-        .then(data => {
-            // Isi form di modal dengan data pemasok
-            document.getElementById('pemasok-name').value = data.data.name;
-            document.getElementById('pemasok-produk').value = data.data.produkDisediakan;
-            document.getElementById('pemasok-kontak').value = data.data.nomorTelepon;
-            document.getElementById('pemasok-email').value = data.data.email;
-
-            // Simpan id pemasok di form dataset untuk submit handler
-            document.getElementById('editPemasokForm').dataset.id = id;
-
-            // Tampilkan modal
-            new bootstrap.Modal(document.getElementById('Editpemasok')).show();
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert(error.message);
-        });
-}
-
-const editFormPemasok = document.querySelector('#editPemasokForm');
-if (editFormPemasok) {
-    editFormPemasok.addEventListener('submit', function(event) {
-        event.preventDefault();
-        const id = this.dataset.id;
-        if (!id) {
-            alert('ID pemasok tidak ditemukan.');
-            return;
-        }
-
-        const token = localStorage.getItem('authToken');
-        if (!token) {
-            alert('Authentication token not found. Please login again.');
-        return;
-    }
-
-    const formData = {
-        name: document.getElementById('pemasok-name').value,
-        produkDisediakan: document.getElementById('pemasok-produk').value,
-        nomorTelepon: document.getElementById('pemasok-kontak').value,
-        email: document.getElementById('pemasok-email').value,
-        _method: 'PUT'
-    };
-
-    fetch(`/api/pemasok/${id}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-            'Accept': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-            'Authorization': 'Bearer ' + token
-        },
-        body: JSON.stringify(formData)
-    })
-    .then(response => {
-        if (!response.ok) {
-            return response.json().then(data => { throw new Error(data.message || 'Gagal memperbarui pemasok'); });
-        }
-        return response.json();
-    })
-    .then(data => {
-        const modal = bootstrap.Modal.getInstance(document.getElementById('Editpemasok'));
-        modal.hide();
-        location.reload();
-    })
-    .catch(error => {
-        alert('Error: ' + error.message);
-    });
-    });
-};
 
 // Removed duplicate declaration of editForm and event listener to avoid redeclaration errors
 
@@ -293,61 +213,7 @@ function deletekaryawanById(karyawanId) {
     });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    const editTransaksiForm = document.getElementById('editTransaksiForm');
-    if (editTransaksiForm !== null) {
-        editTransaksiForm.addEventListener('submit', function(event) {
-            event.preventDefault();
 
-            const token = localStorage.getItem('authToken');
-            if (!token) {
-                alert('Authentication token not found. Please login again.');
-                return;
-            }
-
-            const form = event.target;
-            const id = form.action.split('/').pop();
-
-            const formData = {
-                toko_id: document.getElementById('toko_id').value,
-                produk_id: document.getElementById('produk_id').value,
-                tanggal_keluar: document.getElementById('transactionDate').value,
-                harga: parseFloat(document.getElementById('harga').value),
-                jumlahDibeli: parseInt(document.getElementById('jumlahDibeli').value),
-                terjual: parseInt(document.getElementById('terjual').value),
-                tanggal_retur: document.getElementById('tanggal_retur').value || null,
-            };
-
-            fetch(`/api/transaksi/${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': 'Bearer ' + token,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    return response.json().then(data => {
-                        throw new Error(data.message || 'Gagal memperbarui transaksi');
-                    });
-                }
-                return response.json();
-            })
-            .then(data => {
-                alert(data.message);
-                // Close modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('Edittransaksi'));
-                modal.hide();
-                // Reload page or refresh data
-                location.reload();
-            })
-            .catch(error => {
-                alert('Error: ' + error.message);
-            });
-        });
-    }
-});
 
 // window.editTransaksi = function(id) {
 //     // Ambil data transaksi dengan AJAX

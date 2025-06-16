@@ -122,7 +122,7 @@
             } else {
                 var modal = bootstrap.Modal.getInstance(document.getElementById('Edittoko'));
                 modal.hide();
-
+                location.reload();
                 if (typeof refreshTokoList === 'function') {
                     refreshTokoList();
                 }

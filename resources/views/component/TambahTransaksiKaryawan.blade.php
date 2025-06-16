@@ -55,8 +55,15 @@
 </section>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const token = localStorage.getItem('authToken');
         // Fetch toko data and populate select
-        fetch('/api/transaksi-karyawan')
+        fetch('/api/transaksi-karyawan', {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json'
+
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 const tokoSelect = document.getElementById('toko_id_tambah');
@@ -74,7 +81,13 @@
             });
 
         // Fetch produk data and populate select
-        fetch('/api/transaksi-karyawan')
+        fetch('/api/transaksi-karyawan', {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json'
+
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 const produkSelect = document.getElementById('produk_id_tambah');

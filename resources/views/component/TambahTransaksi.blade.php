@@ -53,10 +53,20 @@
         </main>
     </div>
 </section>
+@if(session('token'))
+    <script>
+        localStorage.setItem('authToken', "{{ session('token') }}");
+    </script>
+@endif
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Fetch toko data and populate select
-        fetch('http://127.0.0.1:8000/api/toko')
+        fetch('/api/toko', {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
+                'Content-Type': 'application/json'
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 const tokoSelect = document.getElementById('toko_id_tambah');
@@ -74,7 +84,12 @@
             });
 
         // Fetch produk data and populate select
-        fetch('/api/gudang')
+        fetch('/api/gudang', {
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
+                'Content-Type': 'application/json'
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 const produkSelect = document.getElementById('produk_id_tambah');

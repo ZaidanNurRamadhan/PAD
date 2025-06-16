@@ -79,6 +79,13 @@
             @yield('content')
         </section>
     </main>
+
+    @if(session('token'))
+    <script>
+        localStorage.setItem('authToken', "{{ session('token') }}");
+    </script>
+    @endif
+
     @include('component.ModalKeluar')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
@@ -127,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('User not authenticated.');
                 return;
             }
-            fetch('http://127.0.0.1:8000/api/logout', {
+            fetch('/api/logout', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,

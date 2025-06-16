@@ -40,7 +40,13 @@
     });
 
     function fetchTokoData() {
-        fetch('/api/toko')
+        const token = localStorage.getItem('authToken');
+        fetch('/api/toko', {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json',
+            }
+        })
             .then(response => response.json())
             .then(data => {
                 tokoList = data.data;

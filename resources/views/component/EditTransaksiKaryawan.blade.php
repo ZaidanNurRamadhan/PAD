@@ -48,43 +48,104 @@
     </div>
 </section>
 
+
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Fetch toko data and populate select
-        fetch('/api/transaksi-karyawan')
-            .then(response => response.json())
-            .then(data => {
-                const tokoSelect = document.getElementById('toko_id');
-                tokoSelect.innerHTML = '';
-                const tokoList = data.toko ? data.toko : data;
-                tokoList.forEach(toko => {
-                    const option = document.createElement('option');
-                    option.value = toko.id;
-                    option.textContent = toko.name;
-                    tokoSelect.appendChild(option);
-                });
-            })
-            .catch(error => {
-                console.error('Error fetching toko data:', error);
+        const token = localStorage.getItem('authToken');
+        let tokoList = [];
+        let produkList = [];
+
+        // Fetch toko and produk data once and populate selects
+        fetch('/api/transaksi-karyawan', {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            tokoList = data.toko ? data.toko : [];
+            produkList = data.gudang ? data.gudang : [];
+
+            const tokoSelect = document.getElementById('toko_id');
+            tokoSelect.innerHTML = '';
+            tokoList.forEach(toko => {
+                const option = document.createElement('option');
+                option.value = toko.id;
+                option.textContent = toko.name;
+                tokoSelect.appendChild(option);
             });
 
-        // Fetch produk data and populate select
-        fetch('/api/transaksi-karyawan')
-            .then(response => response.json())
+            const produkSelect = document.getElementById('produk_id');
+            produkSelect.innerHTML = '';
+            produkList.forEach(produk => {
+                const option = document.createElement('option');
+                option.value = produk.id;
+                option.textContent = produk.name;
+                produkSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching toko and produk data:', error);
+        });
+
+        // Expose tokoList and produkList globally for use in editTransaksi
+        window.tokoList = tokoList;
+        window.produkList = produkList;
+    });
+
+    const editTransaksiForm = document.getElementById('editTransaksiForm');
+    if (editTransaksiForm !== null) {
+        editTransaksiForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('Authentication token not found. Please login again.');
+                return;
+            }
+
+            const form = event.target;
+            const id = form.action.split('/').pop();
+
+            const formData = {
+                toko_id: document.getElementById('toko_id').value,
+                produk_id: document.getElementById('produk_id').value,
+                tanggal_keluar: document.getElementById('transactionDate').value,
+                harga: parseFloat(document.getElementById('harga').value),
+                jumlahDibeli: parseInt(document.getElementById('jumlahDibeli').value),
+                terjual: parseInt(document.getElementById('terjual').value),
+                tanggal_retur: document.getElementById('tanggal_retur').value || null,
+            };
+
+            fetch(`/api/transaksi-karyawan/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(data => {
+                        throw new Error(data.message || 'Gagal memperbarui transaksi');
+                    });
+                }
+                return response.json();
+            })
             .then(data => {
-                const produkSelect = document.getElementById('produk_id');
-                produkSelect.innerHTML = '';
-                const produkList = data.gudang ? data.gudang : data;
-                produkList.forEach(produk => {
-                    const option = document.createElement('option');
-                    option.value = produk.id;
-                    option.textContent = produk.name;
-                    produkSelect.appendChild(option);
-                });
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('Edittransaksi'));
+                modal.hide();
+                // Reload page or refresh data
+                location.reload();
             })
             .catch(error => {
-                console.error('Error fetching produk data:', error);
+                alert('Error: ' + error.message);
             });
-    });
+        });
+    }
 </script>
-</create_file>

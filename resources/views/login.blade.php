@@ -33,7 +33,7 @@
             <section
                 class="col-xl-6 col-lg-6 col-md-12 col-xm-12 d-flex justify-content-center align-items-center"
             >
-                <form id="loginForm" class="login-form">
+                <form id="loginForm" class="login-form" method="POST" action="{{ route('login.submit') }}">
                     @csrf
                     <div class="form-group text-center">
                         <img src="{{ asset('assets/img/logo-konek.png') }}" alt="logo" class="icon-login" />
@@ -49,77 +49,60 @@
                             id="email"
                             placeholder="Masukkan Email"
                             required
+                            value="{{ old('email') }}"
                         />
+                        @error('email')
+                            <div class="text-danger mt-1">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div>
                         <label class="m-0">Password</label>
-                        <div class="d-flex">
+                        <div class="d-flex position-relative">
                             <input
                                 type="password"
                                 name="password"
-                                class="form-control"
+                                class="form-control pe-5"
                                 id="password"
                                 placeholder="Masukkan Password"
                                 required
                             />
+                            <span
+                                class="position-absolute top-50 end-0 translate-middle-y me-3"
+                                onclick="togglePasswordVisibility()"
+                                style="cursor: pointer;"
+                            >
+                                <i id="eyeIcon" class="fas fa-eye"></i>
+                            </span>
                         </div>
+
+                        @error('password')
+                            <div class="text-danger mt-1">{{ $message }}</div>
+                        @enderror
                     </div>
                     <a href="{{ route('password.forgot') }}" class="mb-2 text-decoration-none float-end">Lupa password?</a>
                     <button type="submit" class="btn btn-primary w-100">Login</button>
-                    <div id="loginError" class="text-danger mt-2" style="display:none;"></div>
+                    @if(session('error'))
+                        <div class="text-danger mt-2">{{ session('error') }}</div>
+                    @endif
                 </form>
             </section>
         </div>
     </main>
-
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const loginError = document.getElementById('loginError');
-            loginError.style.display = 'none';
-            loginError.textContent = '';
-
-            fetch('/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                },
-                body: JSON.stringify({ email: email, password: password }),
-            })
-                .then((response) => {
-                    if (!response.ok) {
-                        return response.json().then((data) => {
-                            throw new Error(data.message || 'Login failed');
-                        });
-                    }
-                    return response.json();
-                })
-            .then((data) => {
-                // Save token to localStorage or cookie if needed
-                localStorage.setItem('authToken', data.token);
-
-                // Redirect based on user role
-                if (data.user && data.user.role) {
-                    if (data.user.role === 'owner') {
-                        window.location.href = '/dashboard';
-                    } else if (data.user.role === 'karyawan') {
-                        window.location.href = '/transaksi-karyawan';
-                    } else {
-                        window.location.href = '/dashboard';
-                    }
-                } else {
-                    window.location.href = '/dashboard';
-                }
-            })
-            .catch((error) => {
-                loginError.style.display = 'block';
-                loginError.textContent = error.message;
-            });
-        });
-    </script>
 </body>
+<script>
+    function togglePasswordVisibility() {
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        }
+    }
+</script>
 </html>

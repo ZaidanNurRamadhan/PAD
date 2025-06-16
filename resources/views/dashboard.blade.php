@@ -128,7 +128,13 @@
     }
 
     async function fetchDashboardData() {
-        const response = await fetch('/api/dashboard');
+        const token = localStorage.getItem('authToken');
+        const response = await fetch('/api/dashboard', {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json',
+            }
+        });
         const data = await response.json();
 
         // Update Monitoring Table
@@ -172,7 +178,13 @@
     }
 
     async function fetchSalesChartData(filter) {
-        const response = await fetch('/api/dashboard?filter=' + filter);
+        const token = localStorage.getItem('authToken');
+        const response = await fetch('/api/dashboard?filter=' + filter, {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json',
+            }
+        });
         const data = await response.json();
 
         const salesData = data.sales_data ? data.sales_data : { labels: [], sales: [], returns: [] };
@@ -224,7 +236,13 @@
 
     async function fetchBestSellersTable(filter) {
         // Use the main dashboard API to get bestsellers data to avoid 404
-        const response = await fetch('/api/dashboard?filter=' + filter);
+        const token = localStorage.getItem('authToken');
+        const response = await fetch('/api/dashboard?filter=' + filter, {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json',
+            }
+        });
         const data = await response.json();
 
         // Defensive check for bestsellers data
