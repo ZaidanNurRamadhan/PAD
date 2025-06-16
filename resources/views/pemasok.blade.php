@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(data => {
             pemasokList = data.data;
+            console.log(pemasokList);
             renderPemasokTable();
             renderPagination();
         })

@@ -88,7 +88,7 @@
                             Edit
                         </button>
                         <button class="btn btn-danger btn-sm mx-2 deleteKaryawan" type="button"
-                            data-id="${employee.id}" data-bs-toggle="modal" data-bs-target="#Hapuskaryawan">
+                            data-id="${employee.id}" data-name="${employee.name}" data-bs-toggle="modal" data-bs-target="#Hapuskaryawan">
                             Hapus
                         </button>
                     </td>

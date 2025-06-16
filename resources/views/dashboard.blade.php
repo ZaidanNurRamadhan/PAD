@@ -217,12 +217,12 @@
                     {
                         label: 'Penjualan',
                         data: salesData.sales,
-                        backgroundColor: gradientPenjualan
+                        backgroundColor: '#817AF3'
                     },
                     {
                         label: 'Retur',
                         data: salesData.returns,
-                        backgroundColor: gradientRetur
+                        backgroundColor: '#46A46C'
                     }
                 ]
             },

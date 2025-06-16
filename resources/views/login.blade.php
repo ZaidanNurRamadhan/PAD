@@ -40,6 +40,9 @@
                         <h1>Login</h1>
                         <p class="fw-light">Selamat datang di aplikasi manajemen stok</p>
                     </div>
+                    @error('email')
+                            <div class="text-danger mt-1">{{ $message }}</div>
+                        @enderror
                     <div class="mb-3">
                         <label class="m-0">Email</label>
                         <input
@@ -51,9 +54,6 @@
                             required
                             value="{{ old('email') }}"
                         />
-                        @error('email')
-                            <div class="text-danger mt-1">{{ $message }}</div>
-                        @enderror
                     </div>
                     <div>
                         <label class="m-0">Password</label>
@@ -74,10 +74,6 @@
                                 <i id="eyeIcon" class="fas fa-eye"></i>
                             </span>
                         </div>
-
-                        @error('password')
-                            <div class="text-danger mt-1">{{ $message }}</div>
-                        @enderror
                     </div>
                     <a href="{{ route('password.forgot') }}" class="mb-2 text-decoration-none float-end">Lupa password?</a>
                     <button type="submit" class="btn btn-primary w-100">Login</button>

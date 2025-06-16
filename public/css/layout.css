@@ -6,6 +6,7 @@
     flex-direction: column;
     overflow-y: auto;
 }
+
 @media only screen and (max-width:1440px){
     .sidebar{
         width: 100px;
@@ -232,9 +233,10 @@
 }
 
 thead th {
-        position: sticky;
-        top: 0;
-        background: white;
-        z-index: 90;
-        box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
-    }
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 90;
+    box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
+

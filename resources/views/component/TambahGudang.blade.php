@@ -13,11 +13,7 @@
                             <div class="d-flex flex-column" style="width: 60%">
                                 <select name="name" id="name" class="form-control" required>
                                     <option value="" disabled selected>Pilih Nama Produk</option>
-                                    @foreach($pemasok as $p)
-                                        <optgroup label="{{ $p->name }}">
-                                            <option value="{{ $p->produkDisediakan }}">{{ $p->produkDisediakan }}</option>
-                                        </optgroup>
-                                    @endforeach
+                                    <!-- Options will be populated dynamically -->
                                 </select>
                                 <small class="text-danger error-name"></small>
                             </div>
@@ -68,16 +64,46 @@
         </main>
     </div>
 </section>
+
 <script>
-    document.getElementById('formTambahProduk').addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent default form submission
+document.addEventListener('DOMContentLoaded', function () {
+    const token = localStorage.getItem('authToken');
 
-        // Clear previous error messages
-        document.querySelectorAll('.text-danger').forEach(function(errorElement) {
-            errorElement.innerText = '';
+    // Load options for Nama Produk
+    fetch('/api/pemasok', {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Gagal mengambil data pemasok');
+        return response.json();
+    })
+    .then(data => {
+        const pemasokList = data.data;
+        const select = document.getElementById('name');
+
+        select.innerHTML = '<option value="" disabled selected>Pilih Nama Produk</option>';
+
+        pemasokList.forEach(p => {
+            const option = document.createElement('option');
+            option.value = p.produkDisediakan;
+            option.textContent = `${p.produkDisediakan} (${p.name})`;
+            select.appendChild(option);
         });
+    })
+    .catch(error => {
+        console.error('Error fetching pemasok:', error);
+    });
 
-        // Gather form data
+    // Handle form submission
+    document.getElementById('formTambahProduk').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        document.querySelectorAll('.text-danger').forEach(el => el.innerText = '');
+
         const data = {
             name: document.getElementById('name').value.trim(),
             hargaBeli: document.getElementById('hargaBeli').value.trim(),
@@ -86,22 +112,21 @@
             batasKritis: document.getElementById('batasKritis').value.trim(),
         };
 
-        // Basic client-side validation
         let valid = true;
         if (!data.name) {
             document.querySelector('.error-name').innerText = 'Nama produk tidak boleh kosong.';
             valid = false;
         }
         if (!data.hargaBeli || isNaN(data.hargaBeli)) {
-            document.querySelector('.error-hargaBeli').innerText = 'Harga beli harus berupa angka dan tidak boleh kosong.';
+            document.querySelector('.error-hargaBeli').innerText = 'Harga beli harus berupa angka.';
             valid = false;
         }
         if (!data.hargaJual || isNaN(data.hargaJual)) {
-            document.querySelector('.error-hargaJual').innerText = 'Harga jual harus berupa angka dan tidak boleh kosong.';
+            document.querySelector('.error-hargaJual').innerText = 'Harga jual harus berupa angka.';
             valid = false;
         }
         if (!data.jumlah || isNaN(data.jumlah)) {
-            document.querySelector('.error-jumlah').innerText = 'Jumlah stok harus berupa angka dan tidak boleh kosong.';
+            document.querySelector('.error-jumlah').innerText = 'Jumlah stok harus berupa angka.';
             valid = false;
         }
         if (data.batasKritis && isNaN(data.batasKritis)) {
@@ -109,41 +134,32 @@
             valid = false;
         }
 
-        if (!valid) {
-            return;
-        }
+        if (!valid) return;
 
-        const token = localStorage.getItem('authToken'); // Get token from localStorage
-
-        // Send data to API endpoint
         fetch('/api/gudang', {
             method: 'POST',
             headers: {
+                'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Authorization': `Bearer ${token}` // Add Authorization header
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             body: JSON.stringify(data)
         })
         .then(async response => {
             if (response.ok) {
-                const resData = await response.json();
-                alert(resData.message);
-                // Optionally reset form or close modal
+                const res = await response.json();
+                alert(res.message);
                 document.getElementById('formTambahProduk').reset();
-                var modal = bootstrap.Modal.getInstance(document.getElementById('Tambahproduk'));
+                const modal = bootstrap.Modal.getInstance(document.getElementById('Tambahproduk'));
                 modal.hide();
                 location.reload();
-                // Optionally refresh the page or update the product list dynamically
             } else if (response.status === 422) {
-                const errorData = await response.json();
-                if (errorData.errors) {
-                    for (const [key, messages] of Object.entries(errorData.errors)) {
-                        const errorElement = document.querySelector('.error-' + key);
-                        if (errorElement) {
-                            errorElement.innerText = messages.join(' ');
-                        }
+                const res = await response.json();
+                if (res.errors) {
+                    for (const [key, messages] of Object.entries(res.errors)) {
+                        const errEl = document.querySelector(`.error-${key}`);
+                        if (errEl) errEl.innerText = messages.join(' ');
                     }
                 }
             } else {
@@ -154,4 +170,5 @@
             console.error('Error:', error);
         });
     });
+});
 </script>

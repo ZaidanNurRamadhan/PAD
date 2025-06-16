@@ -23,7 +23,7 @@
                     <section class="form-group d-flex justify-content-between px-3 mt-4 position-relative w-auto">
                         <label for="karyawan-password">Password</label>
                         <input id="karyawan-password" type="password" name="password" class="form-control" style="max-width: 273px;" placeholder="Masukkan password">
-                        <i id="toggle-icon" class="fa fa-eye position-absolute" style="top: 10px; right: 25px;" onclick="togglePassword()"></i>
+                        <i id="toggle-icon" class="fa fa-eye position-absolute" style="right: 25px;" onclick="togglePassword()"></i>
                     </section>
                 </article>
                 <footer class="modal-footer">
@@ -114,18 +114,17 @@
         });
     });
 
-    function togglePassword() {
-        var passwordField = document.getElementById("karyawan-password");
-        var icon = document.getElementById("toggle-icon");
-
-        if (passwordField.type === "password") {
-            passwordField.type = "text";
-            icon.classList.remove("fa-eye");
-            icon.classList.add("fa-eye-slash");
-        } else {
-            passwordField.type = "password";
-            icon.classList.remove("fa-eye-slash");
-            icon.classList.add("fa-eye");
+</script>
+<style>
+    @media only screen and (min-width: 1441px){
+        i{
+            top: 10px !important;
         }
     }
-</script>
+
+    @media only screen and (max-width: 1440px){
+        i{
+            top: 0 !important;
+        }
+    }
+</style>
