@@ -120,7 +120,7 @@
                         password: password.value.trim()
                     };
 
-                    fetch('http://127.0.0.1:8000/api/karyawan', {
+                    fetch('/api/karyawan', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

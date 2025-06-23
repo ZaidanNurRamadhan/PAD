@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (event.target && event.target.classList.contains('deleteProduk')) {
             const id = event.target.dataset.id;
             const form = document.getElementById('deleteProdukForm');
-            form.setAttribute('action', `http://127.0.0.1:8000/api/gudang/${id}`);
+            form.setAttribute('action', `/api/gudang/${id}`);
             // console.log('Selected product id for deletion:', id);
         }
     });

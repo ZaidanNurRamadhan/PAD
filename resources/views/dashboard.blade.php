@@ -1,13 +1,18 @@
 @extends('layout.owner')
 @section('content')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    table th{
+        z-index: 0;
+    }
+</style>
 <section class="container-fluid d-flex row h-100">
     <article class="card mt-2 monitoring">
         <div class="card-header d-flex justify-content-between bg-white position-sticky">
             <h5 class="text-judul align-self-center mb-0 py-2">Monitoring Penyebaran Produk</h5>
             <a class="text-decoration-none text-judul text-end align-self-center" href="{{route('monitoring.index')}}" style="line-height: 1.2">Lihat Semua</a>
         </div>
-        <div class="card-body scrollable-table table-responsive">
+        <div class="card-body scrollable-table table-responsive" style="padding-top: 0">
             <table class="table" id="monitoring-table">
                 <thead>
                     <tr>
@@ -97,7 +102,12 @@
         </section>
     </section>
 </section>
-
+<script>
+    @if(session('token'))
+        // Simpan token ke localStorage
+        localStorage.setItem('authToken', "{{ session('token') }}");
+    @endif
+</script>
 <script>
     let currentSalesFilter = 'harian';
     let currentBestSellerFilter = 'harian';
@@ -123,21 +133,36 @@
     }
 
     async function fetchDashboardData() {
-        const response = await fetch('/api/dashboard');
+        const token = localStorage.getItem('authToken');
+        const response = await fetch('/api/dashboard', {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json',
+            }
+        });
         const data = await response.json();
 
         // Update Monitoring Table
         const monitoringBody = document.querySelector('#monitoring-table tbody');
         if (data.monitoring_data && Array.isArray(data.monitoring_data)) {
             monitoringBody.innerHTML = data.monitoring_data.map(item => `
-                <tr>
-                    <td>${item.nama_toko}</td>
-                    <td>${item.waktu_edar}</td>
-                    <td>${item.jumlah}</td>
-                    <td>${item.kategori}</td>
-                    <td>${item.hari}</td>
-                    <td>${item.tanggal_keluar}</td>
-                </tr>
+                    <tr>
+                        <td>${item.nama_toko}</td>
+                        <td>${item.waktu_edar}</td>
+                        <td>${item.jumlah}</td>
+                        <td>${item.kategori}</td>
+                        <td>${item.hari}</td>
+                        <td>${
+                            (() => {
+                                const date = new Date(item.tanggal_keluar);
+                                if (isNaN(date)) return item.tanggal_keluar;
+                                const day = String(date.getDate()).padStart(2, '0');
+                                const month = String(date.getMonth() + 1).padStart(2, '0');
+                                const year = String(date.getFullYear()).slice(-2);
+                                return `${day}-${month}-${year}`;
+                            })()
+                        }</td>
+                    </tr>
             `).join('');
         } else {
             monitoringBody.innerHTML = '<tr><td colspan="6" class="text-center">No monitoring data available</td></tr>';
@@ -158,7 +183,13 @@
     }
 
     async function fetchSalesChartData(filter) {
-        const response = await fetch('/api/dashboard?filter=' + filter);
+        const token = localStorage.getItem('authToken');
+        const response = await fetch('/api/dashboard?filter=' + filter, {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json',
+            }
+        });
         const data = await response.json();
 
         const salesData = data.sales_data ? data.sales_data : { labels: [], sales: [], returns: [] };
@@ -191,12 +222,12 @@
                     {
                         label: 'Penjualan',
                         data: salesData.sales,
-                        backgroundColor: gradientPenjualan
+                        backgroundColor: '#817AF3'
                     },
                     {
                         label: 'Retur',
                         data: salesData.returns,
-                        backgroundColor: gradientRetur
+                        backgroundColor: '#46A46C'
                     }
                 ]
             },
@@ -210,7 +241,13 @@
 
     async function fetchBestSellersTable(filter) {
         // Use the main dashboard API to get bestsellers data to avoid 404
-        const response = await fetch('/api/dashboard?filter=' + filter);
+        const token = localStorage.getItem('authToken');
+        const response = await fetch('/api/dashboard?filter=' + filter, {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json',
+            }
+        });
         const data = await response.json();
 
         // Defensive check for bestsellers data

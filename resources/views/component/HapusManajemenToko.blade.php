@@ -30,7 +30,7 @@
     function submitDeleteTokoForm(event) {
         event.preventDefault();
 
-        fetch('http://127.0.0.1:8000/api/toko/' + deleteId, {
+        fetch('/api/toko/' + deleteId, {
             method: 'DELETE',
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',

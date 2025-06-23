@@ -23,11 +23,7 @@
             </table>
         </div>
 
-        <nav aria-label="Page navigation" class="mt-3">
-            <ul class="pagination justify-content-center" id="paginationControls">
-                <!-- Pagination buttons will be rendered here -->
-            </ul>
-        </nav>
+        {{-- <div id="pagination-nav" class="mt-3"></div> --}}
     </section>
 
 <script>
@@ -36,7 +32,7 @@
 
     function fetchMonitoringData(page = 1) {
         const token = localStorage.getItem('authToken');
-        const url = `http://127.0.0.1:8000/api/monitoring?page=${page}`;
+        const url = `/api/monitoring?page=${page}`;
 
         fetch(url, {
             headers: {
@@ -111,63 +107,60 @@
     }
 
     function renderPagination(pagination) {
-        const paginationControls = document.getElementById('paginationControls');
-        paginationControls.innerHTML = '';
+        let paginationNav = document.getElementById('pagination-nav');
+
+        if (!paginationNav) {
+            paginationNav = document.createElement('div');
+            paginationNav.id = 'pagination-nav';
+            paginationNav.className = 'mt-3 d-flex justify-content-between';
+            const container = document.querySelector('.table-container');
+            container.appendChild(paginationNav);
+        }
+
+        paginationNav.innerHTML = '';
 
         if (!pagination) return;
 
         const { current_page, last_page } = pagination;
 
-        // Previous button
-        const prevLi = document.createElement('li');
-        prevLi.className = 'page-item' + (current_page === 1 ? ' disabled' : '');
-        const prevLink = document.createElement('a');
-        prevLink.className = 'page-link';
-        prevLink.href = '#';
-        prevLink.textContent = 'Previous';
-        prevLink.addEventListener('click', (e) => {
-            e.preventDefault();
+        const prevBtn = document.createElement('button');
+        prevBtn.textContent = 'Previous';
+        prevBtn.className = 'btn btn-outline-primary me-2';
+        prevBtn.disabled = current_page === 1;
+        prevBtn.addEventListener('click', () => {
             if (current_page > 1) {
                 currentPage = current_page - 1;
                 fetchMonitoringData(currentPage);
             }
         });
-        prevLi.appendChild(prevLink);
-        paginationControls.appendChild(prevLi);
+        paginationNav.appendChild(prevBtn);
 
-        // Page numbers
+        const pageContainer = document.createElement('div');
+        pageContainer.className = 'd-inline-flex';
+
         for (let i = 1; i <= last_page; i++) {
-            const pageLi = document.createElement('li');
-            pageLi.className = 'page-item' + (i === current_page ? ' active' : '');
-            const pageLink = document.createElement('a');
-            pageLink.className = 'page-link';
-            pageLink.href = '#';
-            pageLink.textContent = i;
-            pageLink.addEventListener('click', (e) => {
-                e.preventDefault();
+            const btn = document.createElement('button');
+            btn.textContent = i;
+            btn.className = 'btn me-2 ' + (i === current_page ? 'btn-primary' : 'btn-outline-primary');
+            btn.addEventListener('click', () => {
                 currentPage = i;
                 fetchMonitoringData(currentPage);
             });
-            pageLi.appendChild(pageLink);
-            paginationControls.appendChild(pageLi);
+            pageContainer.appendChild(btn);
         }
+        paginationNav.appendChild(pageContainer);
 
-        // Next button
-        const nextLi = document.createElement('li');
-        nextLi.className = 'page-item' + (current_page === last_page ? ' disabled' : '');
-        const nextLink = document.createElement('a');
-        nextLink.className = 'page-link';
-        nextLink.href = '#';
-        nextLink.textContent = 'Next';
-        nextLink.addEventListener('click', (e) => {
-            e.preventDefault();
+        const nextBtn = document.createElement('button');
+        nextBtn.textContent = 'Next';
+        nextBtn.className = 'btn btn-outline-primary';
+        nextBtn.disabled = current_page === last_page;
+        nextBtn.addEventListener('click', () => {
             if (current_page < last_page) {
                 currentPage = current_page + 1;
                 fetchMonitoringData(currentPage);
             }
         });
-        nextLi.appendChild(nextLink);
-        paginationControls.appendChild(nextLi);
+        paginationNav.appendChild(nextBtn);
     }
 
     document.addEventListener('DOMContentLoaded', () => {

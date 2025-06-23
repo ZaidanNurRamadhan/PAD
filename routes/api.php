@@ -13,6 +13,14 @@ use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\SearchController;
 
+Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
+    return response()->json([
+        'success' => true,
+        'user' => $request->user()
+    ]);
+});
+
+
 Route::post('/login', [LoginController::class, 'login'])->name('api.login');
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth:sanctum')->name('api.logout');
 Route::post('/forgot-password', [LoginController::class, 'handleForgotPassword'])->name('api.password.email');
@@ -70,6 +78,8 @@ Route::middleware('auth:sanctum','check.role:karyawan')->group(function () {
     // Transaksi Routes for Karyawan
     Route::get('/transaksi-karyawan', [TransaksiController::class, 'getKaryawan'])->name('api.transaksi.karyawan');
     Route::post('/transaksi-karyawan', [TransaksiController::class, 'postKaryawan'])->name('api.transaksi.karyawan.store');
+    Route::get('/transaksi-karyawan/{id}', [TransaksiController::class, 'showKaryawan'])->name('api.transaksi.karyawan.show');
+    Route::put('/transaksi-karyawan/{id}', [TransaksiController::class, 'updateKaryawan'])->name('api.transaksi.karyawan.update');
 });
 
 Route::get('/search', [SearchController::class, 'search'])->name('api.search');

@@ -27,12 +27,10 @@ Route::get('/', function () {
 });
 
 Route::get('/login', [LoginController::class, 'index'])->name('login');
-Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::post('/login', [LoginController::class, 'loginWeb'])->name('login.submit');
+Route::post('/logout', [LoginController::class, 'logoutWeb'])->name('logout');
 Route::get('/lupa-password',[LoginController::class, 'lupa_password'])->name('lupa-password');
 Route::post('/lupa-password-aksi',[LoginController::class, 'lupa_password_aksi'])->name('lupa-password-aksi');
-
-Route::get('/search', [SearchController::class, 'search'])->name('search');
 
 
 Route::middleware('auth')->group(function () {
@@ -99,13 +97,13 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:karyawan')->group(function () {
         Route::get('/gudang-karyawan',  [GudangController::class, 'karyawan'])->name('gudang-karyawan');
         Route::get('/transaksi-karyawan', [TransaksiController::class, 'karyawan'])->name('transaksi-karyawan');
-        Route::prefix('transaksi')->group(function () {
-            Route::get('/create', [TransaksiController::class, 'create'])->name('transaksi.create');
-            Route::post('/store', [TransaksiController::class, 'store'])->name('transaksi.store');
-            Route::get('/{id}/edit', [TransaksiController::class, 'edit'])->name('transaksi.edit');
-            Route::put('/{id}', [TransaksiController::class, 'update'])->name('transaksi.update');
-            Route::delete('/destroy/{id}', [TransaksiController::class, 'destroy'])->name('transaksi.destroy');
-        });
+        // Route::prefix('transaksi')->group(function () {
+        //     Route::get('/create', [TransaksiController::class, 'create'])->name('transaksi.create');
+        //     Route::post('/store', [TransaksiController::class, 'store'])->name('transaksi.store');
+        //     Route::get('/{id}/edit', [TransaksiController::class, 'edit'])->name('transaksi.edit');
+        //     Route::put('/{id}', [TransaksiController::class, 'update'])->name('transaksi.update');
+        //     Route::delete('/destroy/{id}', [TransaksiController::class, 'destroy'])->name('transaksi.destroy');
+        // });
     });
 });
 
@@ -118,7 +116,7 @@ Route::get('/forgot-password', [LoginController::class, 'showForgotPasswordForm'
 Route::post('/forgot-password', [LoginController::class, 'handleForgotPassword'])->name('password.email.submit');
 
 // Route untuk halaman memasukkan token
-Route::get('/validate-token/{email}/{token}', [LoginController::class, 'showTokenForm'])->name('password.token.form');
+Route::get('/token-lupa-password', [LoginController::class, 'showTokenLupaPasswordForm'])->name('password.token.form');
 
 // Route untuk menangani submit token
 Route::post('/validate-token', [LoginController::class, 'handleTokenValidation'])->name('password.token.submit');

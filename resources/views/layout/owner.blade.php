@@ -116,11 +116,19 @@
             @endif
         </section>
         <section class="main-content">
+	    <script>
+    		// Simpan token dari session ke localStorage setelah login berhasil
+    		@if(session('token'))
+        	  localStorage.setItem('authToken', "{{ session('token') }}");
+    	  	@endif
+	  </script>
+
             @yield('content')
         </section>
     </main>
 
     @include('component.ModalKeluar')
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="{{ asset('js/layout-owner.js') }}"></script>
@@ -195,7 +203,7 @@
                     deletePemasokById(window.pemasokIdToDelete);
                     $('#Hapuspemasok').modal('hide');
                 });
-                
+
             }
         </script>
 <script>
@@ -208,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('User not authenticated.');
                 return;
             }
-            fetch('http://127.0.0.1:8000/api/logout', {
+            fetch('/api/logout', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -230,7 +238,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
-});
-</script>
+});</script>
 </body>
 </html>

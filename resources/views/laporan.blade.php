@@ -1,5 +1,34 @@
 @extends('layout.owner')
 @section('content')
+<style>
+    /* Make thead sticky */
+    .table-responsive {
+        max-height: 570px; /* Adjust as needed */
+        overflow-y: auto;
+    }
+    thead th {
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 0;
+        box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+    }
+    /* Dropdown menu above thead */
+    .dropdown {
+        position: relative;
+    }
+    .dropdown-options {
+        position: absolute;
+        z-index: 1000;
+        background: white;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        display: none;
+    }
+    .dropdown-options.show {
+        display: block;
+    }
+</style>
 <div class="container-fluid">
     <section class="card p-3">
         <div class="card-header d-flex justify-content-between align-items-center border-0">
@@ -56,11 +85,17 @@
     </section>
 </div>
 <section class="card mt-4 p-4 min-vh-100 d-flex flex-column">
-    <div class="card-header d-flex justify-content-between border-0 mb-2">
-        <h5 class="align-self-end">Rekap Transaksi</h5>
-        <a href="{{ route('laporan.export') }}" id="downloadBtn">
-            <button class="btn btn-outline-secondary">Download</button>
-        </a>
+    <div class="card-header d-flex justify-content-between border-0 px-0">
+        <h5 class="align-self-end text-judul">Rekap Transaksi</h5>
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="downloadDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Download
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="downloadDropdown">
+                <li><a class="dropdown-item fs-5" href="#" id="downloadPdf">Download PDF</a></li>
+                <li><a class="dropdown-item fs-5" href="#" id="downloadExcel">Download Excel</a></li>
+            </ul>
+        </div>
     </div>
     <div class="table-responsive flex-grow-1 table-data">
         <table class="table">
@@ -77,35 +112,34 @@
                     <th class="text-center">Status</th>
                 </tr>
             </thead>
-            <tbody id="laporanTableBody">
-                {{-- Table body will be rendered by JavaScript --}}
-            </tbody>
+<tbody id="laporanTableBody">
+    {{-- Table body will be rendered by JavaScript --}}
+</tbody>
         </table>
     </div>
 </section>
 <script>
     let currentFilter = '{{ $filter ?? "harian" }}';
-    let currentPage = 1;
     const itemsPerPage = 10;
     let laporanData = [];
+    let currentPage = 1;
 
     function toggleDropdown(element) {
         const options = element.nextElementSibling; // Dropdown options
         options.classList.toggle('show'); // Toggle visibility
     }
 
-    // function applyFilter(filter) {
-    //     currentFilter = filter;
-    //     currentPage = 1;
-    //     document.getElementById('filterText').textContent = filter.charAt(0).toUpperCase() + filter.slice(1);
-    //     fetchData();
-    //     toggleDropdown(document.querySelector('.dropdown-selected'));
-    // }
+    function applyFilter(filter) {
+        currentFilter = filter;
+        currentPage = 1;
+        document.getElementById('filterText').textContent = filter.charAt(0).toUpperCase() + filter.slice(1);
+        fetchData();
+        toggleDropdown(document.querySelector('.dropdown-selected'));
+    }
 
     function fetchData() {
         const token = localStorage.getItem('authToken');
-        const url = `http://127.0.0.1:8000/api/laporan?filter=${currentFilter}`;
-        // document.getElementById('debugUrl').textContent = `Fetching data from URL: ${url}`;
+        const url = `/api/laporan?filter=${currentFilter}`;
         fetch(url, {
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -116,7 +150,6 @@
             .then(response => response.json())
             .then(data => {
                 laporanData = data.data;
-                // console.log(laporanData)
                 renderSummary();
                 renderTable();
                 renderPagination();
@@ -140,87 +173,205 @@
         const tbody = document.getElementById('laporanTableBody');
         tbody.innerHTML = '';
 
-        if (laporanData.length === 0) {
+        const closedData = laporanData.filter(item => item.status === 'closed');
+
+        if (closedData.length === 0) {
             const tr = document.createElement('tr');
             const td = document.createElement('td');
             td.colSpan = 9;
             td.className = 'text-center';
-            td.textContent = 'Tidak ada data';
+            td.textContent = 'tidak ada rekap transaksi saat ini';
             tr.appendChild(td);
             tbody.appendChild(tr);
             return;
         }
-        console.log(laporanData);
-        laporanData.forEach(item => {
-            if (item.status === 'closed') {
-                const trToko = document.createElement('tr');
-                const tdToko = document.createElement('td');
-                tdToko.colSpan = 9;
-                tdToko.textContent = item.toko;
-                trToko.appendChild(tdToko);
-                tbody.appendChild(trToko);
 
-                const tr = document.createElement('tr');
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const pageData = closedData.slice(startIndex, endIndex);
 
-                const totalHargaTd = document.createElement('td');
-                totalHargaTd.textContent = `Rp${item.total_harga.toLocaleString('id-ID')}`;
-                tr.appendChild(totalHargaTd);
+        pageData.forEach(item => {
+            const trToko = document.createElement('tr');
+            const tdToko = document.createElement('td');
+            tdToko.colSpan = 9;
+            tdToko.textContent = item.toko;
+            trToko.appendChild(tdToko);
+            tbody.appendChild(trToko);
 
-                const jumlahTd = document.createElement('td');
-                jumlahTd.className = 'text-center';
-                jumlahTd.textContent = item.jumlahDibeli;
-                tr.appendChild(jumlahTd);
+            const tr = document.createElement('tr');
 
-                const produkTd = document.createElement('td');
-                produkTd.className = 'text-center';
-                produkTd.textContent = item.produk;
-                tr.appendChild(produkTd);
+            const totalHargaTd = document.createElement('td');
+            totalHargaTd.textContent = `Rp${item.total_harga.toLocaleString('id-ID')}`;
+            tr.appendChild(totalHargaTd);
 
-                const terjualTd = document.createElement('td');
-                terjualTd.className = 'text-center';
-                terjualTd.textContent = item.terjual;
-                tr.appendChild(terjualTd);
+            const jumlahTd = document.createElement('td');
+            jumlahTd.className = 'text-center';
+            jumlahTd.textContent = item.jumlahDibeli;
+            tr.appendChild(jumlahTd);
 
-                const hargaTd = document.createElement('td');
-                hargaTd.className = 'text-center';
-                hargaTd.textContent = `Rp${item.harga.toLocaleString('id-ID')}`;
-                tr.appendChild(hargaTd);
+            const produkTd = document.createElement('td');
+            produkTd.className = 'text-center';
+            produkTd.textContent = item.produk;
+            tr.appendChild(produkTd);
 
-                const tanggalKeluarTd = document.createElement('td');
-                tanggalKeluarTd.className = 'text-center';
-                tanggalKeluarTd.textContent = new Date(item.tanggal_keluar).toLocaleDateString('id-ID');
-                tr.appendChild(tanggalKeluarTd);
+            const terjualTd = document.createElement('td');
+            terjualTd.className = 'text-center';
+            terjualTd.textContent = item.terjual;
+            tr.appendChild(terjualTd);
 
-                const tanggalReturTd = document.createElement('td');
-                tanggalReturTd.className = 'text-center';
-                tanggalReturTd.textContent = item.tanggal_retur ? new Date(item.tanggal_retur).toLocaleDateString('id-ID') : '';
-                tr.appendChild(tanggalReturTd);
+            const hargaTd = document.createElement('td');
+            hargaTd.className = 'text-center';
+            hargaTd.textContent = `Rp${item.harga.toLocaleString('id-ID')}`;
+            tr.appendChild(hargaTd);
 
-                const waktuEdarTd = document.createElement('td');
-                waktuEdarTd.className = 'text-center';
-                waktuEdarTd.textContent = item.waktu_edar;
-                tr.appendChild(waktuEdarTd);
+            const tanggalKeluarTd = document.createElement('td');
+            tanggalKeluarTd.className = 'text-center';
+            tanggalKeluarTd.textContent = new Date(item.tanggal_keluar).toLocaleDateString('id-ID');
+            tr.appendChild(tanggalKeluarTd);
 
-                const statusTd = document.createElement('td');
-                statusTd.className = 'text-danger text-center';
-                statusTd.textContent = item.status;
-                tr.appendChild(statusTd);
+            const tanggalReturTd = document.createElement('td');
+            tanggalReturTd.className = 'text-center';
+            tanggalReturTd.textContent = item.tanggal_retur ? new Date(item.tanggal_retur).toLocaleDateString('id-ID') : '';
+            tr.appendChild(tanggalReturTd);
 
-                tbody.appendChild(tr);
-            }
+            const waktuEdarTd = document.createElement('td');
+            waktuEdarTd.className = 'text-center';
+            waktuEdarTd.textContent = item.waktu_edar;
+            tr.appendChild(waktuEdarTd);
+
+            const statusTd = document.createElement('td');
+            statusTd.className = 'text-danger text-center';
+            statusTd.textContent = item.status;
+            tr.appendChild(statusTd);
+
+            tbody.appendChild(tr);
         });
     }
 
     function renderPagination() {
-        // Pagination removed as per user request
+        let paginationNav = document.getElementById('pagination-nav');
+        if (!paginationNav) {
+            // Create pagination nav if it doesn't exist
+            const section = document.querySelector('section.card.mt-4.p-4.min-vh-100.d-flex.flex-column');
+            paginationNav = document.createElement('nav');
+            paginationNav.id = 'pagination-nav';
+            paginationNav.setAttribute('aria-label', 'Page navigation');
+            paginationNav.className = 'mt-3 d-flex justify-content-between';
+            section.appendChild(paginationNav);
+        }
+
+        paginationNav.innerHTML = '';
+
+        const totalPages = Math.ceil(laporanData.length / itemsPerPage);
+
+        if (totalPages <= 1) {
+            return; // No need for pagination if only one page
+        }
+
+        // Previous button
+        const prevBtn = document.createElement('button');
+        prevBtn.textContent = 'Previous';
+        prevBtn.className = 'btn btn-outline-primary me-2';
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+                renderPagination();
+            }
+        });
+        paginationNav.appendChild(prevBtn);
+
+        // Page buttons as buttons inside a div container
+        const pageButtonsContainer = document.createElement('div');
+        pageButtonsContainer.className = 'd-inline-flex';
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.textContent = i;
+            pageButton.className = 'btn me-2 ' + (i === currentPage ? 'btn-primary' : 'btn-outline-primary');
+            pageButton.type = 'button';
+            pageButton.addEventListener('click', () => {
+                currentPage = i;
+                renderTable();
+                renderPagination();
+            });
+            pageButtonsContainer.appendChild(pageButton);
+        }
+        paginationNav.appendChild(pageButtonsContainer);
+
+        // Next button
+        const nextBtn = document.createElement('button');
+        nextBtn.textContent = 'Next';
+        nextBtn.className = 'btn btn-outline-primary';
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTable();
+                renderPagination();
+            }
+        });
+        paginationNav.appendChild(nextBtn);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        // Removed pagination button event listeners
-        document.getElementById('downloadBtn').addEventListener('click', function(e) {
+        const token = localStorage.getItem('authToken');
+
+        document.getElementById('downloadExcel').addEventListener('click', function(e) {
             e.preventDefault();
-            window.location.href = 'http://127.0.0.1:8000/api/laporan/export-pdf';
+            fetch('/api/export-transaksi', {
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to download Excel file');
+                return response.blob();
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'Laporan_Transaksi.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                alert(error.message);
+            });
         });
+
+        document.getElementById('downloadPdf').addEventListener('click', function(e) {
+            e.preventDefault();
+            fetch('/api/export-pdf', {
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Accept': 'application/pdf'
+                }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Failed to download PDF file');
+                return response.blob();
+            })
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'Laporan_Transaksi.pdf';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => {
+                alert(error.message);
+            });
+        });
+
         applyFilter(currentFilter);
     });
 </script>

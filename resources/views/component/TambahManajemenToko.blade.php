@@ -4,52 +4,58 @@
             <header class="modal-header">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">Tambah Toko</h1>
             </header>
-            <form id="formTambahToko" action="#" method="post">
+            <form id="formTambahToko">
                 @csrf
-                <article class="modal-body">
+                <div class="modal-body">
                     <section class="form-group mb-3">
                         <div class="d-flex justify-content-between">
-                            <label for="name">Nama Toko</label>
-                            <div class="d-flex flex-column" style="width: 40vh;">
-                                <input type="text" id="name" name="name" class="form-control" placeholder="Masukkan nama toko">
-                                <small style="font-size: 0.8rem" class="text-danger error-name"></small>
-                            </div>
-                        </div>
-                    </section>
-                    <section class="form-group mb-3">
-                        <div class="d-flex justify-content-between">
-                            <label for="namaPemilik">Nama Pemilik</label>
-                            <div class="d-flex flex-column" style="width:40vh;">
-                                <input type="text" id="namaPemilik" name="namaPemilik" class="form-control" placeholder="Masukkan nama pemilik toko">
-                                <small style="font-size: 0.8rem" class="text-danger error-namaPemilik"></small>
+                            <label for="name" class="form-label">Nama Toko</label>
+                            <div class="d-flex flex-column" style="width: 300px;">
+                                <input style="width:100%" type="text" id="name" name="name" class="form-control" placeholder="Masukkan nama toko">
+                                <small class="text-danger error-name" style="font-size: 0.8rem"></small>
                             </div>
                         </div>
                     </section>
 
                     <section class="form-group mb-3">
                         <div class="d-flex justify-content-between">
-                            <label for="address">Alamat</label>
-                            <input type="text" id="address" name="address" class="form-control" style="width: 40vh;" placeholder="Masukkan alamat toko">
+                            <label for="namaPemilik" class="form-label">Nama Pemilik</label>
+                            <div class="d-flex flex-column" style="width: 300px;">
+                                <input style="width:100%" type="text" id="namaPemilik" name="namaPemilik" class="form-control" placeholder="Masukkan nama pemilik toko">
+                                <small class="text-danger error-namaPemilik" style="font-size: 0.8rem"></small>
+                            </div>
                         </div>
-                        <small class="text-danger error-address"></small>
                     </section>
 
                     <section class="form-group mb-3">
                         <div class="d-flex justify-content-between">
-                            <label for="phone_number">Kontak</label>
-                            <input type="text" id="phone_number" name="phone_number" class="form-control" style="width: 40vh;" placeholder="Masukkan kontak toko">
+                            <label for="address" class="form-label">Alamat</label>
+                            <div class="d-flex flex-column" style="width: 300px;">
+                                <input style="width:100%" type="text" id="address" name="address" class="form-control" placeholder="Masukkan alamat toko">
+                                <small class="text-danger error-address" style="font-size: 0.8rem"></small>
+                            </div>
                         </div>
-                        <small class="text-danger error-phone_number"></small>
                     </section>
-                </article>
-                <footer class="modal-footer">
+
+                    <section class="form-group mb-3">
+                        <div class="d-flex justify-content-between">
+                            <label for="phone_number" class="form-label">Kontak</label>
+                            <div class="d-flex flex-column" style="width: 300px;">
+                                <input style="width:100%" type="text" id="phone_number" name="phone_number" class="form-control" placeholder="Masukkan kontak toko">
+                                <small class="text-danger error-phone_number" style="font-size: 0.8rem"></small>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary" id="submitToko">Tambah</button>
-                </footer>
+                    <button type="submit" class="btn btn-primary" id="submitToko" style="font-size: 0.8rem">Tambah</button>
+                </div>
             </form>
         </main>
     </div>
 </section>
+
 <script>
 document.getElementById('formTambahToko').addEventListener('submit', function(event) {
     event.preventDefault();
@@ -61,30 +67,40 @@ document.getElementById('formTambahToko').addEventListener('submit', function(ev
 
     var valid = true;
 
-    document.querySelectorAll('.text-danger').forEach(function(errorElement) {
-        errorElement.innerText = '';
+     document.querySelectorAll('.text-danger').forEach(function(el) {
+        el.innerText = '';
     });
 
+    // Validate name
     if (name === '') {
         document.querySelector('.error-name').innerText = 'Nama toko tidak boleh kosong.';
         valid = false;
     }
 
+    // Validate nama pemilik
     if (namaPemilik === '') {
         document.querySelector('.error-namaPemilik').innerText = 'Nama pemilik tidak boleh kosong.';
         valid = false;
     }
 
-    if (phone_number !== '' && isNaN(phone_number)) {
+    // Validate address
+    if (address === '') {
+        document.querySelector('.error-address').innerText = 'Alamat tidak boleh kosong.';
+        valid = false;
+    }
+
+    // Validate phone number
+    if (phone_number === '') {
+        document.querySelector('.error-phone_number').innerText = 'Nomor telepon tidak boleh kosong.';
+        valid = false;
+    } else if (isNaN(phone_number)) {
         document.querySelector('.error-phone_number').innerText = 'Nomor telepon harus berupa angka.';
         valid = false;
     }
 
-    if (!valid) {
-        return;
-    }
+    if (!valid) return;
 
-    fetch('http://127.0.0.1:8000/api/toko', {
+    fetch('/api/toko', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -123,6 +139,16 @@ document.getElementById('formTambahToko').addEventListener('submit', function(ev
     })
     .catch(error => {
         console.error('Error:', error);
+    });
+});
+
+document.querySelector('#Tambahtoko .btn-secondary').addEventListener('click', function () {
+    // Reset form
+    document.getElementById('formTambahToko').reset();
+
+    // Hapus pesan error jika ada
+    document.querySelectorAll('.text-danger').forEach(function(el) {
+        el.innerText = '';
     });
 });
 </script>

@@ -126,7 +126,7 @@ class DashboardController extends Controller
                 'nama_toko' => $transaksi->toko->name ?? 'Tidak ada toko',
                 'waktu_edar' =>  $transaksi->waktuEdar ?? 'Tidak ada waktu edar',
                 'jumlah' => $transaksi->jumlahDibeli ?? 0,
-                'kategori' => $produk ? $produk->name : 'Tidak ada kategori',
+                'kategori' => $transaksi ? $transaksi->produk->name : 'Tidak ada kategori',
                 'hari' => Carbon::parse($transaksi->transactionDate)->translatedFormat('l'),
                 'tanggal_keluar' => $transaksi->transactionDate,
                 'status' => $transaksi->status,
