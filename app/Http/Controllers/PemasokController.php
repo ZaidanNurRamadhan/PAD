@@ -12,7 +12,8 @@ class PemasokController extends Controller
      */
     public function index()
     {
-        $pemasok = Pemasok::all();
+        // Mengambil pemasok dan mengurutkannya berdasarkan ID secara menurun
+        $pemasok = Pemasok::orderBy('id', 'desc')->paginate(5);
 
         return view('pemasok', compact('pemasok'));
     }

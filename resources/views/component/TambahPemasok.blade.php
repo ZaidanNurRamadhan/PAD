@@ -4,7 +4,7 @@
             <header class="modal-header">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">Tambah Pemasok</h1>
             </header>
-            <form id="formTambahPemasok" action="{{ route('pemasok.store') }}" method="post">
+            <form id="formTambahPemasok">
                 @csrf
                 <div class="modal-body">
                     <section class="form-group mb-3">
@@ -49,12 +49,11 @@
                     <button type="submit" class="btn btn-primary" id="submitPemasok" style="font-size: 0.8rem">Tambah</button>
                 </div>
             </form>
-
         </main>
     </div>
 </section>
 <script>
-    document.getElementById('submitPemasok').addEventListener('click', function(event) {
+document.getElementById('submitPemasok').addEventListener('click', async function(event) {
     event.preventDefault(); // Prevent form from submitting immediately
 
     // Get form elements
@@ -106,10 +105,56 @@
         valid = false;
     }
 
-    // If form is valid, submit it
-    if (valid) {
-        var form = document.getElementById('formTambahPemasok');
-        form.submit(); // Submit the form if valid
+    if (!valid) {
+        return; // Stop submission if client validation fails
+    }
+
+    // Prepare data for API
+    const data = {
+        name: name.value.trim(),
+        produkDisediakan: produkDisediakan.value.trim(),
+        nomorTelepon: nomorTelepon.value.trim(),
+        email: email.value.trim()
+    };
+
+    try {
+        // Get token from localStorage or other storage
+        const token = localStorage.getItem('authToken'); // Adjust key as needed
+
+        const response = await fetch('/api/pemasok', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            // Remove credentials since using Bearer token
+            body: JSON.stringify(data)
+        });
+
+        if (response.status === 201) {
+            // Optionally reset form and close modal
+            document.getElementById('formTambahPemasok').reset();
+            var modal = bootstrap.Modal.getInstance(document.getElementById('Tambahpemasok'));
+            modal.hide();
+            location.reload();
+        } else if (response.status === 422) {
+            // Validation errors from server
+            const result = await response.json();
+            const errors = result.errors;
+            for (const field in errors) {
+                if (errors.hasOwnProperty(field)) {
+                    const errorElement = document.querySelector('.error-' + field);
+                    if (errorElement) {
+                        errorElement.innerText = errors[field][0];
+                    }
+                }
+            }
+        } else {
+            alert('Terjadi kesalahan saat menambahkan pemasok.');
+        }
+    } catch (error) {
+        alert('Gagal menghubungi server.');
     }
 });
 
@@ -118,7 +163,6 @@ function validateEmail(email) {
     var re = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     return re.test(email);
 }
-
 </script>
 
 

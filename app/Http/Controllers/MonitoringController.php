@@ -13,21 +13,40 @@ class MonitoringController extends Controller
      */
     public function index()
     {
-        $transaksis = Transaksi::with('produk')->get();
+        // $transaksis = Transaksi::with('produk', 'toko')->orderBy('id', 'desc')->paginate(5);
+
+        // $data = [];
+        // foreach ($transaksis as $transaksi) {
+        //     $data[] = [
+        //         'nama_toko' => $transaksi->toko->name ?? 'Toko tidak ditemukan',
+        //         'kategori' => $transaksi->produk->name ?? 'Produk tidak ditemukan',
+        //         'jumlah' => $transaksi->terjual,
+        //         'tanggal_keluar' => $transaksi->transactionDate,
+        //         'hari' => Carbon::parse($transaksi->transactionDate)->translatedFormat('l'),
+        //         'waktu_edar' => $transaksi->waktuEdar,
+        //         'status' => $transaksi->status,
+        //     ];
+        // }
+        // return view('Monitoring', compact('data', 'transaksis'));
+
+        $transaksis = Transaksi::with('produk', 'toko')
+            ->where('status', 'open') // Hanya ambil transaksi dengan status "open"
+            ->orderBy('id', 'desc')
+            ->paginate(5);
 
         $data = [];
         foreach ($transaksis as $transaksi) {
             $data[] = [
                 'nama_toko' => $transaksi->toko->name ?? 'Toko tidak ditemukan',
                 'kategori' => $transaksi->produk->name ?? 'Produk tidak ditemukan',
-                'jumlah' => $transaksi->terjual,
+                'jumlah' => $transaksi->jumlahDibeli,
                 'tanggal_keluar' => $transaksi->transactionDate,
                 'hari' => Carbon::parse($transaksi->transactionDate)->translatedFormat('l'),
                 'waktu_edar' => $transaksi->waktuEdar,
                 'status' => $transaksi->status,
             ];
         }
-        return view('Monitoring',compact('data'));
+        return view('Monitoring', compact('data', 'transaksis'));
     }
 
     /**

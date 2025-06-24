@@ -11,17 +11,11 @@
                     <section class="form-group d-flex justify-content-between px-3">
                         <label for="toko_id">Nama Toko</label>
                         <select name="toko_id" id="toko_id" class="form-control" style="max-width: 273px;" required>
-                            @foreach ($tokos as $toko)
-                            <option value="{{ $toko->id }}">{{ $toko->name }}</option>
-                            @endforeach
                         </select>
                     </section>
                     <section class="form-group d-flex justify-content-between px-3 mt-4">
                         <label for="produk_id">Nama Produk</label>
                         <select name="produk_id" id="produk_id" class="form-control" style="max-width: 273px;">
-                            @foreach ($produks as $produk)
-                            <option value="{{ $produk->id }}">{{ $produk->name }}</option>
-                            @endforeach
                         </select>
                     </section>
                     <section class="form-group d-flex justify-content-between px-3 mt-4">
@@ -53,3 +47,111 @@
         </main>
     </div>
 </section>
+@if(session('token'))
+    <script>
+        localStorage.setItem('authToken', "{{ session('token') }}");
+    </script>
+@endif
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const token = localStorage.getItem('authToken');
+        // Fetch toko data and populate select
+        fetch('/api/toko', {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                const tokoSelect = document.getElementById('toko_id');
+                tokoSelect.innerHTML = '';
+                const tokoList = data.data ? data.data : data;
+                tokoList.forEach(toko => {
+                    const option = document.createElement('option');
+                    option.value = toko.id;
+                    option.textContent = toko.name;
+                    tokoSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching toko data:', error);
+            });
+
+        // Fetch produk data and populate select
+        fetch('/api/gudang', {
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json'
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                const produkSelect = document.getElementById('produk_id');
+                produkSelect.innerHTML = '';
+                const produkList = data.produks ? data.produks : data;
+                produkList.forEach(produk => {
+                    const option = document.createElement('option');
+                    option.value = produk.id;
+                    option.textContent = produk.name;
+                    produkSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching produk data:', error);
+            });
+    });
+    const editTransaksiForm = document.getElementById('editTransaksiForm');
+    if (editTransaksiForm !== null) {
+        editTransaksiForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('Authentication token not found. Please login again.');
+                return;
+            }
+
+            const form = event.target;
+            const id = form.action.split('/').pop();
+
+            const formData = {
+                toko_id: document.getElementById('toko_id').value,
+                produk_id: document.getElementById('produk_id').value,
+                tanggal_keluar: document.getElementById('transactionDate').value,
+                harga: parseFloat(document.getElementById('harga').value),
+                jumlahDibeli: parseInt(document.getElementById('jumlahDibeli').value),
+                terjual: parseInt(document.getElementById('terjual').value),
+                tanggal_retur: document.getElementById('tanggal_retur').value || null,
+            };
+
+            fetch(`/api/transaksi/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(data => {
+                        throw new Error(data.message || 'Gagal memperbarui transaksi');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Close modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('Edittransaksi'));
+                modal.hide();
+                // Reload page or refresh data
+                location.reload();
+            })
+            .catch(error => {
+                alert('Error: ' + error.message);
+            });
+        });
+    }
+</script>

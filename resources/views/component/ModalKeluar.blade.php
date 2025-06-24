@@ -9,10 +9,10 @@
         </div>
         <div class="modal-footer justify-content-center">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-          <form action="{{ route('logout') }}" method="POST">
+          <form id="logoutForm" method="POST" action="{{ route('logout') }}">
             @csrf
             <button type="submit" class="btn btn-danger">Keluar</button>
-        </form>
+          </form>
         </div>
       </div>
     </div>

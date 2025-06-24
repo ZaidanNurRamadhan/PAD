@@ -10,19 +10,20 @@
                 <article class="modal-body">
                     <section class="form-group d-flex justify-content-between px-3">
                         <label for="karyawan-name">Nama Karyawan</label>
-                        <input id="karyawan-name" type="text" name="kname" class="form-control" style="max-width: 273px;" placeholder="Masukkan nama karyawan">
+                        <input id="karyawan-name" type="text" name="name" class="form-control" style="max-width: 273px;" placeholder="Masukkan nama karyawan">
                     </section>
                     <section class="form-group d-flex justify-content-between px-3 mt-4">
                         <label for="karyawan-contact">Kontak</label>
                         <input id="karyawan-contact" type="number" name="contact" class="form-control" style="max-width: 273px;" placeholder="Masukkan kontak karyawan">
                     </section>
                     <section class="form-group d-flex justify-content-between px-3 mt-4">
-                        <label for="karyawan-username">Username</label>
-                        <input id="karyawan-username" type="text" name="username" class="form-control" style="max-width: 273px;" placeholder="Masukkan username">
+                        <label for="karyawan-email">Email</label>
+                        <input id="karyawan-email" type="text" name="email" class="form-control" style="max-width: 273px;" placeholder="Masukkan email">
                     </section>
-                    <section class="form-group d-flex justify-content-between px-3 mt-4">
+                    <section class="form-group d-flex justify-content-between px-3 mt-4 position-relative w-auto">
                         <label for="karyawan-password">Password</label>
-                        <input id="karyawan-password" type="text" name="password" class="form-control" style="max-width: 273px;" placeholder="Masukkan password">
+                        <input id="karyawan-password" type="password" name="password" class="form-control" style="max-width: 273px;" placeholder="Masukkan password">
+                        <i id="toggle-icon" class="fa fa-eye position-absolute" style="right: 25px;" onclick="togglePassword()"></i>
                     </section>
                 </article>
                 <footer class="modal-footer">
@@ -35,25 +36,95 @@
 </section>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const editModal = document.getElementById('Editkaryawan');
-        editModal.addEventListener('show.bs.modal', function (event) {
-            // Tombol yang diklik
-            const button = event.relatedTarget;
+    const editModal = document.getElementById('Editkaryawan');
+    editModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
 
-            // Ambil data dari atribut tombol
-            const id = button.getAttribute('data-id');
-            const name = button.getAttribute('data-name');
-            const contact = button.getAttribute('data-contact');
-            const username = button.getAttribute('data-username');
+        const id = button.getAttribute('data-id');
+        const name = button.getAttribute('data-name');
+        const contact = button.getAttribute('data-contact');
+        const email = button.getAttribute('data-email');
 
-            // Masukkan data ke dalam input modal
-            document.getElementById('karyawan-name').value = name;
-            document.getElementById('karyawan-contact').value = contact;
-            document.getElementById('karyawan-username').value = username;
+        document.getElementById('karyawan-name').value = name;
+        document.getElementById('karyawan-contact').value = contact;
+        document.getElementById('karyawan-email').value = email;
 
-            // Update action form dengan ID
-            const form = document.getElementById('edit-form');
-            form.action = `/karyawan/${id}`;
+        const form = document.getElementById('edit-form');
+        form.action = `/api/karyawan/${id}`; // Correctly update the action for the form
+    });
+});
+
+
+    function togglePassword() {
+        var passwordField = document.getElementById("karyawan-password");
+        var icon = document.getElementById("toggle-icon");
+
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        } else {
+            passwordField.type = "password";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+        }
+    }
+        document.getElementById('edit-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var token = localStorage.getItem('authToken');
+        if (!token) {
+            alert('Authentication token not found. Please login again.');
+            return;
+        }
+
+        var form = this;
+        var id = form.action.split('/').pop();
+
+        var formData = {
+            name: document.getElementById('karyawan-name').value.trim(),
+            contact: document.getElementById('karyawan-contact').value.trim(),
+            email: document.getElementById('karyawan-email').value.trim(),
+            password: document.getElementById('karyawan-password').value.trim()
+        };
+
+        fetch(form.action, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': 'Bearer ' + token,
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => { throw new Error(data.message || 'Gagal memperbarui karyawan'); });
+            }
+            return response.json();
+        })
+        .then(data => {
+            var modal = bootstrap.Modal.getInstance(document.getElementById('Editkaryawan'));
+            modal.hide();
+            location.reload();
+        })
+        .catch(error => {
+            alert('Error: ' + error.message);
         });
     });
+
 </script>
+<style>
+    @media only screen and (min-width: 1441px){
+        i{
+            top: 10px !important;
+        }
+    }
+
+    @media only screen and (max-width: 1440px){
+        i{
+            top: 0 !important;
+        }
+    }
+</style>

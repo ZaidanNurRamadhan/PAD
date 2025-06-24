@@ -4,7 +4,7 @@
             <header class="modal-header">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">Tambah Produk</h1>
             </header>
-            <form id="formTambahProduk" action="{{ route('gudang.store') }}" method="post">
+            <form id="formTambahProduk">
                 @csrf
                 <article class="modal-body">
                     <section class="form-group px-3">
@@ -13,11 +13,7 @@
                             <div class="d-flex flex-column" style="width: 60%">
                                 <select name="name" id="name" class="form-control" required>
                                     <option value="" disabled selected>Pilih Nama Produk</option>
-                                    @foreach($pemasok as $p)
-                                        <optgroup label="{{ $p->name }}">
-                                            <option value="{{ $p->produkDisediakan }}">{{ $p->produkDisediakan }}</option>
-                                        </optgroup>
-                                    @endforeach
+                                    <!-- Options will be populated dynamically -->
                                 </select>
                                 <small class="text-danger error-name"></small>
                             </div>
@@ -68,70 +64,111 @@
         </main>
     </div>
 </section>
+
 <script>
-    document.getElementById('submitProduk').addEventListener('click', function(event) {
-        event.preventDefault(); // Prevent form from submitting immediately
+document.addEventListener('DOMContentLoaded', function () {
+    const token = localStorage.getItem('authToken');
 
-        // Get form elements
-        var name = document.getElementById('name');
-        var hargaBeli = document.getElementById('hargaBeli');
-        var hargaJual = document.getElementById('hargaJual');
-        var jumlah = document.getElementById('jumlah');
-        var batasKritis = document.getElementById('batasKritis');
+    // Load options for Nama Produk
+    fetch('/api/pemasok', {
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Gagal mengambil data pemasok');
+        return response.json();
+    })
+    .then(data => {
+        const pemasokList = data.data;
+        const select = document.getElementById('name');
 
-        var valid = true; // Flag to check if the form is valid
+        select.innerHTML = '<option value="" disabled selected>Pilih Nama Produk</option>';
 
-        // Clear previous error messages
-        document.querySelectorAll('.text-danger').forEach(function(errorElement) {
-            errorElement.innerText = '';
+        pemasokList.forEach(p => {
+            const option = document.createElement('option');
+            option.value = p.produkDisediakan;
+            option.textContent = `${p.produkDisediakan} (${p.name})`;
+            select.appendChild(option);
         });
+    })
+    .catch(error => {
+        console.error('Error fetching pemasok:', error);
+    });
 
-        // Validate Nama Produk (select dropdown)
-        if (name.value.trim() === '') {
+    // Handle form submission
+    document.getElementById('formTambahProduk').addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        document.querySelectorAll('.text-danger').forEach(el => el.innerText = '');
+
+        const data = {
+            name: document.getElementById('name').value.trim(),
+            hargaBeli: document.getElementById('hargaBeli').value.trim(),
+            hargaJual: document.getElementById('hargaJual').value.trim(),
+            jumlah: document.getElementById('jumlah').value.trim(),
+            batasKritis: document.getElementById('batasKritis').value.trim(),
+        };
+
+        let valid = true;
+        if (!data.name) {
             document.querySelector('.error-name').innerText = 'Nama produk tidak boleh kosong.';
             valid = false;
         }
-
-        // Validate Harga Beli (required and must be numeric)
-        if (hargaBeli.value.trim() === '') {
-            document.querySelector('.error-hargaBeli').innerText = 'Harga beli tidak boleh kosong.';
-            valid = false;
-        } else if (isNaN(hargaBeli.value.trim())) {
+        if (!data.hargaBeli || isNaN(data.hargaBeli)) {
             document.querySelector('.error-hargaBeli').innerText = 'Harga beli harus berupa angka.';
             valid = false;
         }
-
-        // Validate Harga Jual (required and must be numeric)
-        if (hargaJual.value.trim() === '') {
-            document.querySelector('.error-hargaJual').innerText = 'Harga jual tidak boleh kosong.';
-            valid = false;
-        } else if (isNaN(hargaJual.value.trim())) {
+        if (!data.hargaJual || isNaN(data.hargaJual)) {
             document.querySelector('.error-hargaJual').innerText = 'Harga jual harus berupa angka.';
             valid = false;
         }
-
-        // Validate Jumlah Stok (required and must be numeric)
-        if (jumlah.value.trim() === '') {
-            document.querySelector('.error-jumlah').innerText = 'Jumlah stok tidak boleh kosong.';
-            valid = false;
-        } else if (isNaN(jumlah.value.trim())) {
+        if (!data.jumlah || isNaN(data.jumlah)) {
             document.querySelector('.error-jumlah').innerText = 'Jumlah stok harus berupa angka.';
             valid = false;
         }
-
-        // Validate Ambang Kritis (optional, can be text or numeric)
-        if (batasKritis.value.trim() === '') {
-            document.querySelector('.error-batasKritis').innerText = 'Batas Kritis tidak boleh kosong.';
-            valid = false;
-        }else if (batasKritis.value.trim() !== '' && isNaN(batasKritis.value.trim())) {
+        if (data.batasKritis && isNaN(data.batasKritis)) {
             document.querySelector('.error-batasKritis').innerText = 'Batas kritis harus berupa angka jika diisi.';
             valid = false;
         }
 
-        // If form is valid, submit it
-        if (valid) {
-            var form = document.getElementById('formTambahProduk');
-            form.submit(); // Submit the form if valid
-        }
+        if (!valid) return;
+
+        fetch('/api/gudang', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(async response => {
+            if (response.ok) {
+                const res = await response.json();
+                alert(res.message);
+                document.getElementById('formTambahProduk').reset();
+                const modal = bootstrap.Modal.getInstance(document.getElementById('Tambahproduk'));
+                modal.hide();
+                location.reload();
+            } else if (response.status === 422) {
+                const res = await response.json();
+                if (res.errors) {
+                    for (const [key, messages] of Object.entries(res.errors)) {
+                        const errEl = document.querySelector(`.error-${key}`);
+                        if (errEl) errEl.innerText = messages.join(' ');
+                    }
+                }
+            } else {
+                alert('Terjadi kesalahan saat menambahkan produk.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     });
+});
 </script>
