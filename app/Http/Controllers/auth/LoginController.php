@@ -14,6 +14,37 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
+    public function loginWeb(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+            $user = Auth::user();
+
+            // Buat token Sanctum langsung setelah login
+            $token = $user->createToken('web_token')->plainTextToken;
+
+            // Simpan token di session, atau kirim ke Blade untuk disimpan di localStorage
+            session(['api_token' => $token]);
+            session(['level' => $user->level]);
+
+            if ($user->role === 'owner') {
+                return redirect()->route('dashboard')->with('token', $token);
+            } elseif ($user->role === 'karyawan') {
+                return redirect()->route('transaksi-karyawan')->with('token', $token);
+            }
+
+            return redirect()->route('dashboard')->with('token', $token);
+        }
+
+        return back()->withErrors(['email' => 'Email atau password salah.']);
+    }
+
+    public function index(){
+        return view('login');
+    }
+
     /**
      * Handle login request via API
      */
@@ -52,6 +83,15 @@ class LoginController extends Controller
     }
 
     /**
+     * Show token lupa password form
+     */
+    public function showTokenLupaPasswordForm(Request $request)
+    {
+        $email = $request->query('email', '');
+        return view('token-lupa-password', ['email' => $email, 'token' => '']);
+    }
+
+    /**
      * Logout API
      */
     public function logout(Request $request)
@@ -66,6 +106,20 @@ class LoginController extends Controller
             'success' => true,
             'message' => 'Logout successful'
         ], 200);
+    }
+
+    public function logoutWeb(Request $request)
+{
+    Auth::logout(); // Menghapus session
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect()->route('login');
+}
+
+
+    public function showForgotPasswordForm(){
+        return view('lupa-password');
     }
 
     /**
@@ -119,6 +173,10 @@ class LoginController extends Controller
             'success' => true,
             'message' => 'Token is valid'
         ], 200);
+    }
+
+    public function showResetPasswordForm(){
+        return view('reset-password');
     }
 
     /**

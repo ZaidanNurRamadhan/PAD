@@ -116,11 +116,19 @@
             @endif
         </section>
         <section class="main-content">
+	    <script>
+    		// Simpan token dari session ke localStorage setelah login berhasil
+    		@if(session('token'))
+        	  localStorage.setItem('authToken', "{{ session('token') }}");
+    	  	@endif
+	  </script>
+
             @yield('content')
         </section>
     </main>
 
     @include('component.ModalKeluar')
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="{{ asset('js/layout-owner.js') }}"></script>
@@ -159,7 +167,7 @@
                 }
 
                 $.ajax({
-                    url: "{{ route('search') }}",  // URL ke controller untuk pencarian
+                    url: "{{ url('/api/search') }}",  // URL ke controller untuk pencarian
                     method: 'GET',
                     data: {
                         search: search_string,
@@ -177,6 +185,59 @@
                     }
                 });
             });
+
+            function applyDeleteListeners() {
+                // Remove old listeners and add new for deletePemasok buttons
+                $('.deletePemasok').off('click').on('click', function() {
+                    window.pemasokIdToDelete = $(this).data('id');
+                    $('#Hapuspemasok').modal('show');
+                });
+
+                // Remove old listeners and add new for modal confirm button
+                $('#deletePemasokForm').off('submit').on('submit', function(e) {
+                    e.preventDefault();
+                    if (!window.pemasokIdToDelete) {
+                        alert('No pemasok selected for deletion.');
+                        return;
+                    }
+                    deletePemasokById(window.pemasokIdToDelete);
+                    $('#Hapuspemasok').modal('hide');
+                });
+
+            }
         </script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('User not authenticated.');
+                return;
+            }
+            fetch('/api/logout', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    localStorage.removeItem('authToken');
+                    window.location.href = '/';
+                } else {
+                    alert('Logout failed.');
+                }
+            })
+            .catch(() => {
+                alert('Logout failed.');
+            });
+        });
+    }
+});</script>
 </body>
 </html>

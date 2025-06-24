@@ -13,8 +13,54 @@
             <footer class="modal-footer m-0 justify-content-center">
                 <button type="button" style="width: 100px;" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                 <button type="submit" style="width: 100px;" class="btn btn-danger">Ya</button>
-              </footer>
+            </footer>
         </form>
-    </main>
+      </main>
     </div>
 </section>
+<script>
+    let deleteId = null;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const deleteModal = document.getElementById('Hapuskaryawan');
+
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            deleteId = button.getAttribute('data-id');
+        });
+    });
+
+    document.getElementById('deleteKaryawanForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var token = localStorage.getItem('authToken');
+        if (!token) {
+            alert('Authentication token not found. Please login again.');
+            return;
+        }
+
+        fetch('/api/karyawan/' + deleteId, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': 'Bearer ' + token,
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => { throw new Error(data.message || 'Gagal menghapus karyawan'); });
+            }
+            return response.json();
+        })
+        .then(data => {
+            // alert('Karyawan berhasil dihapus!');
+            var modal = bootstrap.Modal.getInstance(document.getElementById('Hapuskaryawan'));
+            modal.hide();
+            location.reload();
+        })
+        .catch(error => {
+            alert('Error: ' + error.message);
+        });
+    });
+</script>

@@ -15,12 +15,9 @@ class SettingController extends Controller
      */
     public function index()
     {
-        $employees = User::where('role', 'karyawan')->orderBy('id', 'desc')->get();
+        $employees = User::where('role', 'karyawan')->orderBy('id', 'desc')->paginate(10);
 
-        return response()->json([
-            'data' => $employees,
-            'message' => 'Daftar karyawan berhasil diambil.'
-        ], 200);
+        return response()->json($employees, 200);
     }
 
     /**
