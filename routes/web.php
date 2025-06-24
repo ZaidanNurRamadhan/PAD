@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\MonitoringController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\auth\LoginController;
 use App\Http\Controllers\PemasokController;
 use App\Http\Controllers\TokoController;
 use App\Http\Controllers\GudangController;
