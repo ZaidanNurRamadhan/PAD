@@ -53,25 +53,22 @@
         </main>
     </div>
 </section>
-@if(session('token'))
-    <script>
-        localStorage.setItem('authToken', "{{ session('token') }}");
-    </script>
-@endif
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const token = localStorage.getItem('authToken');
         // Fetch toko data and populate select
-        fetch('/api/toko', {
+        fetch('/api/transaksi-karyawan', {
             headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
-                'Content-Type': 'application/json'
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json'
+
             }
         })
             .then(response => response.json())
             .then(data => {
                 const tokoSelect = document.getElementById('toko_id_tambah');
                 tokoSelect.innerHTML = '<option value="">Pilih Toko</option>';
-                const tokoList = data.data ? data.data : data;
+                const tokoList = data.toko ? data.toko : data;
                 tokoList.forEach(toko => {
                     const option = document.createElement('option');
                     option.value = toko.id;
@@ -84,17 +81,18 @@
             });
 
         // Fetch produk data and populate select
-        fetch('/api/gudang', {
+        fetch('/api/transaksi-karyawan', {
             headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('authToken'),
-                'Content-Type': 'application/json'
+                'Authorization': 'Bearer ' + token,
+                'Accept': 'application/json'
+
             }
         })
             .then(response => response.json())
             .then(data => {
                 const produkSelect = document.getElementById('produk_id_tambah');
                 produkSelect.innerHTML = '<option value="">Pilih Produk</option>';
-                const produkList = data.produks ? data.produks : data;
+                const produkList = data.gudang ? data.gudang : data;
                 produkList.forEach(produk => {
                     const option = document.createElement('option');
                     option.value = produk.id;
@@ -128,7 +126,7 @@
 
                 console.log('Submitting formData:', formData);
 
-                fetch('/api/transaksi', {
+                fetch('/api/transaksi-karyawan', {
                     method: 'POST',
                     headers: {
                         'Authorization': 'Bearer ' + token,

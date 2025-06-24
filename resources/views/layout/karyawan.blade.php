@@ -57,7 +57,7 @@
                             </a>
                           </li>
                           <li class="nav-item">
-                            <a href="{{ route('gudang-karyawan') }}" id="gudangLink" class="text-decoration-none fst-normal {{ request()->routeIs('transaksi-karyawan') ? 'active' : '' }}"><i class="fas fa-warehouse"></i><i class="d-none lg d-lg-inline fst-normal"> Gudang</i></a>
+                            <a href="{{ route('gudang-karyawan') }}" id="gudangLink" class="text-decoration-none fst-normal {{ request()->routeIs('gudang-karyawan') ? 'active' : '' }}"><i class="fas fa-warehouse"></i><i class="d-none lg d-lg-inline fst-normal"> Gudang</i></a>
                           </li>
 
                           <!-- Bagian bawah dengan `mt-auto` agar berada di bagian paling bawah -->
@@ -79,6 +79,13 @@
             @yield('content')
         </section>
     </main>
+
+    @if(session('token'))
+    <script>
+        localStorage.setItem('authToken', "{{ session('token') }}");
+    </script>
+    @endif
+
     @include('component.ModalKeluar')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
@@ -98,17 +105,17 @@
             }
 
             $.ajax({
-                url: "{{ route('search') }}",  // URL ke controller untuk pencarian
+                url: "{{ url('/api/search') }}",  // URL ke controller untuk pencarian
                 method: 'GET',
                 data: {
                     search: search_string,
                     page: page // Kirimkan kata kunci pencarian
                 },
                 success: function(res) {
-                    console.log('Search Results:', res);
+                    // console.log('Search Results:', res);
                     // Update hasil pencarian hanya di dalam <tbody> (area yang relevan)
                     $('.table-data tbody').html(res);  // Update hasil pencarian di dalam tabel
-                    applyDeleteListeners(); // Fungsi untuk menerapkan event listener pada tombol delete
+                    //applyDeleteListeners(); Fungsi untuk menerapkan event listener pada tombol delete
 
                 },
                 error: function(xhr, status, error) {
@@ -117,5 +124,38 @@
             });
         });
     </script>
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('User not authenticated.');
+                return;
+            }
+            fetch('/api/logout', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    localStorage.removeItem('authToken');
+                } else {
+                    alert('Logout failed.');
+                }
+            })
+            .catch(() => {
+                alert('Logout failed.');
+            });
+        });
+    }
+});
+</script>
 </body>
 </html>

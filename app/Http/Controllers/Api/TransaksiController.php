@@ -111,6 +111,17 @@ class TransaksiController extends Controller
         return response()->json(['data' => $transaksi], 200);
     }
 
+public function showKaryawan(string $id)
+{
+    $transaksi = Transaksi::with('produk', 'toko')->find($id);
+
+    if (!$transaksi) {
+        return response()->json(['message' => 'Transaksi tidak ditemukan'], 404);
+    }
+
+    return response()->json(['data' => $transaksi], 200);
+}
+
     /**
      * Update the specified resource in storage.
      */
@@ -192,6 +203,9 @@ public function getKaryawan()
 {
     $transaksis = Transaksi::with('produk', 'toko')->orderBy('id', 'desc')->get();
 
+    $toko = Toko::get();
+    $gudang = Produk::get();
+
     $data = $transaksis->map(function ($transaksi) {
         return [
             'id' => $transaksi->id,
@@ -210,7 +224,7 @@ public function getKaryawan()
         ];
     });
 
-    return response()->json(['data' => $data], 200);
+    return response()->json(['data' => $data, 'toko' => $toko, 'gudang' => $gudang], 200);
 }
 
 // POST transaksi khusus karyawan
@@ -265,6 +279,60 @@ public function postKaryawan(Request $request)
 
     return response()->json(['message' => 'Transaksi karyawan berhasil ditambahkan', 'data' => $transaksi], 201);
 }
+
+public function updateKaryawan(Request $request, string $id)
+    {
+        $transaksi = Transaksi::find($id);
+        if (!$transaksi) {
+            return response()->json(['message' => 'Transaksi tidak ditemukan'], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'toko_id' => 'required|exists:toko,id',
+            'produk_id' => 'required|exists:produk,id',
+            'jumlahDibeli' => 'required|numeric|min:1',
+            'harga' => 'required|numeric|min:0',
+            'terjual' => 'required|numeric|min:0',
+            'tanggal_keluar' => 'required|date',
+            'tanggal_retur' => 'nullable|date|after_or_equal:tanggal_keluar',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $produk = Produk::find($request->produk_id);
+        $produk->increment('jumlah', $transaksi->jumlahDibeli);
+
+        if ($produk->jumlah < $request->jumlahDibeli) {
+            return response()->json(['message' => 'Jumlah produk tidak mencukupi.'], 400);
+        }
+
+        $waktuEdar = $request->tanggal_retur
+            ? (strtotime($request->tanggal_retur) - strtotime($request->tanggal_keluar)) / (60 * 60 * 24)
+            : null;
+
+        $status = $request->tanggal_retur ? 'closed' : 'open';
+
+        $transaksi->update([
+            'toko_id' => $request->toko_id,
+            'produk_id' => $request->produk_id,
+            'transactionDate' => $request->tanggal_keluar,
+            'returDate' => $request->tanggal_retur,
+            'jumlahDibeli' => $request->jumlahDibeli,
+            'harga' => $request->harga,
+            'terjual' => $request->terjual,
+            'waktuEdar' => $waktuEdar,
+            'status' => $status,
+        ]);
+
+        $produk->decrement('jumlah', $request->jumlahDibeli);
+        if ($request->tanggal_retur) {
+            $produk->increment('jumlah', ($request->jumlahDibeli - $request->terjual));
+        }
+
+        return response()->json(['message' => 'Transaksi berhasil diperbarui', 'data' => $transaksi], 200);
+    }
 
 public function export()
 {

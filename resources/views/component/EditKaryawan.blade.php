@@ -10,7 +10,7 @@
                 <article class="modal-body">
                     <section class="form-group d-flex justify-content-between px-3">
                         <label for="karyawan-name">Nama Karyawan</label>
-                        <input id="karyawan-name" type="text" name="kname" class="form-control" style="max-width: 273px;" placeholder="Masukkan nama karyawan">
+                        <input id="karyawan-name" type="text" name="name" class="form-control" style="max-width: 273px;" placeholder="Masukkan nama karyawan">
                     </section>
                     <section class="form-group d-flex justify-content-between px-3 mt-4">
                         <label for="karyawan-contact">Kontak</label>
@@ -22,8 +22,8 @@
                     </section>
                     <section class="form-group d-flex justify-content-between px-3 mt-4 position-relative w-auto">
                         <label for="karyawan-password">Password</label>
-                        <input id="karyawan-password" id="password" type="password" name="password" class="form-control" style="max-width: 273px;" placeholder="Masukkan password">
-                        <i id="toggle-icon" class="fa fa-eye position-absolute" style="top: 10px; right: 25px;" onclick="togglePassword()"></i>
+                        <input id="karyawan-password" type="password" name="password" class="form-control" style="max-width: 273px;" placeholder="Masukkan password">
+                        <i id="toggle-icon" class="fa fa-eye position-absolute" style="right: 25px;" onclick="togglePassword()"></i>
                     </section>
                 </article>
                 <footer class="modal-footer">
@@ -50,13 +50,13 @@
         document.getElementById('karyawan-email').value = email;
 
         const form = document.getElementById('edit-form');
-        form.action = `/karyawan/${id}`; // Correctly update the action for the form
+        form.action = `/api/karyawan/${id}`; // Correctly update the action for the form
     });
 });
 
 
     function togglePassword() {
-        var passwordField = document.getElementById("password");
+        var passwordField = document.getElementById("karyawan-password");
         var icon = document.getElementById("toggle-icon");
 
         if (passwordField.type === "password") {
@@ -69,4 +69,62 @@
             icon.classList.add("fa-eye");
         }
     }
+        document.getElementById('edit-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var token = localStorage.getItem('authToken');
+        if (!token) {
+            alert('Authentication token not found. Please login again.');
+            return;
+        }
+
+        var form = this;
+        var id = form.action.split('/').pop();
+
+        var formData = {
+            name: document.getElementById('karyawan-name').value.trim(),
+            contact: document.getElementById('karyawan-contact').value.trim(),
+            email: document.getElementById('karyawan-email').value.trim(),
+            password: document.getElementById('karyawan-password').value.trim()
+        };
+
+        fetch(form.action, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': 'Bearer ' + token,
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => { throw new Error(data.message || 'Gagal memperbarui karyawan'); });
+            }
+            return response.json();
+        })
+        .then(data => {
+            var modal = bootstrap.Modal.getInstance(document.getElementById('Editkaryawan'));
+            modal.hide();
+            location.reload();
+        })
+        .catch(error => {
+            alert('Error: ' + error.message);
+        });
+    });
+
 </script>
+<style>
+    @media only screen and (min-width: 1441px){
+        i{
+            top: 10px !important;
+        }
+    }
+
+    @media only screen and (max-width: 1440px){
+        i{
+            top: 0 !important;
+        }
+    }
+</style>

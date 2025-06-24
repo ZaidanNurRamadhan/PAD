@@ -47,60 +47,54 @@
         </main>
     </div>
 </section>
-@if(session('token'))
-    <script>
-        localStorage.setItem('authToken', "{{ session('token') }}");
-    </script>
-@endif
+
+
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const token = localStorage.getItem('authToken');
-        // Fetch toko data and populate select
-        fetch('/api/toko', {
+        let tokoList = [];
+        let produkList = [];
+
+        // Fetch toko and produk data once and populate selects
+        fetch('/api/transaksi-karyawan', {
             headers: {
                 'Authorization': 'Bearer ' + token,
                 'Accept': 'application/json'
             }
         })
-            .then(response => response.json())
-            .then(data => {
-                const tokoSelect = document.getElementById('toko_id');
-                tokoSelect.innerHTML = '';
-                const tokoList = data.data ? data.data : data;
-                tokoList.forEach(toko => {
-                    const option = document.createElement('option');
-                    option.value = toko.id;
-                    option.textContent = toko.name;
-                    tokoSelect.appendChild(option);
-                });
-            })
-            .catch(error => {
-                console.error('Error fetching toko data:', error);
+        .then(response => response.json())
+        .then(data => {
+            tokoList = data.toko ? data.toko : [];
+            produkList = data.gudang ? data.gudang : [];
+
+            const tokoSelect = document.getElementById('toko_id');
+            tokoSelect.innerHTML = '';
+            tokoList.forEach(toko => {
+                const option = document.createElement('option');
+                option.value = toko.id;
+                option.textContent = toko.name;
+                tokoSelect.appendChild(option);
             });
 
-        // Fetch produk data and populate select
-        fetch('/api/gudang', {
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Accept': 'application/json'
-            }
-        })
-            .then(response => response.json())
-            .then(data => {
-                const produkSelect = document.getElementById('produk_id');
-                produkSelect.innerHTML = '';
-                const produkList = data.produks ? data.produks : data;
-                produkList.forEach(produk => {
-                    const option = document.createElement('option');
-                    option.value = produk.id;
-                    option.textContent = produk.name;
-                    produkSelect.appendChild(option);
-                });
-            })
-            .catch(error => {
-                console.error('Error fetching produk data:', error);
+            const produkSelect = document.getElementById('produk_id');
+            produkSelect.innerHTML = '';
+            produkList.forEach(produk => {
+                const option = document.createElement('option');
+                option.value = produk.id;
+                option.textContent = produk.name;
+                produkSelect.appendChild(option);
             });
+        })
+        .catch(error => {
+            console.error('Error fetching toko and produk data:', error);
+        });
+
+        // Expose tokoList and produkList globally for use in editTransaksi
+        window.tokoList = tokoList;
+        window.produkList = produkList;
     });
+
     const editTransaksiForm = document.getElementById('editTransaksiForm');
     if (editTransaksiForm !== null) {
         editTransaksiForm.addEventListener('submit', function(event) {
@@ -125,7 +119,7 @@
                 tanggal_retur: document.getElementById('tanggal_retur').value || null,
             };
 
-            fetch(`/api/transaksi/${id}`, {
+            fetch(`/api/transaksi-karyawan/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': 'Bearer ' + token,

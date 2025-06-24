@@ -1,5 +1,6 @@
-@forelse($pemasok as $data)
+@forelse($pemasok as $index => $data)
     <tr>
+        <td>{{$index + $pemasok->firstItem()}}</td>
         <td>{{ $data->name }}</td>
         <td>{{ $data->produkDisediakan }}</td>
         <td>{{ $data->nomorTelepon }}</td>

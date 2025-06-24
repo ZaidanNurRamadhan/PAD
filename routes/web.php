@@ -27,12 +27,10 @@ Route::get('/', function () {
 });
 
 Route::get('/login', [LoginController::class, 'index'])->name('login');
-Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::post('/login', [LoginController::class, 'loginWeb'])->name('login.submit');
+Route::post('/logout', [LoginController::class, 'logoutWeb'])->name('logout');
 Route::get('/lupa-password',[LoginController::class, 'lupa_password'])->name('lupa-password');
 Route::post('/lupa-password-aksi',[LoginController::class, 'lupa_password_aksi'])->name('lupa-password-aksi');
-
-Route::get('/search', [SearchController::class, 'search'])->name('search');
 
 
 Route::middleware('auth:sanctum', 'check.role:owner')->group(function () {
@@ -114,7 +112,7 @@ Route::get('/forgot-password', [LoginController::class, 'showForgotPasswordForm'
 Route::post('/forgot-password', [LoginController::class, 'handleForgotPassword'])->name('password.email.submit');
 
 // Route untuk halaman memasukkan token
-Route::get('/validate-token/{email}/{token}', [LoginController::class, 'showTokenForm'])->name('password.token.form');
+Route::get('/token-lupa-password', [LoginController::class, 'showTokenLupaPasswordForm'])->name('password.token.form');
 
 // Route untuk menangani submit token
 Route::post('/validate-token', [LoginController::class, 'handleTokenValidation'])->name('password.token.submit');
