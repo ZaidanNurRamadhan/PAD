@@ -28,7 +28,7 @@ class TokoController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:toko,name',
             'namaPemilik' => 'required|string|max:255',
             'address' => 'nullable|string|max:255',
             'phone_number' => 'nullable|string|max:255',
@@ -70,7 +70,7 @@ class TokoController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:toko,name,' . $id,
             'namaPemilik' => 'required|string|max:255',
             'address' => 'nullable|string|max:255',
             'phone_number' => 'nullable|string|max:255',

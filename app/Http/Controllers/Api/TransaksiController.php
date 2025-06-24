@@ -60,6 +60,10 @@ class TransaksiController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
+        if ($request->terjual !== null && $request->terjual > $request->jumlahDibeli) {
+            return response()->json(['message' => 'Jumlah terjual tidak boleh melebihi jumlah dibeli.'], 422);
+        }
+
         $produk = Produk::find($request->produk_id);
 
         if ($produk->jumlah < $request->jumlahDibeli) {
@@ -140,6 +144,10 @@ public function showKaryawan(string $id)
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        if ($request->terjual > $request->jumlahDibeli) {
+            return response()->json(['message' => 'Jumlah terjual tidak boleh melebihi jumlah dibeli.'], 422);
         }
 
         $produk = Produk::find($request->produk_id);
@@ -234,6 +242,10 @@ public function postKaryawan(Request $request)
 
     if ($validator->fails()) {
         return response()->json(['errors' => $validator->errors()], 422);
+    }
+
+    if ($request->terjual !== null && $request->terjual > $request->jumlahDibeli) {
+        return response()->json(['message' => 'Jumlah terjual tidak boleh melebihi jumlah dibeli.'], 422);
     }
 
     $produk = Produk::find($request->produk_id);
