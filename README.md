@@ -2,13 +2,6 @@
   <img src="https://raw.githubusercontent.com/zaidannurramadhan/pad/main/public/assets/img/Logo.png" alt="KONEK Logo" width="400">
 </p>
 
-<p align="center">
-  <img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status">
-  <img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads">
-  <img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version">
-  <img src="https://img.shields.io/packagist/l/laravel/framework" alt="License">
-</p>
-
 # KONEK - Stock Management Application
 
 KONEK is a web-based stock management application built with the Laravel framework, designed to provide an intuitive and efficient solution for managing product inventory, transactions, suppliers, and store data. It offers different access levels for owners and employees, ensuring streamlined operations and clear oversight of business activities.
