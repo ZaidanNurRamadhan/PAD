@@ -1,66 +1,125 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Aplikasi Manajemen Stok KONEK (PAD-fe)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi Manajemen Stok KONEK adalah sebuah sistem berbasis web yang dirancang untuk membantu pengelolaan inventaris, transaksi penjualan, informasi pemasok, data toko, dan manajemen karyawan. Aplikasi ini mendukung dua peran pengguna utama: Pemilik (Owner) dan Karyawan, dengan fungsionalitas yang disesuaikan untuk setiap peran.
 
-## About Laravel
+## Fitur Utama
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+  * **Manajemen Otentikasi Pengguna**:
+      * Login dan Logout.
+      * Fitur Lupa Kata Sandi dan Reset Kata Sandi melalui email.
+  * **Sistem Peran Pengguna**:
+      * **Owner**: Akses penuh ke semua fitur, termasuk *dashboard* lengkap, manajemen gudang, transaksi, laporan, pemasok, toko, dan karyawan.
+      * **Karyawan**: Akses terbatas hanya pada manajemen gudang dan transaksi.
+  * **Dashboard Interaktif**:
+      * Melihat monitoring penyebaran produk.
+      * Grafik penjualan dan retur (harian/bulanan).
+      * Daftar produk terlaris.
+      * Notifikasi produk dengan stok menipis.
+  * **Manajemen Gudang**:
+      * Menambah, mengedit, dan menghapus data produk.
+      * Melihat detail stok produk dan batas kritis.
+  * **Manajemen Transaksi**:
+      * Mencatat transaksi penjualan (keluar) dan pengembalian (retur).
+      * Melihat daftar transaksi lengkap dengan detail produk, toko, harga, jumlah, tanggal transaksi, dan tanggal retur.
+      * Status transaksi ("open" atau "closed").
+  * **Manajemen Pemasok**:
+      * Menambah, mengedit, dan menghapus data pemasok.
+      * Mencatat produk yang disediakan oleh masing-masing pemasok.
+  * **Manajemen Toko**:
+      * Menambah, mengedit, dan menghapus data toko.
+      * Mencatat nama toko, nama pemilik, alamat, dan kontak.
+  * **Manajemen Karyawan**:
+      * Menambah, mengedit, dan menghapus informasi karyawan (hanya untuk peran Owner).
+  * **Laporan**:
+      * Filter laporan transaksi berdasarkan periode harian atau bulanan.
+      * Ekspor laporan transaksi ke format PDF dan Excel.
+  * **Fungsionalitas Pencarian**:
+      * Pencarian global di seluruh halaman (transaksi, gudang, pemasok, toko, karyawan, laporan) untuk mempermudah pencarian data.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Instalasi
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Untuk menjalankan aplikasi ini di lingkungan lokal Anda, ikuti langkah-langkah berikut:
 
-## Learning Laravel
+1.  **Kloning Repositori:**
+    ```bash
+    git clone <URL_REPOSITORI_ANDA> PAD-fe
+    ```
+2.  **Navigasi ke Direktori Proyek:**
+    ```bash
+    cd PAD-fe
+    ```
+3.  **Instal Dependensi Composer:**
+    ```bash
+    composer install
+    ```
+4.  **Instal Dependensi NPM:**
+    ```bash
+    npm install
+    ```
+5.  **Buat File `.env`:**
+    ```bash
+    cp .env.example .env
+    ```
+6.  **Konfigurasi Database:**
+    Edit file `.env` dan sesuaikan pengaturan database Anda (contoh untuk MySQL):
+    ```dotenv
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=nama_database_anda
+    DB_USERNAME=username_database_anda
+    DB_PASSWORD=password_database_anda
+    ```
+7.  **Jalankan Migrasi Database:**
+    Ini akan membuat tabel-tabel yang diperlukan di database Anda.
+    ```bash
+    php artisan migrate
+    ```
+8.  **(Opsional) Jalankan Seeder:**
+    Untuk mengisi database dengan data awal (pengguna, toko, produk, transaksi, pemasok), Anda bisa menjalankan *seeder*:
+    ```bash
+    php artisan db:seed
+    ```
+    *Catatan: Lihat `database/seeders` untuk detail data yang akan dibuat.*
+9.  **Generate Kunci Aplikasi:**
+    ```bash
+    php artisan key:generate
+    ```
+10. **Jalankan Server Pengembangan Laravel:**
+    ```bash
+    php artisan serve
+    ```
+11. **Jalankan Vite untuk Aset (CSS/JS):**
+    Buka terminal baru dan jalankan:
+    ```bash
+    npm run dev
+    ```
+    Biarkan proses ini berjalan di *background*.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Penggunaan
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Setelah semua langkah instalasi selesai, Anda dapat mengakses aplikasi melalui URL yang diberikan oleh `php artisan serve` (biasanya `http://127.0.0.1:8000`).
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+  * Gunakan kredensial dari *seeder* (misalnya `isdeaths7@gmail.com` dengan *password* `12345678` untuk *owner*, atau `zaidan@gmail.com` dengan *password* `12345678` untuk *karyawan*) untuk masuk ke dalam aplikasi.
+  * Jelajahi fitur-fitur yang tersedia sesuai dengan peran pengguna.
 
-## Laravel Sponsors
+## API Endpoints
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Aplikasi ini juga menyediakan *API endpoints* untuk berbagai fungsionalitas manajemen data. Semua *endpoints* API diakses melalui prefiks `/api/` (misalnya `/api/dashboard`, `/api/gudang`, dll.). Detail lebih lanjut dapat ditemukan di *file* `routes/api.php`.
 
-### Premium Partners
+## Teknologi yang Digunakan
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+  * **Backend**: PHP 8.2+
+  * **Framework**: Laravel Framework 10.x
+  * **Database**: MySQL (dapat dikonfigurasi untuk PostgreSQL/SQLite)
+  * **Frontend**: HTML, CSS (Bootstrap 5), JavaScript (Vanilla JS, jQuery)
+  * **Visualisasi Data**: Chart.js
+  * **Ekspor Data**: Maatwebsite Excel (untuk `.xlsx`), mPDF (untuk `.pdf`)
 
-## Contributing
+## Kontribusi
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Kami menyambut kontribusi Anda\! Silakan lihat [panduan kontribusi Laravel](https://laravel.com/docs/contributions) untuk informasi lebih lanjut mengenai cara berkontribusi pada proyek berbasis Laravel.
 
-## Code of Conduct
+## Lisensi
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Proyek ini dilisensikan di bawah [Lisensi MIT](https://opensource.org/licenses/MIT).
