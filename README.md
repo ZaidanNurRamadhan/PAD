@@ -14,7 +14,7 @@ KONEK adalah aplikasi manajemen stok berbasis web yang dibangun dengan framework
 * **Manajemen Gudang**: Kelola inventaris produk, termasuk menambah produk baru, mengedit yang sudah ada, dan menghapus catatan. Lacak stok produk, harga beli, harga jual, dan ambang batas stok kritis.
 * **Laporan**: Buat laporan harian dan bulanan untuk transaksi dalam format PDF dan Excel.
 * **Manajemen Pemasok**: Pertahankan daftar pemasok, termasuk nama, produk yang disediakan, nomor kontak, dan email mereka.
-* **Manajemen Toko**: Kelola informasi tentang toko Anda, seperti nama toko, nama pemilik, alamat, dan nomor telepon.
+* **Manajemen Toko**: Kelola informasi tentang toko, seperti nama toko, nama pemilik, alamat, dan nomor telepon.
 * **Manajemen Karyawan**: Tambah, edit, dan hapus akun karyawan dengan peran tertentu.
 
 **Untuk Karyawan:**
